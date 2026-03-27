@@ -1,0 +1,15 @@
+{
+  "name": "@adamaszczos/beadloo-assets",
+  "version": "0.1.0",
+  "description": "Beadloo bead image and metadata assets",
+  "private": false,
+  "license": "MIT",
+  "author": "Adam Nowakowski",
+  "files": ["beads/**"],
+  "publishConfig": { "access": "public" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adamaszczos/beadloo-assets"
+  },
+  "scripts": {}
+}
