@@ -1,0 +1,32 @@
+{
+  "15/0": {
+    "height_mm": 1.5,
+    "length_mm": 1.1,
+    "hole_size_mm": 0.7,
+    "beads_per_gram": 250
+  },
+  "11/0": {
+    "height_mm": 2.2,
+    "length_mm": 1.5,
+    "hole_size_mm": 0.8,
+    "beads_per_gram": 110
+  },
+  "8/0": {
+    "height_mm": 3,
+    "length_mm": 2.1,
+    "hole_size_mm": 1.1,
+    "beads_per_gram": 43
+  },
+  "6/0": {
+    "height_mm": 4,
+    "length_mm": 2.8,
+    "hole_size_mm": 1.5,
+    "beads_per_gram": 15
+  },
+  "3/0": {
+    "height_mm": 5.5,
+    "length_mm": 3.8,
+    "hole_size_mm": 2,
+    "beads_per_gram": 6
+  }
+}

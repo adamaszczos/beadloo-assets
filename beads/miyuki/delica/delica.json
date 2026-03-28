@@ -1,0 +1,22 @@
+{
+    "15/0" : {
+        "height_mm" : 1.30,
+        "length_mm": 1.15,
+        "hole_size_mm": 0.65
+    },
+    "11/0" : {
+        "height_mm" : 1.60,
+        "length_mm": 1.30,
+        "hole_size_mm": 0.80
+    },
+    "10/0" : {
+        "height_mm" : 2.20,
+        "length_mm": 1.70,
+        "hole_size_mm": 1.00
+    },
+    "8/0" : {
+        "height_mm" : 3.00,
+        "length_mm": 2.75,
+        "hole_size_mm": 1.50
+    }
+}

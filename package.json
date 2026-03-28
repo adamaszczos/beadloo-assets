@@ -1,0 +1,36 @@
+{
+  "name": "@adamaszczos/beadloo-assets",
+  "version": "0.1.0",
+  "description": "Beadloo bead image and metadata assets",
+  "private": false,
+  "license": "MIT",
+  "author": "Adam Nowakowski",
+  "files": [
+    "beads/**"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adamaszczos/beadloo-assets"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "beads:miyuki:delica:sync": "tsx scripts/beads/miyuki/delica/sync.ts",
+    "beads:miyuki:delica:blob": "tsx scripts/beads/miyuki/delica/blob.ts",
+    "beads:toho:round:sync": "tsx scripts/beads/toho/round/sync.ts",
+    "beads:toho:round:blob": "tsx scripts/beads/toho/round/blob.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@vercel/blob": "^2.0.0",
+    "dotenv": "^17.2.3",
+    "node-html-parser": "^7.0.1",
+    "sharp": "^0.34.3",
+    "tsx": "^4.20.4",
+    "typescript": "^5",
+    "vitest": "^4.1.2"
+  }
+}
