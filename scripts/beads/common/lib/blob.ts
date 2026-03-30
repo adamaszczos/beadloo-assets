@@ -2,7 +2,11 @@ import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import { list, put } from '@vercel/blob';
-import { getBeadTypeDirectory, getBeadTypePublicPath, ASSET_OUTPUTS_DIR } from './paths.js';
+import {
+  ASSET_OUTPUTS_DIR,
+  getBeadTypePublicPath,
+  getDownloadedBeadTypeDirectory,
+} from './paths.js';
 
 // ============================================================================
 // Types
@@ -68,17 +72,17 @@ export function collectLocalBlobAssets(beadType: string, sizes: string[]): BlobA
   const blobPrefix = getBlobPrefix(beadType);
 
   for (const size of sizes) {
-    const sizeDir = getBeadTypeDirectory(beadType, size);
-    if (!fs.existsSync(sizeDir)) {
+    const downloadedSizeDir = getDownloadedBeadTypeDirectory(beadType, size);
+    if (!fs.existsSync(downloadedSizeDir)) {
       continue;
     }
 
-    for (const file of fs.readdirSync(sizeDir)) {
+    for (const file of fs.readdirSync(downloadedSizeDir)) {
       if (!isOriginalBlobAssetFile(file)) {
         continue;
       }
 
-      const localPath = path.join(sizeDir, file);
+      const localPath = path.join(downloadedSizeDir, file);
       const content = fs.readFileSync(localPath);
       const relativePath = path.posix.join(blobPrefix, size, file);
 
