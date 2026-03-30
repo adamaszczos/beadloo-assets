@@ -52,6 +52,16 @@ describe('constructImageUrl', () => {
     expect(result).toBe('https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/DB0001.jpg');
   });
 
+  it('preserves lowercase image URLs from the server', () => {
+    const result = constructImageUrl({
+      beadId: 'DB271',
+      size: '11',
+      name: 'DB271 Delica Beads 11/0',
+      imageUrl: 'https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/db0271-324x324.jpg',
+    });
+    expect(result).toBe('https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/db0271.jpg');
+  });
+
   it('constructs a fallback URL when no imageUrl provided', () => {
     const result = constructImageUrl({
       beadId: 'DB45',

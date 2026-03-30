@@ -302,7 +302,7 @@ export function findMissingBeads(
 
 export function constructImageUrl(beadListing: BeadListing): string {
   if (beadListing.imageUrl) {
-    const match = beadListing.imageUrl.match(/(https:\/\/[^"'\s]+\/(DB[LMS]?\d+))(?:-\d+x\d+)?\.jpg/);
+    const match = beadListing.imageUrl.match(/(https:\/\/[^"'\s]+\/(DB[LMS]?\d+))(?:-\d+x\d+)?\.jpg/i);
     if (match) {
       return `${match[1]}.jpg`;
     }
