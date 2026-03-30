@@ -21,7 +21,7 @@ import { GENERATED_DATA_DIR, getBeadTypeDirectory } from './lib/paths.js';
 interface BeadMetadata {
   shape: string;
   size: string;
-  colorGroup: string;
+  colorGroup?: string;
   glassGroup: string;
   finish?: string;
   dyed: string;
@@ -153,20 +153,62 @@ function extractAllMetadata(options: GenerationOptions): AllSizesMetadata {
 // TypeScript File Generation
 // ============================================================================
 
+interface DiscoveredBeadType {
+  beadType: string;
+  sizes: string[];
+}
+
 /**
- * Generate TypeScript loader file (NEW: uses JSON imports)
+ * Discover all *-metadata.json files in the output directory and group by bead type.
  */
-function generateTypeScriptLoader(
-  metadata: AllSizesMetadata,
-  beadType: string
-): string {
-  const sizeTypes = Object.keys(metadata).map(s => `"${s}"`).join(' | ');
-  
+function discoverMetadataFiles(outputDir: string): DiscoveredBeadType[] {
+  if (!fs.existsSync(outputDir)) return [];
+
+  const files = fs.readdirSync(outputDir);
+  const byType = new Map<string, string[]>();
+
+  for (const file of files) {
+    const match = file.match(/^(.+)-(\d+)-metadata\.json$/);
+    if (!match) continue;
+    const beadType = match[1];
+    const size = match[2];
+    if (!byType.has(beadType)) byType.set(beadType, []);
+    byType.get(beadType)!.push(size);
+  }
+
+  // Sort sizes numerically within each type, sort types alphabetically
+  return Array.from(byType.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([beadType, sizes]) => ({
+      beadType,
+      sizes: sizes.sort((a, b) => Number(a) - Number(b)),
+    }));
+}
+
+/**
+ * Generate a unified TypeScript loader covering all discovered bead types.
+ */
+function generateUnifiedTypeScriptLoader(beadTypes: DiscoveredBeadType[]): string {
+  const beadTypeUnion = beadTypes.map(bt => `"${bt.beadType}"`).join(' | ');
+
+  const beadTypeSizesEntries = beadTypes
+    .map(bt => `  "${bt.beadType}": ${bt.sizes.map(s => `"${s}"`).join(' | ')};`)
+    .join('\n');
+
+  const switchCases = beadTypes
+    .flatMap(bt =>
+      bt.sizes.map(
+        size =>
+          `    case "${bt.beadType}-${size}":\n      data = (await import('./${bt.beadType}-${size}-metadata.json')).default;\n      break;`
+      )
+    )
+    .join('\n');
+
   return `/**
  * Bead metadata loader with dynamic JSON imports
- * Auto-generated for ${beadType} beads
+ * Auto-generated — covers all bead types
  * Generated on: ${new Date().toISOString()}
- * 
+ *
  * This module loads bead metadata from JSON files instead of bundling
  * all metadata inline. This significantly reduces serverless function
  * bundle sizes.
@@ -175,7 +217,7 @@ function generateTypeScriptLoader(
 export interface BeadMetadata {
   shape: string;
   size: string;
-  colorGroup: string;
+  colorGroup?: string;
   glassGroup: string;
   finish?: string;
   dyed: string;
@@ -183,67 +225,80 @@ export interface BeadMetadata {
   plating: string;
 }
 
-export type BeadSize = ${sizeTypes};
+export type BeadType = ${beadTypeUnion};
 
-// Cache for loaded metadata
-const metadataCache: Partial<Record<BeadSize, Record<string, BeadMetadata>>> = {};
+export interface BeadTypeSizes {
+${beadTypeSizesEntries}
+}
+
+// Cache keyed by "\${beadType}-\${size}"
+const metadataCache: Record<string, Record<string, BeadMetadata>> = {};
 
 /**
- * Dynamically load metadata for a specific bead size
+ * Dynamically load metadata for a specific bead type and size
  */
-async function loadMetadataForSize(size: BeadSize): Promise<Record<string, BeadMetadata>> {
-  if (metadataCache[size]) {
-    return metadataCache[size]!;
+async function loadMetadata<T extends BeadType>(
+  beadType: T,
+  size: BeadTypeSizes[T]
+): Promise<Record<string, BeadMetadata>> {
+  const key = \`\${beadType}-\${size}\`;
+  if (metadataCache[key]) {
+    return metadataCache[key];
   }
 
   let data: Record<string, BeadMetadata>;
-  
-  switch (size) {
-${Object.keys(metadata).map(size => `    case "${size}":
-      data = (await import('./${beadType}-${size}-metadata.json')).default;
-      break;`).join('\n')}
+
+  switch (key) {
+${switchCases}
     default:
-      throw new Error(\`Unknown bead size: \${size}\`);
+      throw new Error(\`Unknown bead type/size: \${key}\`);
   }
 
-  metadataCache[size] = data;
+  metadataCache[key] = data;
   return data;
 }
 
 /**
- * Synchronously get cached metadata for a size
+ * Synchronously get cached metadata for a bead type and size
  */
-function getCachedMetadata(size: BeadSize): Record<string, BeadMetadata> {
-  return metadataCache[size] || {};
+function getCachedMetadata<T extends BeadType>(
+  beadType: T,
+  size: BeadTypeSizes[T]
+): Record<string, BeadMetadata> {
+  return metadataCache[\`\${beadType}-\${size}\`] || {};
 }
 
 /**
- * Get metadata for a specific bead
+ * Get metadata for a specific bead (sync — must preload first)
  */
-export function getBeadMetadata(
+export function getBeadMetadata<T extends BeadType>(
   beadId: string,
-  size: BeadSize
+  beadType: T,
+  size: BeadTypeSizes[T]
 ): BeadMetadata | null {
-  const sizeMetadata = getCachedMetadata(size);
-  return sizeMetadata[beadId] || null;
+  return getCachedMetadata(beadType, size)[beadId] || null;
 }
 
 /**
  * Async version that ensures data is loaded
  */
-export async function getBeadMetadataAsync(
+export async function getBeadMetadataAsync<T extends BeadType>(
   beadId: string,
-  size: BeadSize
+  beadType: T,
+  size: BeadTypeSizes[T]
 ): Promise<BeadMetadata | null> {
-  const metadata = await loadMetadataForSize(size);
+  const metadata = await loadMetadata(beadType, size);
   return metadata[beadId] || null;
 }
 
 /**
- * Preload metadata for specific sizes
+ * Preload metadata for specific bead type + sizes
  */
-export async function preloadMetadata(sizes: BeadSize[]): Promise<void> {
-  await Promise.all(sizes.map(size => loadMetadataForSize(size)));
+export async function preloadMetadata<T extends BeadType>(
+  beadType: T,
+  sizes: BeadTypeSizes[T][]
+): Promise<void> {
+  await Promise.all(sizes.map(size => loadMetadata(beadType, size)));
 }
 
 /**
@@ -252,7 +307,7 @@ export async function preloadMetadata(sizes: BeadSize[]): Promise<void> {
 export function isMetallicBead(metadata: BeadMetadata): boolean {
   const finish = metadata.finish?.toLowerCase() || '';
   const glassGroup = metadata.glassGroup?.toLowerCase() || '';
-  
+
   return (
     finish.includes('metallic') ||
     finish.includes('plating') ||
@@ -263,13 +318,12 @@ export function isMetallicBead(metadata: BeadMetadata): boolean {
 /**
  * Get all beads for a specific color group
  */
-export function getBeadsByColorGroup(
+export function getBeadsByColorGroup<T extends BeadType>(
   colorGroup: string,
-  size: BeadSize
+  beadType: T,
+  size: BeadTypeSizes[T]
 ): string[] {
-  const sizeMetadata = getCachedMetadata(size);
-  
-  return Object.entries(sizeMetadata)
+  return Object.entries(getCachedMetadata(beadType, size))
     .filter(([, meta]) => meta.colorGroup === colorGroup)
     .map(([id]) => id);
 }
@@ -277,13 +331,12 @@ export function getBeadsByColorGroup(
 /**
  * Get all beads for a specific glass group
  */
-export function getBeadsByGlassGroup(
+export function getBeadsByGlassGroup<T extends BeadType>(
   glassGroup: string,
-  size: BeadSize
+  beadType: T,
+  size: BeadTypeSizes[T]
 ): string[] {
-  const sizeMetadata = getCachedMetadata(size);
-  
-  return Object.entries(sizeMetadata)
+  return Object.entries(getCachedMetadata(beadType, size))
     .filter(([, meta]) => meta.glassGroup === glassGroup)
     .map(([id]) => id);
 }
@@ -291,12 +344,13 @@ export function getBeadsByGlassGroup(
 /**
  * Async version of getBeadsByColorGroup
  */
-export async function getBeadsByColorGroupAsync(
+export async function getBeadsByColorGroupAsync<T extends BeadType>(
   colorGroup: string,
-  size: BeadSize
+  beadType: T,
+  size: BeadTypeSizes[T]
 ): Promise<string[]> {
-  const sizeMetadata = await loadMetadataForSize(size);
-  
+  const sizeMetadata = await loadMetadata(beadType, size);
+
   return Object.entries(sizeMetadata)
     .filter(([, meta]) => meta.colorGroup === colorGroup)
     .map(([id]) => id);
@@ -305,12 +359,13 @@ export async function getBeadsByColorGroupAsync(
 /**
  * Async version of getBeadsByGlassGroup
  */
-export async function getBeadsByGlassGroupAsync(
+export async function getBeadsByGlassGroupAsync<T extends BeadType>(
   glassGroup: string,
-  size: BeadSize
+  beadType: T,
+  size: BeadTypeSizes[T]
 ): Promise<string[]> {
-  const sizeMetadata = await loadMetadataForSize(size);
-  
+  const sizeMetadata = await loadMetadata(beadType, size);
+
   return Object.entries(sizeMetadata)
     .filter(([, meta]) => meta.glassGroup === glassGroup)
     .map(([id]) => id);
@@ -318,108 +373,31 @@ export async function getBeadsByGlassGroupAsync(
 `;
 }
 
-/**
- * Generate TypeScript file content (OLD: big inline object)
- * DEPRECATED: Use generateTypeScriptLoader instead
- */
-function generateTypeScriptContent(
-  metadata: AllSizesMetadata,
-  beadType: string
-): string {
-  const sizeTypes = Object.keys(metadata).map(s => `"${s}"`).join(' | ');
-  
-  return `/**
- * Auto-generated file containing metadata for ${beadType} beads
- * Generated on: ${new Date().toISOString()}
- * 
- * This file contains metadata extracted from bead image metadata files
- * including properties like finish type, glass group, color group, etc.
- */
-
-export interface BeadMetadata {
-  shape: string;
-  size: string;
-  colorGroup: string;
-  glassGroup: string;
-  finish?: string;
-  dyed: string;
-  galvanized: string;
-  plating: string;
-}
-
-export type BeadSize = ${sizeTypes};
-
-export const beadMetadata: Record<BeadSize, Record<string, BeadMetadata>> = ${JSON.stringify(metadata, null, 2)};
+// ============================================================================
+// Unified Loader Regeneration
+// ============================================================================
 
 /**
- * Get metadata for a specific bead
- * 
- * @param beadId - Bead identifier (e.g., "DB0001")
- * @param size - Size identifier
- * @returns Bead metadata or null if not found
+ * Regenerate the unified bead-metadata.ts covering ALL bead types
+ * discovered in the output directory.
+ *
+ * Call this from any sync script after writing per-size JSON files.
  */
-export function getBeadMetadata(
-  beadId: string,
-  size: BeadSize
-): BeadMetadata | null {
-  return beadMetadata[size]?.[beadId] || null;
-}
+export function regenerateUnifiedLoader(outputDir?: string): void {
+  const dir = outputDir || GENERATED_DATA_DIR;
+  const beadTypes = discoverMetadataFiles(dir);
 
-/**
- * Check if a bead has metallic finish
- * 
- * @param metadata - Bead metadata
- * @returns True if bead is metallic
- */
-export function isMetallicBead(metadata: BeadMetadata): boolean {
-  const finish = metadata.finish?.toLowerCase() || '';
-  const glassGroup = metadata.glassGroup?.toLowerCase() || '';
-  
-  return (
-    finish.includes('metallic') ||
-    finish.includes('plating') ||
-    glassGroup.includes('metallic')
-  );
-}
+  if (beadTypes.length === 0) {
+    console.warn('[WARN] No *-metadata.json files found — skipping bead-metadata.ts generation');
+    return;
+  }
 
-/**
- * Get all beads for a specific color group
- * 
- * @param colorGroup - Color group name
- * @param size - Size identifier
- * @returns Array of bead IDs
- */
-export function getBeadsByColorGroup(
-  colorGroup: string,
-  size: BeadSize
-): string[] {
-  const sizeMetadata = beadMetadata[size];
-  if (!sizeMetadata) return [];
-  
-  return Object.entries(sizeMetadata)
-    .filter(([, meta]) => meta.colorGroup === colorGroup)
-    .map(([id]) => id);
-}
+  const content = generateUnifiedTypeScriptLoader(beadTypes);
+  const outputFile = path.join(dir, 'bead-metadata.ts');
+  fs.writeFileSync(outputFile, content);
 
-/**
- * Get all beads for a specific glass group
- * 
- * @param glassGroup - Glass group name (e.g., "Opaque", "Transparent")
- * @param size - Size identifier
- * @returns Array of bead IDs
- */
-export function getBeadsByGlassGroup(
-  glassGroup: string,
-  size: BeadSize
-): string[] {
-  const sizeMetadata = beadMetadata[size];
-  if (!sizeMetadata) return [];
-  
-  return Object.entries(sizeMetadata)
-    .filter(([, meta]) => meta.glassGroup === glassGroup)
-    .map(([id]) => id);
-}
-`;
+  const allTypes = beadTypes.map(bt => `${bt.beadType} (${bt.sizes.join(', ')})`).join(', ');
+  console.log(`  [OK] bead-metadata.ts updated: ${allTypes}`);
 }
 
 // ============================================================================
@@ -472,11 +450,8 @@ export async function generateMetadata(
       console.log(`   [OK] ${jsonFilename} (${(stats.size / 1024).toFixed(1)} KB)`);
     }
     
-    // Generate TypeScript loader file (much smaller)
-    const outputFilename = options.outputFile || 'bead-metadata.ts';
-    const outputFile = path.join(outputDir, outputFilename);
-    const content = generateTypeScriptLoader(metadata, options.beadType);
-    fs.writeFileSync(outputFile, content);
+    // Generate TypeScript loader file covering all bead types
+    regenerateUnifiedLoader(outputDir);
     
     console.log(`\n[SUCCESS] Success!`);
     console.log(`   Total beads: ${totalBeads}`);
@@ -484,7 +459,6 @@ export async function generateMetadata(
     for (const [size, count] of Object.entries(sizeBreakdown)) {
       console.log(`     Size ${size}: ${count} beads`);
     }
-    console.log(`   Output: ${outputFilename} (TypeScript loader)`);
     console.log(`   JSON files: ${Object.keys(metadata).length} files`);
     
     return {
@@ -492,7 +466,7 @@ export async function generateMetadata(
       beadType: options.beadType,
       totalBeads,
       sizeBreakdown,
-      outputFile,
+      outputFile: path.join(outputDir, 'bead-metadata.ts'),
       errors
     };
     

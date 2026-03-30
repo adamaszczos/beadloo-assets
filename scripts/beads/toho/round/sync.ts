@@ -16,6 +16,7 @@ import sharp from "sharp";
 import dotenv from "dotenv";
 import { parse } from "node-html-parser";
 import { extractColors } from "../../common/extract-colors.js";
+import { regenerateUnifiedLoader } from "../../common/generate-metadata.js";
 import { GENERATED_DATA_DIR, getBeadTypeDirectory, getDownloadedBeadTypeDirectory } from "../../common/lib/paths.js";
 import { generateDerivatives } from "../../common/lib/thumbnails.js";
 import {
@@ -561,6 +562,11 @@ async function scrapeAndSyncTohoRound(options: SyncOptions): Promise<SyncSummary
     }
 
     await rebuildSizeData(size, options, summary);
+  }
+
+  if (!options.dryRun) {
+    console.log('\nRegenerating unified bead-metadata.ts...');
+    regenerateUnifiedLoader();
   }
 
   return summary;
