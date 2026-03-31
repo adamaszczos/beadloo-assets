@@ -1,6 +1,6 @@
 {
   "name": "@adamaszczos/beadloo-assets",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Beadloo bead image and metadata assets",
   "private": false,
   "license": "MIT",
@@ -20,6 +20,8 @@
     "test:watch": "vitest",
     "beads:miyuki:delica:sync": "tsx scripts/beads/miyuki/delica/sync.ts",
     "beads:miyuki:delica:blob": "tsx scripts/beads/miyuki/delica/blob.ts",
+    "beads:miyuki:round_rocailles:sync": "tsx scripts/beads/miyuki/round_rocailles/sync.ts",
+    "beads:miyuki:round_rocailles:blob": "tsx scripts/beads/miyuki/round_rocailles/blob.ts",
     "beads:toho:round:sync": "tsx scripts/beads/toho/round/sync.ts",
     "beads:toho:round:blob": "tsx scripts/beads/toho/round/blob.ts"
   },

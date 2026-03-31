@@ -46,6 +46,13 @@ interface ScrapingResult {
 // Configuration
 // ============================================================================
 
+export type MiyukiShape = 'delica' | 'round-rocailles';
+
+const SHAPE_SLUG: Record<MiyukiShape, string> = {
+  'delica': 'delica-beads',
+  'round-rocailles': 'round-rocailles',
+};
+
 const BASE_URL = 'https://www.miyuki-beads.co.jp/directory';
 const REQUEST_DELAY_MS = 1000; // Be respectful to the server
 
@@ -55,20 +62,24 @@ const REQUEST_DELAY_MS = 1000; // Be respectful to the server
 
 /**
  * Constructs Miyuki directory URL for a bead
- * DB2271 + size 11 → db2271-delica-beads-11-0
- * DB0987 + size 11 → db987-delica-beads-11-0 (leading zero stripped)
+ * DB2271 + size 11 + delica      → db2271-delica-beads-11-0
+ * DB0987 + size 11 + delica      → db987-delica-beads-11-0 (leading zero stripped)
+ * 1F     + size 15 + round-rocailles → 1f-round-rocailles-15-0
  */
-function constructMiyukiUrl(beadId: string, size: string): string {
+function constructMiyukiUrl(beadId: string, size: string, shape: MiyukiShape = 'delica'): string {
   const lowerBeadId = beadId.toLowerCase();
   const sizeSlug = `${size}-0`;
-  return `${BASE_URL}/${lowerBeadId}-delica-beads-${sizeSlug}/`;
+  const slug = SHAPE_SLUG[shape];
+  return `${BASE_URL}/${lowerBeadId}-${slug}-${sizeSlug}/`;
 }
 
 /**
  * Constructs alternative URL by stripping leading zero after DB prefix
  * DB0987 → db987-delica-beads-11-0
+ * Only applicable to Delica beads.
  */
-function constructAlternativeUrl(beadId: string, size: string): string | null {
+function constructAlternativeUrl(beadId: string, size: string, shape: MiyukiShape = 'delica'): string | null {
+  if (shape !== 'delica') return null;
   // Only applies to beads like DB0xxx (4 digits starting with 0)
   if (beadId.match(/^DB0\d{3}$/i)) {
     const withoutLeadingZero = beadId.replace(/^DB0/i, 'DB');
@@ -82,8 +93,10 @@ function constructAlternativeUrl(beadId: string, size: string): string | null {
 /**
  * Constructs simple fallback URL without size suffix
  * DB0990 → db990/ (for edge cases with non-standard URLs)
+ * Only applicable to Delica beads.
  */
-function constructSimpleFallbackUrl(beadId: string): string {
+function constructSimpleFallbackUrl(beadId: string, shape: MiyukiShape = 'delica'): string | null {
+  if (shape !== 'delica') return null;
   // Strip leading zero if present (DB0xxx → DBxxx)
   const withoutLeadingZero = beadId.replace(/^DB0/i, 'DB');
   const lowerBeadId = withoutLeadingZero.toLowerCase();
@@ -169,8 +182,8 @@ function parseMetadataFromHtml(html: string): BeadMetadata | null {
  * Fetches and parses metadata for a single bead
  * Tries multiple URL patterns if the primary URL fails
  */
-async function scrapeBeadMetadata(beadId: string, size: string): Promise<ScrapingResult> {
-  const url = constructMiyukiUrl(beadId, size);
+async function scrapeBeadMetadata(beadId: string, size: string, shape: MiyukiShape = 'delica'): Promise<ScrapingResult> {
+  const url = constructMiyukiUrl(beadId, size, shape);
   
   console.log(`Fetching metadata for ${beadId} (size ${size})...`);
   console.log(`URL: ${url}`);
@@ -179,9 +192,9 @@ async function scrapeBeadMetadata(beadId: string, size: string): Promise<Scrapin
     let response = await fetch(url);
     let attemptedUrl = url;
     
-    // If 404, try alternative URL (without leading zero for DB0xxx)
+    // If 404, try alternative URL (without leading zero for DB0xxx, Delica only)
     if (!response.ok && response.status === 404) {
-      const altUrl = constructAlternativeUrl(beadId, size);
+      const altUrl = constructAlternativeUrl(beadId, size, shape);
       if (altUrl) {
         console.log(`  Trying alternative URL: ${altUrl}`);
         response = await fetch(altUrl);
@@ -189,15 +202,18 @@ async function scrapeBeadMetadata(beadId: string, size: string): Promise<Scrapin
       }
     }
     
-    // If still 404, try simple fallback URL (edge cases like DB0990)
+    // If still 404, try simple fallback URL (edge cases like DB0990, Delica only)
     if (!response.ok && response.status === 404) {
-      const fallbackUrl = constructSimpleFallbackUrl(beadId);
-      console.log(`  Trying simple fallback URL: ${fallbackUrl}`);
-      response = await fetch(fallbackUrl);
-      attemptedUrl = fallbackUrl;
+      const fallbackUrl = constructSimpleFallbackUrl(beadId, shape);
+      if (fallbackUrl) {
+        console.log(`  Trying simple fallback URL: ${fallbackUrl}`);
+        response = await fetch(fallbackUrl);
+        attemptedUrl = fallbackUrl;
+      }
     }
     
     if (!response.ok) {
+      console.log(`  ✗ ${beadId}: HTTP ${response.status} ${response.statusText}`);
       return {
         beadId,
         url: attemptedUrl,
@@ -210,6 +226,7 @@ async function scrapeBeadMetadata(beadId: string, size: string): Promise<Scrapin
     const metadata = parseMetadataFromHtml(html);
 
     if (!metadata) {
+      console.log(`  ✗ ${beadId}: failed to parse metadata`);
       return {
         beadId,
         url: attemptedUrl,
@@ -218,6 +235,7 @@ async function scrapeBeadMetadata(beadId: string, size: string): Promise<Scrapin
       };
     }
 
+    console.log(`  ✓ ${beadId}: ${metadata.colorGroup} / ${metadata.finish}`);
     return {
       beadId,
       url: attemptedUrl,
@@ -225,6 +243,7 @@ async function scrapeBeadMetadata(beadId: string, size: string): Promise<Scrapin
       metadata
     };
   } catch (error) {
+    console.log(`  ✗ ${beadId}: ${error instanceof Error ? error.message : String(error)}`);
     return {
       beadId,
       url,
@@ -240,13 +259,14 @@ async function scrapeBeadMetadata(beadId: string, size: string): Promise<Scrapin
 async function scrapeMultipleBeads(
   beadIds: string[],
   size: string,
-  delayMs: number = REQUEST_DELAY_MS
+  delayMs: number = REQUEST_DELAY_MS,
+  shape: MiyukiShape = 'delica'
 ): Promise<ScrapingResult[]> {
   const results: ScrapingResult[] = [];
 
   for (let i = 0; i < beadIds.length; i++) {
     const beadId = beadIds[i];
-    const result = await scrapeBeadMetadata(beadId, size);
+    const result = await scrapeBeadMetadata(beadId, size, shape);
     results.push(result);
 
     // Delay between requests (except for the last one)

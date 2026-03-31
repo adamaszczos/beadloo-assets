@@ -18,6 +18,7 @@ export const ASSET_OUTPUTS_DIR = process.env.BEAD_ASSETS_OUTPUTS_DIR
 
 const KNOWN_BEAD_TYPE_SEGMENTS: Record<string, string[]> = {
   'miyuki-delica': ['miyuki', 'delica'],
+  'miyuki-round_rocailles': ['miyuki', 'round_rocailles'],
   'toho-round': ['toho', 'round'],
 };
 

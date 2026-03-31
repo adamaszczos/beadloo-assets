@@ -1,0 +1,8 @@
+{
+  "2/0": { "diameter_mm": 6.00, "hole_size_mm": 2.00 },
+  "5/0": { "diameter_mm": 4.50, "hole_size_mm": 1.40 },
+  "6/0": { "diameter_mm": 4.00, "hole_size_mm": 1.30 },
+  "8/0": { "diameter_mm": 3.00, "hole_size_mm": 1.00 },
+  "11/0": { "diameter_mm": 2.00, "hole_size_mm": 0.80 },
+  "15/0": { "diameter_mm": 1.50, "hole_size_mm": 0.70 }
+}
