@@ -524,6 +524,7 @@ async function rebuildSizeData(
       beadType: BEAD_TYPE,
       size,
       inputDir: path.join(RR_DIR, size),
+      originalDir: path.join(RR_DOWNLOADED_DIR, size),
       verbose: options.verbose,
     });
     if (!extractionResult.success) {

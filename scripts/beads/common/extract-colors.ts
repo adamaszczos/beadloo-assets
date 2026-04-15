@@ -12,7 +12,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { GENERATED_DATA_DIR, getBeadTypeDirectory } from './lib/paths.js';
+import { GENERATED_DATA_DIR, getBeadTypeDirectory, getDownloadedBeadTypeDirectory } from './lib/paths.js';
 
 // ============================================================================
 // Types
@@ -27,6 +27,7 @@ interface ExtractionOptions {
   beadType: string;
   size?: string;
   inputDir?: string;
+  originalDir?: string;
   outputDir?: string;
   verbose?: boolean;
 }
@@ -190,12 +191,11 @@ function getThumbnailSource(file: string): BeadColorSource | null {
   };
 }
 
-export function collectBeadColorSources(directory: string): BeadColorSource[] {
-  if (!fs.existsSync(directory)) {
+export function collectBeadColorSources(directory: string, originalDir?: string): BeadColorSource[] {
+  if (!fs.existsSync(directory) && !(originalDir && fs.existsSync(originalDir))) {
     return [];
   }
 
-  const files = fs.readdirSync(directory).sort();
   const sources = new Map<string, BeadColorSource>();
 
   const registerSource = (source: BeadColorSource): void => {
@@ -205,38 +205,56 @@ export function collectBeadColorSources(directory: string): BeadColorSource[] {
     }
   };
 
-  for (const file of files) {
-    if (!file.endsWith('.metadata.json')) {
-      continue;
+  if (fs.existsSync(directory)) {
+    const files = fs.readdirSync(directory).sort();
+
+    for (const file of files) {
+      if (!file.endsWith('.metadata.json')) {
+        continue;
+      }
+
+      const beadId = file.replace('.metadata.json', '');
+      registerSource({
+        beadId,
+        imagePath: null,
+        source: 'fallback',
+      });
     }
 
-    const beadId = file.replace('.metadata.json', '');
-    registerSource({
-      beadId,
-      imagePath: null,
-      source: 'fallback',
-    });
+    for (const file of files) {
+      if (!IMAGE_FILE_REGEX.test(file)) {
+        continue;
+      }
+
+      const thumbnailSource = getThumbnailSource(file);
+      if (thumbnailSource) {
+        registerSource({
+          ...thumbnailSource,
+          imagePath: path.join(directory, file),
+        });
+        continue;
+      }
+
+      registerSource({
+        beadId: path.basename(file, path.extname(file)),
+        imagePath: path.join(directory, file),
+        source: 'original',
+      });
+    }
   }
 
-  for (const file of files) {
-    if (!IMAGE_FILE_REGEX.test(file)) {
-      continue;
-    }
+  if (originalDir && fs.existsSync(originalDir)) {
+    for (const file of fs.readdirSync(originalDir).sort()) {
+      if (!IMAGE_FILE_REGEX.test(file) || getThumbnailSource(file)) {
+        continue;
+      }
 
-    const thumbnailSource = getThumbnailSource(file);
-    if (thumbnailSource) {
       registerSource({
-        ...thumbnailSource,
-        imagePath: path.join(directory, file),
+        beadId: path.basename(file, path.extname(file)),
+        imagePath: path.join(originalDir, file),
+        source: 'original',
       });
-      continue;
     }
-
-    registerSource({
-      beadId: path.basename(file, path.extname(file)),
-      imagePath: path.join(directory, file),
-      source: 'original',
-    });
   }
 
   return Array.from(sources.values()).sort((left, right) => left.beadId.localeCompare(right.beadId));
@@ -332,7 +350,7 @@ async function processDirectory(
     throw new Error(`Directory not found: ${directory}`);
   }
 
-  const beadSources = collectBeadColorSources(directory);
+  const beadSources = collectBeadColorSources(directory, options.originalDir);
 
   if (options.verbose) {
     console.log(`  Found ${beadSources.length} bead color sources`);
@@ -402,16 +420,24 @@ export async function extractColors(
   try {
     // Determine directories
     const inputDir = options.inputDir || getBeadTypeDirectory(options.beadType, options.size || '');
+    const originalDir = options.originalDir || getDownloadedBeadTypeDirectory(options.beadType, options.size || '');
     const outputDir = options.outputDir || GENERATED_DATA_DIR;
+    const resolvedOptions: ExtractionOptions = {
+      ...options,
+      inputDir,
+      originalDir,
+      outputDir,
+    };
     
     if (options.verbose) {
       console.log(`\n📂 Input directory: ${inputDir}`);
+      console.log(`📂 Original directory: ${originalDir}`);
       console.log(`📂 Output directory: ${outputDir}`);
     }
     
     // Process images
     console.log(`\n🎨 Extracting colors for ${options.beadType}${options.size ? ` (size ${options.size})` : ''}...`);
-    const colorData = await processDirectory(inputDir, options);
+    const colorData = await processDirectory(inputDir, resolvedOptions);
     
     // Ensure output directory exists
     if (!fs.existsSync(outputDir)) {
@@ -474,6 +500,8 @@ Options:
   --type <type>       Bead type (e.g., miyuki-delica, toho-round)
   --size <size>       Specific size to process (e.g., 8, 10, 11, 15)
   --input <dir>       Custom input directory (overrides default)
+  --original-dir <dir>
+                     Preferred directory of original bead images
   --output <dir>      Custom output directory (overrides default)
   --verbose, -v       Enable verbose logging
   --help, -h          Show this help message
@@ -517,6 +545,9 @@ async function main() {
         break;
       case '--input':
         options.inputDir = args[++i];
+        break;
+      case '--original-dir':
+        options.originalDir = args[++i];
         break;
       case '--output':
         options.outputDir = args[++i];

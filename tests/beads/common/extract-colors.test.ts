@@ -24,6 +24,17 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
   };
 }
 
+function colorDistance(left: string, right: string): number {
+  const a = hexToRgb(left);
+  const b = hexToRgb(right);
+
+  return Math.sqrt(
+    (a.r - b.r) ** 2 +
+    (a.g - b.g) ** 2 +
+    (a.b - b.b) ** 2
+  );
+}
+
 async function createSolidImage(filePath: string, color: string): Promise<void> {
   const sharp = (await import('sharp')).default;
   const { r, g, b } = hexToRgb(color);
@@ -76,6 +87,39 @@ describe('extractColors', () => {
     expect(rgb.r).toBeGreaterThan(200);
     expect(rgb.g).toBeLessThan(20);
     expect(rgb.b).toBeLessThan(20);
+  });
+
+  it('prefers original images over lighter thumbnails when an original directory is provided', async () => {
+    const inputDir = createTemporaryDirectory('beadloo-extract-input-');
+    const originalDir = createTemporaryDirectory('beadloo-extract-originals-');
+    const outputDir = createTemporaryDirectory('beadloo-extract-output-');
+
+    fs.writeFileSync(
+      path.join(inputDir, 'DB0002.metadata.json'),
+      JSON.stringify({ shape: 'Delica', size: '11/0' })
+    );
+
+    await createSolidImage(path.join(inputDir, 'DB0002_48x48.jpg'), '#607184');
+    await createSolidImage(path.join(inputDir, 'DB0002_16x16.jpg'), '#8090a4');
+    await createSolidImage(path.join(originalDir, 'DB0002.jpg'), '#1a212b');
+
+    const result = await extractColors({
+      beadType: 'vitest-original-preferred',
+      size: '11',
+      inputDir,
+      originalDir,
+      outputDir,
+    });
+
+    expect(result.success).toBe(true);
+
+    const colorData = JSON.parse(
+      fs.readFileSync(path.join(outputDir, 'vitest-original-preferred-11-colors.json'), 'utf-8')
+    );
+
+    const extracted = colorData.colorMappings.DB0002;
+    expect(colorDistance(extracted, '#1a212b')).toBeLessThan(8);
+    expect(colorDistance(extracted, '#1a212b')).toBeLessThan(colorDistance(extracted, '#607184'));
   });
 
   it('generates a fallback color when metadata exists without any image asset', async () => {

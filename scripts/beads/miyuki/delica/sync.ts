@@ -463,6 +463,7 @@ async function rebuildSizeData(
       beadType: BEAD_TYPE,
       size,
       inputDir: path.join(DELICA_DIR, size),
+      originalDir: path.join(DELICA_DOWNLOADED_DIR, size),
       verbose: options.verbose,
     });
     if (!extractionResult.success) {

@@ -530,6 +530,7 @@ async function rebuildSizeData(
       beadType: "toho-round",
       size,
       inputDir: getSizeDirectory(size),
+      originalDir: getDownloadedSizeDirectory(size),
       verbose: options.verbose,
     });
 
