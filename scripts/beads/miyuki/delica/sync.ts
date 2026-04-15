@@ -462,7 +462,7 @@ async function rebuildSizeData(
     const extractionResult = await extractColors({
       beadType: BEAD_TYPE,
       size,
-      inputDir: path.join(DELICA_DOWNLOADED_DIR, size),
+      inputDir: path.join(DELICA_DIR, size),
       verbose: options.verbose,
     });
     if (!extractionResult.success) {

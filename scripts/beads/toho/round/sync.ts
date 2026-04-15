@@ -529,7 +529,7 @@ async function rebuildSizeData(
     const extractionResult = await extractColors({
       beadType: "toho-round",
       size,
-      inputDir: getDownloadedSizeDirectory(size),
+      inputDir: getSizeDirectory(size),
       verbose: options.verbose,
     });
 

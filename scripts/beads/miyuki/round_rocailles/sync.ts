@@ -523,7 +523,7 @@ async function rebuildSizeData(
     const extractionResult = await extractColors({
       beadType: BEAD_TYPE,
       size,
-      inputDir: path.join(RR_DOWNLOADED_DIR, size),
+      inputDir: path.join(RR_DIR, size),
       verbose: options.verbose,
     });
     if (!extractionResult.success) {

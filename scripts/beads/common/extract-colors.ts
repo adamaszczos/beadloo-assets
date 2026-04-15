@@ -45,6 +45,15 @@ interface ExtractionResult {
 // Constants
 // ============================================================================
 
+const IMAGE_FILE_REGEX = /\.(jpg|jpeg|png)$/i;
+const THUMBNAIL_FILE_REGEX = /^(.*)_(16x16|48x48)\.(jpg|jpeg|png)$/i;
+
+export interface BeadColorSource {
+  beadId: string;
+  imagePath: string | null;
+  source: 'original' | 'thumbnail-48' | 'thumbnail-16' | 'fallback';
+}
+
 
 // ============================================================================
 // Color Extraction Core
@@ -152,6 +161,87 @@ function generateFallbackColor(beadId: string): string {
   );
 }
 
+function getColorSourcePriority(source: BeadColorSource['source']): number {
+  switch (source) {
+    case 'original':
+      return 3;
+    case 'thumbnail-48':
+      return 2;
+    case 'thumbnail-16':
+      return 1;
+    case 'fallback':
+      return 0;
+  }
+}
+
+function getThumbnailSource(file: string): BeadColorSource | null {
+  const match = file.match(THUMBNAIL_FILE_REGEX);
+  if (!match) {
+    return null;
+  }
+
+  const beadId = match[1];
+  const thumbnailSize = match[2];
+
+  return {
+    beadId,
+    imagePath: file,
+    source: thumbnailSize === '48x48' ? 'thumbnail-48' : 'thumbnail-16',
+  };
+}
+
+export function collectBeadColorSources(directory: string): BeadColorSource[] {
+  if (!fs.existsSync(directory)) {
+    return [];
+  }
+
+  const files = fs.readdirSync(directory).sort();
+  const sources = new Map<string, BeadColorSource>();
+
+  const registerSource = (source: BeadColorSource): void => {
+    const existing = sources.get(source.beadId);
+    if (!existing || getColorSourcePriority(source.source) > getColorSourcePriority(existing.source)) {
+      sources.set(source.beadId, source);
+    }
+  };
+
+  for (const file of files) {
+    if (!file.endsWith('.metadata.json')) {
+      continue;
+    }
+
+    const beadId = file.replace('.metadata.json', '');
+    registerSource({
+      beadId,
+      imagePath: null,
+      source: 'fallback',
+    });
+  }
+
+  for (const file of files) {
+    if (!IMAGE_FILE_REGEX.test(file)) {
+      continue;
+    }
+
+    const thumbnailSource = getThumbnailSource(file);
+    if (thumbnailSource) {
+      registerSource({
+        ...thumbnailSource,
+        imagePath: path.join(directory, file),
+      });
+      continue;
+    }
+
+    registerSource({
+      beadId: path.basename(file, path.extname(file)),
+      imagePath: path.join(directory, file),
+      source: 'original',
+    });
+  }
+
+  return Array.from(sources.values()).sort((left, right) => left.beadId.localeCompare(right.beadId));
+}
+
 // ============================================================================
 // Processing Functions
 // ============================================================================
@@ -241,52 +331,54 @@ async function processDirectory(
   if (!fs.existsSync(directory)) {
     throw new Error(`Directory not found: ${directory}`);
   }
-  
-  const imageFiles = fs.readdirSync(directory)
-    .filter(file => {
-      // Only process actual bead images (not generated thumbnails)
-      if (file.includes('_16x16')) return false;
-      if (file.includes('_48x48')) return false;
-      return /\.(jpg|jpeg|png)$/i.test(file);
-    })
-    .sort();
-  
+
+  const beadSources = collectBeadColorSources(directory);
+
   if (options.verbose) {
-    console.log(`  Found ${imageFiles.length} image files`);
+    console.log(`  Found ${beadSources.length} bead color sources`);
   }
-  
-  for (const imageFile of imageFiles) {
-    const imagePath = path.join(directory, imageFile);
-    const beadId = path.basename(imageFile, path.extname(imageFile));
-    
+
+  for (const beadSource of beadSources) {
+    const { beadId, imagePath, source } = beadSource;
+
     try {
+      if (!imagePath) {
+        throw new Error('No image asset available');
+      }
+
       let dominantColor = await extractDominantColor(imagePath);
-      
+
       // Ensure color is unique
       const originalColor = dominantColor;
       dominantColor = adjustColorForUniqueness(dominantColor, usedColors);
-      
+
       if (originalColor !== dominantColor && options.verbose) {
         console.log(`  ⚠ Adjusted ${beadId}: ${originalColor} → ${dominantColor} (collision)`);
       }
-      
+
       colorMappings[beadId] = dominantColor;
       usedColors.add(dominantColor);
-      
+
       if (!beadIds[dominantColor]) {
         beadIds[dominantColor] = [];
       }
       beadIds[dominantColor].push(beadId);
-      
+
       if (options.verbose) {
-        console.log(`  ${beadId}: ${dominantColor}`);
+        const sourceLabel = source === 'original' ? '' : ` [${source}]`;
+        console.log(`  ${beadId}: ${dominantColor}${sourceLabel}`);
       }
-      
+
     } catch (error) {
-      console.warn(`  ⚠ Failed to extract color from ${imageFile}, using fallback`);
+      if (imagePath) {
+        console.warn(`  ⚠ Failed to extract color from ${path.basename(imagePath)}, using fallback`);
+      } else {
+        console.warn(`  ⚠ No image asset available for ${beadId}, using fallback color`);
+      }
+
       let fallbackColor = generateFallbackColor(beadId);
       fallbackColor = adjustColorForUniqueness(fallbackColor, usedColors);
-      
+
       colorMappings[beadId] = fallbackColor;
       usedColors.add(fallbackColor);
       if (!beadIds[fallbackColor]) {
