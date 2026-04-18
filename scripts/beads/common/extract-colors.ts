@@ -12,7 +12,13 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { GENERATED_DATA_DIR, getBeadTypeDirectory, getDownloadedBeadTypeDirectory } from './lib/paths.js';
+import {
+  GENERATED_DATA_DIR,
+  getBeadTypeDirectory,
+  getDownloadedBeadTypeDirectory,
+  getGeneratedBeadTypeDataDirectory,
+  getGeneratedColorDataPath,
+} from './lib/paths.js';
 
 // ============================================================================
 // Types
@@ -445,14 +451,12 @@ export async function extractColors(
     }
     
     // Determine output filename
-    const outputFilename = options.size
-      ? `${options.beadType}-${options.size}-colors.json`
-      : `${options.beadType}-colors.json`;
-    
-    const outputFile = path.join(outputDir, outputFilename);
-    
-    // Write output
-    fs.writeFileSync(outputFile, JSON.stringify(colorData, null, 2));
+    const outputFile = options.size
+      ? getGeneratedColorDataPath(options.beadType, options.size, outputDir)
+      : path.join(getGeneratedBeadTypeDataDirectory(options.beadType, outputDir), 'colors.json');
+
+    fs.mkdirSync(path.dirname(outputFile), { recursive: true });
+    fs.writeFileSync(outputFile, `${JSON.stringify(colorData, null, 2)}\n`);
     
     const totalBeads = Object.keys(colorData.colorMappings).length;
     const uniqueColors = Object.keys(colorData.beadIds).length;
@@ -460,7 +464,7 @@ export async function extractColors(
     console.log(`\n✅ Success!`);
     console.log(`   Total beads: ${totalBeads}`);
     console.log(`   Unique colors: ${uniqueColors}`);
-    console.log(`   Output: ${outputFilename}`);
+    console.log(`   Output: ${path.relative(outputDir, outputFile)}`);
     
     return {
       success: true,

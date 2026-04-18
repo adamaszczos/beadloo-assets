@@ -4,6 +4,7 @@ import * as path from 'path';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { extractColors } from '../../../scripts/beads/common/extract-colors.js';
+import { getGeneratedColorDataPath } from '../../../scripts/beads/common/lib/paths.js';
 
 const temporaryDirectories: string[] = [];
 
@@ -80,7 +81,7 @@ describe('extractColors', () => {
     expect(result.success).toBe(true);
 
     const colorData = JSON.parse(
-      fs.readFileSync(path.join(outputDir, 'vitest-thumbnail-only-11-colors.json'), 'utf-8')
+      fs.readFileSync(getGeneratedColorDataPath('vitest-thumbnail-only', '11', outputDir), 'utf-8')
     );
 
     const rgb = hexToRgb(colorData.colorMappings.DB0001);
@@ -114,7 +115,7 @@ describe('extractColors', () => {
     expect(result.success).toBe(true);
 
     const colorData = JSON.parse(
-      fs.readFileSync(path.join(outputDir, 'vitest-original-preferred-11-colors.json'), 'utf-8')
+      fs.readFileSync(getGeneratedColorDataPath('vitest-original-preferred', '11', outputDir), 'utf-8')
     );
 
     const extracted = colorData.colorMappings.DB0002;
@@ -141,7 +142,7 @@ describe('extractColors', () => {
     expect(result.success).toBe(true);
 
     const colorData = JSON.parse(
-      fs.readFileSync(path.join(outputDir, 'vitest-fallback-only-11-colors.json'), 'utf-8')
+      fs.readFileSync(getGeneratedColorDataPath('vitest-fallback-only', '11', outputDir), 'utf-8')
     );
 
     const fallbackColor = colorData.colorMappings.DB0002;

@@ -12,7 +12,13 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { GENERATED_DATA_DIR, getBeadTypeDirectory } from './lib/paths.js';
+import {
+  GENERATED_DATA_DIR,
+  discoverGeneratedMetadataFiles,
+  getBeadTypeDirectory,
+  getGeneratedMetadataDataPath,
+  getGeneratedMetadataImportPath,
+} from './lib/paths.js';
 
 // ============================================================================
 // Types
@@ -162,16 +168,9 @@ interface DiscoveredBeadType {
  * Discover all *-metadata.json files in the output directory and group by bead type.
  */
 function discoverMetadataFiles(outputDir: string): DiscoveredBeadType[] {
-  if (!fs.existsSync(outputDir)) return [];
-
-  const files = fs.readdirSync(outputDir);
   const byType = new Map<string, string[]>();
 
-  for (const file of files) {
-    const match = file.match(/^(.+)-(\d+)-metadata\.json$/);
-    if (!match) continue;
-    const beadType = match[1];
-    const size = match[2];
+  for (const { beadType, size } of discoverGeneratedMetadataFiles(outputDir)) {
     if (!byType.has(beadType)) byType.set(beadType, []);
     byType.get(beadType)!.push(size);
   }
@@ -199,7 +198,7 @@ function generateUnifiedTypeScriptLoader(beadTypes: DiscoveredBeadType[]): strin
     .flatMap(bt =>
       bt.sizes.map(
         size =>
-          `    case "${bt.beadType}-${size}":\n      data = (await import('./${bt.beadType}-${size}-metadata.json')).default;\n      break;`
+          `    case "${bt.beadType}-${size}":\n      data = (await import('${getGeneratedMetadataImportPath(bt.beadType, size)}')).default;\n      break;`
       )
     )
     .join('\n');
@@ -443,11 +442,11 @@ export async function generateMetadata(
     // NEW: Write separate JSON files for each size
     console.log(`\n Writing JSON files...`);
     for (const [size, sizeData] of Object.entries(metadata)) {
-      const jsonFilename = `${options.beadType}-${size}-metadata.json`;
-      const jsonPath = path.join(outputDir, jsonFilename);
-      fs.writeFileSync(jsonPath, JSON.stringify(sizeData, null, 2));
+      const jsonPath = getGeneratedMetadataDataPath(options.beadType, size, outputDir);
+      fs.mkdirSync(path.dirname(jsonPath), { recursive: true });
+      fs.writeFileSync(jsonPath, `${JSON.stringify(sizeData, null, 2)}\n`);
       const stats = fs.statSync(jsonPath);
-      console.log(`   [OK] ${jsonFilename} (${(stats.size / 1024).toFixed(1)} KB)`);
+      console.log(`   [OK] ${path.relative(outputDir, jsonPath)} (${(stats.size / 1024).toFixed(1)} KB)`);
     }
     
     // Generate TypeScript loader file covering all bead types

@@ -17,7 +17,11 @@ import dotenv from "dotenv";
 import { parse } from "node-html-parser";
 import { extractColors } from "../../common/extract-colors.js";
 import { regenerateUnifiedLoader } from "../../common/generate-metadata.js";
-import { GENERATED_DATA_DIR, getBeadTypeDirectory, getDownloadedBeadTypeDirectory } from "../../common/lib/paths.js";
+import {
+  getBeadTypeDirectory,
+  getDownloadedBeadTypeDirectory,
+  getGeneratedMetadataDataPath,
+} from "../../common/lib/paths.js";
 import { generateDerivatives } from "../../common/lib/thumbnails.js";
 import {
   TOHO_ROUND_SIZES,
@@ -74,7 +78,6 @@ const TOHO_BASE_URL = "https://www.czechbeads.eu";
 const REQUEST_DELAY_MS = 1200;
 const TOHO_ASSET_DIR = getBeadTypeDirectory('toho-round');
 const TOHO_DOWNLOADED_DIR = getDownloadedBeadTypeDirectory('toho-round');
-const TOHO_DATA_DIR = GENERATED_DATA_DIR;
 const TOHO_DIMENSIONS_PATH = path.join(TOHO_ASSET_DIR, "toho-rounded.json");
 const FETCH_TIMEOUT_MS = 30000;
 
@@ -333,7 +336,7 @@ function getMetadataSidecarPath(size: TohoRoundSize, beadId: string): string {
 }
 
 function getConsolidatedMetadataPath(size: TohoRoundSize): string {
-  return path.join(TOHO_DATA_DIR, `toho-round-${size}-metadata.json`);
+  return getGeneratedMetadataDataPath('toho-round', size);
 }
 
 function fileExists(filePath: string): boolean {

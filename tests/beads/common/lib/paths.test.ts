@@ -5,8 +5,13 @@ import {
   getBeadTypeSegments,
   getBeadTypePublicPath,
   getBeadTypeDirectory,
+  getGeneratedBeadTypeDataDirectory,
+  getGeneratedColorDataPath,
+  getGeneratedMetadataDataPath,
+  getGeneratedMetadataImportPath,
   discoverBeadTypesOnDisk,
   BEADS_ROOT,
+  GENERATED_DATA_DIR,
 } from '../../../../scripts/beads/common/lib/paths.js';
 
 describe('getBeadTypeSegments', () => {
@@ -55,6 +60,32 @@ describe('getBeadTypeDirectory', () => {
   it('works for unknown types', () => {
     const result = getBeadTypeDirectory('brand-shape', 'size');
     expect(result).toBe(path.join(BEADS_ROOT, 'brand', 'shape', 'size'));
+  });
+});
+
+describe('generated data helpers', () => {
+  it('builds bead-type data directories under GENERATED_DATA_DIR', () => {
+    expect(getGeneratedBeadTypeDataDirectory('miyuki-delica')).toBe(
+      path.join(GENERATED_DATA_DIR, 'miyuki', 'delica')
+    );
+  });
+
+  it('builds nested color data paths', () => {
+    expect(getGeneratedColorDataPath('miyuki-delica', '11')).toBe(
+      path.join(GENERATED_DATA_DIR, 'miyuki', 'delica', '11-colors.json')
+    );
+  });
+
+  it('builds nested metadata data paths', () => {
+    expect(getGeneratedMetadataDataPath('toho-round', '8')).toBe(
+      path.join(GENERATED_DATA_DIR, 'toho', 'round', '8-metadata.json')
+    );
+  });
+
+  it('builds metadata import paths relative to the generated data root', () => {
+    expect(getGeneratedMetadataImportPath('miyuki-round_rocailles', '15')).toBe(
+      './miyuki/round_rocailles/15-metadata.json'
+    );
   });
 });
 

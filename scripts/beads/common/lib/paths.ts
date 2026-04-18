@@ -16,6 +16,12 @@ export const ASSET_OUTPUTS_DIR = process.env.BEAD_ASSETS_OUTPUTS_DIR
   ? path.resolve(ASSET_REPO_ROOT, process.env.BEAD_ASSETS_OUTPUTS_DIR)
   : path.join(ASSET_REPO_ROOT, 'outputs');
 
+export interface GeneratedMetadataFile {
+  beadType: string;
+  size: string;
+  filePath: string;
+}
+
 const KNOWN_BEAD_TYPE_SEGMENTS: Record<string, string[]> = {
   'miyuki-delica': ['miyuki', 'delica'],
   'miyuki-round_rocailles': ['miyuki', 'round_rocailles'],
@@ -36,6 +42,83 @@ export function getBeadTypeDirectory(beadType: string, ...segments: string[]): s
 
 export function getDownloadedBeadTypeDirectory(beadType: string, ...segments: string[]): string {
   return path.join(DOWNLOADED_ROOT, ...getBeadTypeSegments(beadType), ...segments);
+}
+
+export function getGeneratedBeadTypeDataDirectory(
+  beadType: string,
+  dataRoot: string = GENERATED_DATA_DIR,
+  ...segments: string[]
+): string {
+  return path.join(dataRoot, ...getBeadTypeSegments(beadType), ...segments);
+}
+
+export function getGeneratedColorDataPath(
+  beadType: string,
+  size: string,
+  dataRoot: string = GENERATED_DATA_DIR
+): string {
+  return getGeneratedBeadTypeDataDirectory(beadType, dataRoot, `${size}-colors.json`);
+}
+
+export function getGeneratedMetadataDataPath(
+  beadType: string,
+  size: string,
+  dataRoot: string = GENERATED_DATA_DIR
+): string {
+  return getGeneratedBeadTypeDataDirectory(beadType, dataRoot, `${size}-metadata.json`);
+}
+
+export function getGeneratedMetadataImportPath(beadType: string, size: string): string {
+  return `./${getBeadTypePublicPath(beadType)}/${size}-metadata.json`;
+}
+
+export function discoverGeneratedMetadataFiles(
+  dataRoot: string = GENERATED_DATA_DIR
+): GeneratedMetadataFile[] {
+  const discovered: GeneratedMetadataFile[] = [];
+
+  if (!fs.existsSync(dataRoot)) {
+    return discovered;
+  }
+
+  function walk(directory: string): void {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const entryPath = path.join(directory, entry.name);
+
+      if (entry.isDirectory()) {
+        walk(entryPath);
+        continue;
+      }
+
+      const match = entry.name.match(/^(.+)-metadata\.json$/);
+      if (!match) {
+        continue;
+      }
+
+      const relativeDirectory = path.relative(dataRoot, path.dirname(entryPath));
+      const segments = relativeDirectory === '' ? [] : relativeDirectory.split(path.sep).filter(Boolean);
+
+      if (segments.length === 0) {
+        continue;
+      }
+
+      discovered.push({
+        beadType: segments.join('-'),
+        size: match[1],
+        filePath: entryPath,
+      });
+    }
+  }
+
+  walk(dataRoot);
+
+  return discovered.sort((left, right) => {
+    if (left.beadType !== right.beadType) {
+      return left.beadType.localeCompare(right.beadType);
+    }
+
+    return Number(left.size) - Number(right.size);
+  });
 }
 
 export function discoverBeadTypesOnDisk(): string[] {

@@ -17,7 +17,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { GENERATED_DATA_DIR, getBeadTypeDirectory } from './lib/paths.js';
+import { GENERATED_DATA_DIR, getBeadTypeDirectory, getGeneratedColorDataPath } from './lib/paths.js';
 
 // ============================================================================
 // Types
@@ -420,7 +420,7 @@ export function validateBeadType(
     console.log(`📏 Checking size ${size}...`);
     
     const beadDir = path.join(beadBaseDir, size);
-    const colorJsonPath = path.join(dataDir, `${options.beadType}-${size}-colors.json`);
+    const colorJsonPath = getGeneratedColorDataPath(options.beadType, size, dataDir);
     
     // Check 1: Image/Metadata sync
     const { images, metadata } = validateImageMetadataSync(beadDir, issues);

@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { getBeadTypeDirectory } from '../../../scripts/beads/common/lib/paths.js';
+import { getBeadTypeDirectory, getGeneratedColorDataPath } from '../../../scripts/beads/common/lib/paths.js';
 
 const TEST_BEAD_TYPE = 'vitest-validate-colors';
 const TEST_DATA_DIR = path.join(process.cwd(), '.tmp-generated', 'validate-colors');
@@ -65,8 +65,10 @@ describe('validateBeadType', () => {
     fs.writeFileSync(path.join(beadDir, 'DB0001_48x48.jpg'), Buffer.from('thumb'));
 
     writeMetadataLoaderStub();
+    const colorJsonPath = getGeneratedColorDataPath(TEST_BEAD_TYPE, '11', TEST_DATA_DIR);
+    fs.mkdirSync(path.dirname(colorJsonPath), { recursive: true });
     fs.writeFileSync(
-      path.join(TEST_DATA_DIR, `${TEST_BEAD_TYPE}-11-colors.json`),
+      colorJsonPath,
       JSON.stringify(
         {
           beadIds: { '#112233': ['DB0001'] },
@@ -95,8 +97,10 @@ describe('validateBeadType', () => {
     fs.writeFileSync(path.join(beadDir, 'DB0001_48x48.jpg'), Buffer.from('thumb'));
 
     writeMetadataLoaderStub();
+    const colorJsonPath = getGeneratedColorDataPath(TEST_BEAD_TYPE, '11', TEST_DATA_DIR);
+    fs.mkdirSync(path.dirname(colorJsonPath), { recursive: true });
     fs.writeFileSync(
-      path.join(TEST_DATA_DIR, `${TEST_BEAD_TYPE}-11-colors.json`),
+      colorJsonPath,
       JSON.stringify(
         {
           beadIds: {},
