@@ -9,6 +9,7 @@
  * 
  * Extracts metadata from "Additional information" table:
  * - Shape, Size, Color Group, Glass Group, Finish, Dyed, Galvanized, Plating
+ * - Some Miyuki pages omit Color Group, so that field is treated as optional
  * 
  * Usage:
  *   tsx scripts/beads/miyuki/common/scrape-metadata.ts DB2271 11
@@ -26,7 +27,7 @@ import { getBeadTypeDirectory } from '../../common/lib/paths.js';
 interface BeadMetadata {
   shape: string;
   size: string;
-  colorGroup: string;
+  colorGroup?: string;
   glassGroup: string;
   finish: string;
   dyed: string;
@@ -110,7 +111,7 @@ function constructSimpleFallbackUrl(beadId: string, shape: MiyukiShape = 'delica
 /**
  * Parses HTML to extract metadata from "Additional information" table
  */
-function parseMetadataFromHtml(html: string): BeadMetadata | null {
+export function parseMetadataFromHtml(html: string): BeadMetadata | null {
   try {
     // Find the "Additional information" section
     const additionalInfoRegex = /<h2[^>]*>Additional information<\/h2>/i;
@@ -151,9 +152,9 @@ function parseMetadataFromHtml(html: string): BeadMetadata | null {
     parseField('Galvanized', 'galvanized');
     parseField('Plating', 'plating');
 
-    // Validate we got all required fields (Finish is optional)
+    // Validate we got all required fields. Finish and Color Group are optional
     const requiredFields: (keyof BeadMetadata)[] = [
-      'shape', 'size', 'colorGroup', 'glassGroup', 'dyed', 'galvanized', 'plating'
+      'shape', 'size', 'glassGroup', 'dyed', 'galvanized', 'plating'
     ];
     
     const missingFields = requiredFields.filter(field => !metadata[field]);
@@ -235,7 +236,7 @@ async function scrapeBeadMetadata(beadId: string, size: string, shape: MiyukiSha
       };
     }
 
-    console.log(`  ✓ ${beadId}: ${metadata.colorGroup} / ${metadata.finish}`);
+    console.log(`  ✓ ${beadId}: ${metadata.colorGroup ?? 'n/a'} / ${metadata.finish}`);
     return {
       beadId,
       url: attemptedUrl,
@@ -525,6 +526,5 @@ export {
   findBeadsWithoutMetadata,
   constructMiyukiUrl,
   constructAlternativeUrl,
-  constructSimpleFallbackUrl,
-  parseMetadataFromHtml
+  constructSimpleFallbackUrl
 };
