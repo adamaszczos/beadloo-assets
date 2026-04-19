@@ -52,13 +52,17 @@ interface ExtractionResult {
 // Constants
 // ============================================================================
 
-const IMAGE_FILE_REGEX = /\.(jpg|jpeg|png)$/i;
+const IMAGE_FILE_REGEX = /\.(jpg|jpeg|png|webp)$/i;
 const THUMBNAIL_FILE_REGEX = /^(.*)_(16x16|48x48)\.(jpg|jpeg|png)$/i;
 
 export interface BeadColorSource {
   beadId: string;
   imagePath: string | null;
   source: 'original' | 'thumbnail-48' | 'thumbnail-16' | 'fallback';
+}
+
+interface MetadataSidecar {
+  beadId?: string;
 }
 
 
@@ -197,12 +201,57 @@ function getThumbnailSource(file: string): BeadColorSource | null {
   };
 }
 
+function normalizeRelativePath(relativePath: string): string {
+  return relativePath.split(path.sep).join('/');
+}
+
+function walkFilesRecursive(directory: string): Array<{ relativePath: string; absolutePath: string }> {
+  const discovered: Array<{ relativePath: string; absolutePath: string }> = [];
+
+  function walk(currentDirectory: string): void {
+    const entries = fs.readdirSync(currentDirectory, { withFileTypes: true }).sort((left, right) => {
+      return left.name.localeCompare(right.name);
+    });
+
+    for (const entry of entries) {
+      const entryPath = path.join(currentDirectory, entry.name);
+
+      if (entry.isDirectory()) {
+        walk(entryPath);
+        continue;
+      }
+
+      discovered.push({
+        relativePath: normalizeRelativePath(path.relative(directory, entryPath)),
+        absolutePath: entryPath,
+      });
+    }
+  }
+
+  walk(directory);
+  return discovered;
+}
+
+function getImageAssetKey(relativePath: string): string {
+  return normalizeRelativePath(relativePath.slice(0, -path.extname(relativePath).length));
+}
+
+function getMetadataBeadId(filePath: string, fallbackId: string): string {
+  try {
+    const metadata = JSON.parse(fs.readFileSync(filePath, 'utf-8')) as MetadataSidecar;
+    return typeof metadata.beadId === 'string' && metadata.beadId.trim() ? metadata.beadId.trim() : fallbackId;
+  } catch {
+    return fallbackId;
+  }
+}
+
 export function collectBeadColorSources(directory: string, originalDir?: string): BeadColorSource[] {
   if (!fs.existsSync(directory) && !(originalDir && fs.existsSync(originalDir))) {
     return [];
   }
 
   const sources = new Map<string, BeadColorSource>();
+  const canonicalBeadIdsByAssetKey = new Map<string, string>();
 
   const registerSource = (source: BeadColorSource): void => {
     const existing = sources.get(source.beadId);
@@ -212,14 +261,16 @@ export function collectBeadColorSources(directory: string, originalDir?: string)
   };
 
   if (fs.existsSync(directory)) {
-    const files = fs.readdirSync(directory).sort();
+    const files = walkFilesRecursive(directory);
 
     for (const file of files) {
-      if (!file.endsWith('.metadata.json')) {
+      if (!file.relativePath.endsWith('.metadata.json')) {
         continue;
       }
 
-      const beadId = file.replace('.metadata.json', '');
+      const assetKey = file.relativePath.replace(/\.metadata\.json$/, '');
+      const beadId = getMetadataBeadId(file.absolutePath, assetKey);
+      canonicalBeadIdsByAssetKey.set(assetKey, beadId);
       registerSource({
         beadId,
         imagePath: null,
@@ -228,36 +279,42 @@ export function collectBeadColorSources(directory: string, originalDir?: string)
     }
 
     for (const file of files) {
-      if (!IMAGE_FILE_REGEX.test(file)) {
+      if (!IMAGE_FILE_REGEX.test(file.relativePath)) {
         continue;
       }
 
-      const thumbnailSource = getThumbnailSource(file);
+      const thumbnailSource = getThumbnailSource(file.relativePath);
       if (thumbnailSource) {
+        const beadId = canonicalBeadIdsByAssetKey.get(thumbnailSource.beadId) || thumbnailSource.beadId;
         registerSource({
-          ...thumbnailSource,
-          imagePath: path.join(directory, file),
+          beadId,
+          imagePath: file.absolutePath,
+          source: thumbnailSource.source,
         });
         continue;
       }
 
+      const assetKey = getImageAssetKey(file.relativePath);
+
       registerSource({
-        beadId: path.basename(file, path.extname(file)),
-        imagePath: path.join(directory, file),
+        beadId: canonicalBeadIdsByAssetKey.get(assetKey) || assetKey,
+        imagePath: file.absolutePath,
         source: 'original',
       });
     }
   }
 
   if (originalDir && fs.existsSync(originalDir)) {
-    for (const file of fs.readdirSync(originalDir).sort()) {
-      if (!IMAGE_FILE_REGEX.test(file) || getThumbnailSource(file)) {
+    for (const file of walkFilesRecursive(originalDir)) {
+      if (!IMAGE_FILE_REGEX.test(file.relativePath) || getThumbnailSource(file.relativePath)) {
         continue;
       }
 
+      const assetKey = getImageAssetKey(file.relativePath);
+
       registerSource({
-        beadId: path.basename(file, path.extname(file)),
-        imagePath: path.join(originalDir, file),
+        beadId: canonicalBeadIdsByAssetKey.get(assetKey) || assetKey,
+        imagePath: file.absolutePath,
         source: 'original',
       });
     }

@@ -25,6 +25,7 @@ import {
 // ============================================================================
 
 interface BeadMetadata {
+  beadId?: string;
   shape: string;
   size: string;
   colorGroup?: string;
@@ -33,6 +34,7 @@ interface BeadMetadata {
   dyed: string;
   galvanized: string;
   plating: string;
+  additionalArticleNumber?: string;
   [key: string]: string | undefined;
 }
 
@@ -70,8 +72,44 @@ interface GenerationResult {
 // Default sizes for common bead types
 const DEFAULT_SIZES: Record<string, string[]> = {
   'miyuki-delica': ['8', '10', '11', '15'],
+  'preciosa-rocailles': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '31', '32', '33', '34'],
   'toho-round': ['3', '6', '8', '11', '15'],
 };
+
+function normalizeRelativePath(relativePath: string): string {
+  return relativePath.split(path.sep).join('/');
+}
+
+function walkFilesRecursive(directory: string): Array<{ filePath: string; relativePath: string }> {
+  const discovered: Array<{ filePath: string; relativePath: string }> = [];
+
+  function walk(currentDirectory: string): void {
+    const entries = fs.readdirSync(currentDirectory, { withFileTypes: true }).sort((left, right) => {
+      return left.name.localeCompare(right.name);
+    });
+
+    for (const entry of entries) {
+      const entryPath = path.join(currentDirectory, entry.name);
+      if (entry.isDirectory()) {
+        walk(entryPath);
+        continue;
+      }
+
+      discovered.push({
+        filePath: entryPath,
+        relativePath: normalizeRelativePath(path.relative(directory, entryPath)),
+      });
+    }
+  }
+
+  walk(directory);
+
+  return discovered;
+}
+
+function getMetadataKey(relativePath: string, metadata: BeadMetadata): string {
+  return (metadata.beadId || relativePath.replace(/\.metadata\.json$/, '')).toUpperCase();
+}
 
 // ============================================================================
 // Metadata Extraction
@@ -93,27 +131,23 @@ function extractMetadataFromDirectory(
     }
     return metadata;
   }
-  
-  const files = fs.readdirSync(directory);
-  const metadataFiles = files.filter(file => file.endsWith('.metadata.json'));
+
+  const metadataFiles = walkFilesRecursive(directory).filter((file) => file.relativePath.endsWith('.metadata.json'));
   
   if (options.verbose) {
     console.log(`  Processing size ${size}: found ${metadataFiles.length} metadata files`);
   }
   
-  for (const file of metadataFiles) {
-    const beadId = file.replace('.metadata.json', '');
-    const filePath = path.join(directory, file);
-    
+  for (const metadataFile of metadataFiles) {
     try {
-      const content = fs.readFileSync(filePath, 'utf-8');
+      const content = fs.readFileSync(metadataFile.filePath, 'utf-8');
       const beadMetadata: BeadMetadata = JSON.parse(content);
-      
+
       // Store with uppercase bead ID for consistency
-      metadata[beadId.toUpperCase()] = beadMetadata;
-      
+      metadata[getMetadataKey(metadataFile.relativePath, beadMetadata)] = beadMetadata;
+
     } catch (error) {
-      console.error(`  [ERROR] Error reading ${file}:`, error);
+      console.error(`  [ERROR] Error reading ${metadataFile.relativePath}:`, error);
     }
   }
   
@@ -214,6 +248,7 @@ function generateUnifiedTypeScriptLoader(beadTypes: DiscoveredBeadType[]): strin
  */
 
 export interface BeadMetadata {
+  beadId?: string;
   shape: string;
   size: string;
   colorGroup?: string;
@@ -222,6 +257,7 @@ export interface BeadMetadata {
   dyed: string;
   galvanized: string;
   plating: string;
+  additionalArticleNumber?: string;
 }
 
 export type BeadType = ${beadTypeUnion};

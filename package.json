@@ -22,6 +22,8 @@
     "beads:miyuki:delica:blob": "tsx scripts/beads/miyuki/delica/blob.ts",
     "beads:miyuki:round_rocailles:sync": "tsx scripts/beads/miyuki/round_rocailles/sync.ts",
     "beads:miyuki:round_rocailles:blob": "tsx scripts/beads/miyuki/round_rocailles/blob.ts",
+    "beads:preciosa:rocailles:sync": "tsx scripts/beads/preciosa/rocailles/sync.ts",
+    "beads:preciosa:rocailles:blob": "tsx scripts/beads/preciosa/rocailles/blob.ts",
     "beads:toho:round:sync": "tsx scripts/beads/toho/round/sync.ts",
     "beads:toho:round:blob": "tsx scripts/beads/toho/round/blob.ts"
   },

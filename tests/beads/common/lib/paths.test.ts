@@ -93,6 +93,7 @@ describe('discoverBeadTypesOnDisk', () => {
   it('discovers existing bead types from the real beads/ directory', () => {
     const result = discoverBeadTypesOnDisk();
     expect(result).toContain('miyuki-delica');
+    expect(result).toContain('preciosa-rocailles');
     expect(result).toContain('toho-round');
     // Results should be sorted
     expect(result).toEqual([...result].sort());

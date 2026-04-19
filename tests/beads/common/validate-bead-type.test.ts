@@ -123,4 +123,43 @@ describe('validateBeadType', () => {
       })
     );
   });
+
+  it('accepts nested assets when metadata declares the canonical bead ID', async () => {
+    const beadDir = getBeadTypeDirectory(TEST_BEAD_TYPE, '11');
+    const articleDir = path.join(beadDir, '331-19001');
+    fs.mkdirSync(articleDir, { recursive: true });
+
+    fs.writeFileSync(
+      path.join(articleDir, '20420.metadata.json'),
+      JSON.stringify({ beadId: '311-19001-11_0-20420', size: '11/0' })
+    );
+    fs.writeFileSync(path.join(articleDir, '20420_48x48.jpg'), Buffer.from('thumb'));
+
+    writeMetadataLoaderStub();
+    const colorJsonPath = getGeneratedColorDataPath(TEST_BEAD_TYPE, '11', TEST_DATA_DIR);
+    fs.mkdirSync(path.dirname(colorJsonPath), { recursive: true });
+    fs.writeFileSync(
+      colorJsonPath,
+      JSON.stringify(
+        {
+          beadIds: { '#112233': ['311-19001-11_0-20420'] },
+          colorMappings: { '311-19001-11_0-20420': '#112233' },
+        },
+        null,
+        2
+      )
+    );
+
+    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const { validateBeadType } = await loadValidator();
+    const result = validateBeadType({ beadType: TEST_BEAD_TYPE, size: '11' });
+    consoleSpy.mockRestore();
+
+    expect(
+      result.issues.some((issue) => issue.message.includes('Known bead ID missing from color JSON'))
+    ).toBe(false);
+    expect(
+      result.issues.some((issue) => issue.message.includes('Metadata exists but no image assets were found'))
+    ).toBe(false);
+  });
 });

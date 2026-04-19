@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { collectLocalBlobAssets } from '../../../../scripts/beads/common/lib/blob.js';
+import { collectLocalBlobAssets, isOriginalBlobAssetFile } from '../../../../scripts/beads/common/lib/blob.js';
 import {
   getBeadTypeDirectory,
   getDownloadedBeadTypeDirectory,
@@ -49,5 +49,59 @@ describe('collectLocalBlobAssets', () => {
         size: originalContent.length,
       },
     ]);
+  });
+
+  it('includes webp originals and excludes jpg derivatives', () => {
+    const downloadedSizeDir = getDownloadedBeadTypeDirectory(TEST_BEAD_TYPE, '10');
+
+    fs.mkdirSync(downloadedSizeDir, { recursive: true });
+
+    const originalContent = Buffer.from('original-webp-content');
+    const originalPath = path.join(downloadedSizeDir, '311-19001-10_0-00050.webp');
+
+    fs.writeFileSync(originalPath, originalContent);
+    fs.writeFileSync(path.join(downloadedSizeDir, '311-19001-10_0-00050_16x16.jpg'), Buffer.from('thumb-16'));
+    fs.writeFileSync(path.join(downloadedSizeDir, '311-19001-10_0-00050_48x48.jpg'), Buffer.from('thumb-48'));
+
+    expect(collectLocalBlobAssets(TEST_BEAD_TYPE, ['10'])).toEqual([
+      {
+        pathname: 'beads/vitest/blob/assets/10/311-19001-10_0-00050.webp',
+        localPath: originalPath,
+        sha256: crypto.createHash('sha256').update(originalContent).digest('hex'),
+        size: originalContent.length,
+      },
+    ]);
+  });
+
+  it('includes nested originals below a size directory', () => {
+    const downloadedSizeDir = getDownloadedBeadTypeDirectory(TEST_BEAD_TYPE, '10');
+    const articleDir = path.join(downloadedSizeDir, '331-19001');
+
+    fs.mkdirSync(articleDir, { recursive: true });
+
+    const originalContent = Buffer.from('nested-webp-content');
+    const originalPath = path.join(articleDir, '20420.webp');
+
+    fs.writeFileSync(originalPath, originalContent);
+
+    expect(collectLocalBlobAssets(TEST_BEAD_TYPE, ['10'])).toEqual([
+      {
+        pathname: 'beads/vitest/blob/assets/10/331-19001/20420.webp',
+        localPath: originalPath,
+        sha256: crypto.createHash('sha256').update(originalContent).digest('hex'),
+        size: originalContent.length,
+      },
+    ]);
+  });
+});
+
+describe('isOriginalBlobAssetFile', () => {
+  it('accepts original webp files', () => {
+    expect(isOriginalBlobAssetFile('311-19001-10_0-00050.webp')).toBe(true);
+  });
+
+  it('rejects derivative jpg files', () => {
+    expect(isOriginalBlobAssetFile('311-19001-10_0-00050_16x16.jpg')).toBe(false);
+    expect(isOriginalBlobAssetFile('311-19001-10_0-00050_48x48.jpg')).toBe(false);
   });
 });

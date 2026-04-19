@@ -34,7 +34,9 @@ export type BlobDiff = {
 export function isOriginalBlobAssetFile(fileName: string): boolean {
   const normalized = fileName.toLowerCase();
   return (
-    normalized.endsWith('.jpg') &&
+    (normalized.endsWith('.jpg') ||
+      normalized.endsWith('.jpeg') ||
+      normalized.endsWith('.webp')) &&
     !normalized.endsWith('_16x16.jpg') &&
     !normalized.endsWith('_48x48.jpg')
   );
@@ -67,6 +69,36 @@ export function writeBlobManifest(manifestPath: string, records: BlobAssetRecord
 // Collection & Diff
 // ============================================================================
 
+function normalizeRelativePath(relativePath: string): string {
+  return relativePath.split(path.sep).join('/');
+}
+
+function walkFilesRecursive(directory: string): Array<{ relativePath: string; localPath: string }> {
+  const discovered: Array<{ relativePath: string; localPath: string }> = [];
+
+  function walk(currentDirectory: string): void {
+    const entries = fs.readdirSync(currentDirectory, { withFileTypes: true }).sort((left, right) => {
+      return left.name.localeCompare(right.name);
+    });
+
+    for (const entry of entries) {
+      const entryPath = path.join(currentDirectory, entry.name);
+      if (entry.isDirectory()) {
+        walk(entryPath);
+        continue;
+      }
+
+      discovered.push({
+        relativePath: normalizeRelativePath(path.relative(directory, entryPath)),
+        localPath: entryPath,
+      });
+    }
+  }
+
+  walk(directory);
+  return discovered;
+}
+
 export function collectLocalBlobAssets(beadType: string, sizes: string[]): BlobAssetRecord[] {
   const assets: BlobAssetRecord[] = [];
   const blobPrefix = getBlobPrefix(beadType);
@@ -77,18 +109,17 @@ export function collectLocalBlobAssets(beadType: string, sizes: string[]): BlobA
       continue;
     }
 
-    for (const file of fs.readdirSync(downloadedSizeDir)) {
-      if (!isOriginalBlobAssetFile(file)) {
+    for (const file of walkFilesRecursive(downloadedSizeDir)) {
+      if (!isOriginalBlobAssetFile(file.relativePath)) {
         continue;
       }
 
-      const localPath = path.join(downloadedSizeDir, file);
-      const content = fs.readFileSync(localPath);
-      const relativePath = path.posix.join(blobPrefix, size, file);
+      const content = fs.readFileSync(file.localPath);
+      const relativePath = path.posix.join(blobPrefix, size, file.relativePath);
 
       assets.push({
         pathname: relativePath,
-        localPath,
+        localPath: file.localPath,
         sha256: crypto.createHash('sha256').update(content).digest('hex'),
         size: content.length,
       });

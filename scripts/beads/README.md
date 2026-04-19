@@ -33,6 +33,15 @@ pnpm beads:miyuki:round_rocailles:sync -- --local-only
 # Upload Miyuki Round Rocailles originals to Vercel Blob
 pnpm beads:miyuki:round_rocailles:blob -- --upload
 
+# Full local sync for Preciosa Rocailles
+pnpm beads:preciosa:rocailles:sync
+
+# Rebuild Preciosa Rocailles from local files only
+pnpm beads:preciosa:rocailles:sync -- --local-only
+
+# Upload Preciosa Rocailles originals to Vercel Blob
+pnpm beads:preciosa:rocailles:blob -- --upload
+
 # Full local sync for TOHO Round
 pnpm beads:toho:round:sync
 
@@ -41,6 +50,22 @@ pnpm beads:toho:round:sync -- --local-only
 
 # Upload TOHO originals to Vercel Blob
 pnpm beads:toho:round:blob -- --upload
+```
+
+## Repo-Wide Rebuilds
+
+```bash
+# Rebuild every supported bead type from local files only and refresh generated/data/bead-metadata.ts
+pnpm beads:miyuki:delica:sync -- --local-only && \
+pnpm beads:miyuki:round_rocailles:sync -- --local-only && \
+pnpm beads:preciosa:rocailles:sync -- --local-only && \
+pnpm beads:toho:round:sync -- --local-only
+
+# Run the full scrape/download/build pipeline for every supported bead type
+pnpm beads:miyuki:delica:sync && \
+pnpm beads:miyuki:round_rocailles:sync && \
+pnpm beads:preciosa:rocailles:sync && \
+pnpm beads:toho:round:sync
 ```
 
 ## Directory Structure
@@ -66,6 +91,12 @@ scripts/beads/
 │       ├── sync.ts                 # Full sync pipeline
 │       ├── sync.test.ts            # Tests
 │       └── blob.ts                 # Blob upload entry point
+├── preciosa/                       # Preciosa brand
+│   └── rocailles/                  # Preciosa Rocailles specific
+│       ├── sync.ts                 # Full sync pipeline
+│       ├── blob.ts                 # Blob upload entry point
+│       └── lib/
+│           └── config.ts           # Size tables and dimensions loading
 ├── toho/                           # TOHO brand
 │   └── round/                      # TOHO Round specific
 │       ├── sync.ts                 # Full sync pipeline
@@ -79,7 +110,7 @@ scripts/beads/
 
 ## Sync Scripts
 
-Both sync scripts follow the same pipeline:
+All sync scripts follow the same pipeline:
 
 1. **Scrape** — fetch the online catalog for the brand
 2. **Download** — pull missing original images
@@ -115,6 +146,23 @@ pnpm beads:miyuki:round_rocailles:sync [options]
 | `--dry-run` | Report what would change without writing |
 | `--force` | Force-regenerate thumbnails even when up to date |
 | `--verbose` | Detailed progress output |
+
+### Preciosa Rocailles Sync (`preciosa/rocailles/sync.ts`)
+
+```bash
+pnpm beads:preciosa:rocailles:sync [options]
+```
+
+| Flag | Description |
+|------|-------------|
+| `--local-only` | Skip catalog scraping and rebuild from local files only |
+| `--sizes 10,11` | Limit to specific sizes (default: sizes found in the live catalog and local data) |
+| `--dry-run` | Report what would change without writing |
+| `--force` | Redownload metadata/assets and regenerate thumbnails |
+| `--verbose` | Detailed progress output |
+
+Preciosa sync keeps full-size originals as `.webp` in `downloaded/` and generates `.jpg` `_16x16` and `_48x48` derivatives in `beads/`.
+Preciosa assets are stored under article subdirectories so the filenames can consistently stay as the color number, for example `331-19001/20420.webp` and `331-19001/20420_48x48.jpg`.
 
 ### TOHO Round Sync (`toho/round/sync.ts`)
 
@@ -156,6 +204,17 @@ pnpm beads:miyuki:round_rocailles:blob [options]
 | `--upload` | Upload new/changed originals (without this flag, only reports the diff) |
 | `--sizes 11,15` | Limit to specific sizes (default: `2,5,6,8,11,15`) |
 
+### Preciosa Rocailles Blob (`preciosa/rocailles/blob.ts`)
+
+```bash
+pnpm beads:preciosa:rocailles:blob [options]
+```
+
+| Flag | Description |
+|------|-------------|
+| `--upload` | Upload new/changed originals (without this flag, only reports the diff) |
+| `--sizes 10,11` | Limit to specific sizes (default: all supported sizes) |
+
 ### TOHO Round Blob (`toho/round/blob.ts`)
 
 ```bash
@@ -178,7 +237,7 @@ These modules are shared across all brands. They are imported by the sync/blob s
 | `common/lib/paths.ts` | Central path resolution (`BEADS_ROOT`, `getBeadTypeDirectory`, etc.) |
 | `common/lib/blob.ts` | Manifest-based SHA-256 diff and Vercel Blob upload |
 | `common/lib/thumbnails.ts` | 16×16 and 48×48 derivative generation via Sharp (with optional SVG overlay for Miyuki) |
-| `common/extract-colors.ts` | Dominant color extraction from bead images |
+| `common/extract-colors.ts` | Dominant color extraction from bead images and per-size color mapping JSON generation |
 | `common/generate-metadata.ts` | Consolidated metadata TypeScript generation |
 | `common/validate-bead-type.ts` | Data integrity validation |
 
@@ -194,6 +253,9 @@ pnpm beads:miyuki:delica:blob      # Miyuki Delica blob diff/upload
 pnpm beads:miyuki:round_rocailles:sync  # Full Miyuki Round Rocailles sync pipeline
 pnpm beads:miyuki:round_rocailles:blob  # Miyuki Round Rocailles blob diff/upload
 
+pnpm beads:preciosa:rocailles:sync      # Full Preciosa Rocailles sync pipeline
+pnpm beads:preciosa:rocailles:blob      # Preciosa Rocailles blob diff/upload
+
 pnpm beads:toho:round:sync         # Full TOHO Round sync pipeline
 pnpm beads:toho:round:blob         # TOHO Round blob diff/upload
 ```
@@ -208,8 +270,8 @@ pnpm beads:toho:round:blob         # TOHO Round blob diff/upload
    "beads:<brand>:<type>:sync": "tsx scripts/beads/<brand>/<type>/sync.ts",
    "beads:<brand>:<type>:blob": "tsx scripts/beads/<brand>/<type>/blob.ts"
    ```
-5. Create the corresponding image directory at `beads/<brand>/<type>/<size>/`
-6. Add tests next to each script: `sync.test.ts`, `config.test.ts`, etc.
+5. Create the corresponding bead and downloaded directories under `beads/<brand>/<type>/` and `downloaded/<brand>/<type>/`
+6. Add tests under `tests/` mirroring the script structure, for example `tests/beads/<brand>/<type>/sync.test.ts`
 
 ## Error Handling
 

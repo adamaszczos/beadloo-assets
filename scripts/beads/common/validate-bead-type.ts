@@ -56,6 +56,10 @@ interface ColorMapping {
   colorMappings: Record<string, string>;
 }
 
+interface MetadataSidecar {
+  beadId?: string;
+}
+
 export interface BeadDirectoryIndex {
   metadataIds: string[];
   originalImageIds: string[];
@@ -67,8 +71,51 @@ export interface BeadDirectoryIndex {
 // Constants
 // ============================================================================
 
-const IMAGE_FILE_REGEX = /\.(jpg|jpeg|png)$/i;
+const IMAGE_FILE_REGEX = /\.(jpg|jpeg|png|webp)$/i;
 const THUMBNAIL_FILE_REGEX = /^(.*)_(16x16|48x48)\.(jpg|jpeg|png)$/i;
+
+function normalizeRelativePath(relativePath: string): string {
+  return relativePath.split(path.sep).join('/');
+}
+
+function walkFilesRecursive(directory: string): Array<{ relativePath: string; absolutePath: string }> {
+  const discovered: Array<{ relativePath: string; absolutePath: string }> = [];
+
+  function walk(currentDirectory: string): void {
+    const entries = fs.readdirSync(currentDirectory, { withFileTypes: true }).sort((left, right) => {
+      return left.name.localeCompare(right.name);
+    });
+
+    for (const entry of entries) {
+      const entryPath = path.join(currentDirectory, entry.name);
+      if (entry.isDirectory()) {
+        walk(entryPath);
+        continue;
+      }
+
+      discovered.push({
+        relativePath: normalizeRelativePath(path.relative(directory, entryPath)),
+        absolutePath: entryPath,
+      });
+    }
+  }
+
+  walk(directory);
+  return discovered;
+}
+
+function getMetadataBeadId(filePath: string, fallbackId: string): string {
+  try {
+    const metadata = JSON.parse(fs.readFileSync(filePath, 'utf-8')) as MetadataSidecar;
+    return typeof metadata.beadId === 'string' && metadata.beadId.trim() ? metadata.beadId.trim() : fallbackId;
+  } catch {
+    return fallbackId;
+  }
+}
+
+function getImageAssetKey(relativePath: string): string {
+  return normalizeRelativePath(relativePath.slice(0, -path.extname(relativePath).length));
+}
 
 // ============================================================================
 // Validation Checks
@@ -87,24 +134,35 @@ export function buildBeadDirectoryIndex(beadDir: string): BeadDirectoryIndex {
   const metadataIds = new Set<string>();
   const originalImageIds = new Set<string>();
   const thumbnailImageIds = new Set<string>();
+  const canonicalBeadIdsByAssetKey = new Map<string, string>();
+  const files = walkFilesRecursive(beadDir);
 
-  for (const file of fs.readdirSync(beadDir)) {
-    if (file.endsWith('.metadata.json')) {
-      metadataIds.add(file.replace('.metadata.json', ''));
+  for (const file of files) {
+    if (file.relativePath.endsWith('.metadata.json')) {
+      const assetKey = file.relativePath.replace(/\.metadata\.json$/, '');
+      const beadId = getMetadataBeadId(file.absolutePath, assetKey);
+      metadataIds.add(beadId);
+      canonicalBeadIdsByAssetKey.set(assetKey, beadId);
+    }
+  }
+
+  for (const file of files) {
+    if (file.relativePath.endsWith('.metadata.json')) {
       continue;
     }
 
-    if (!IMAGE_FILE_REGEX.test(file)) {
+    if (!IMAGE_FILE_REGEX.test(file.relativePath)) {
       continue;
     }
 
-    const thumbnailMatch = file.match(THUMBNAIL_FILE_REGEX);
+    const thumbnailMatch = file.relativePath.match(THUMBNAIL_FILE_REGEX);
     if (thumbnailMatch) {
-      thumbnailImageIds.add(thumbnailMatch[1]);
+      thumbnailImageIds.add(canonicalBeadIdsByAssetKey.get(thumbnailMatch[1]) || thumbnailMatch[1]);
       continue;
     }
 
-    originalImageIds.add(path.basename(file, path.extname(file)));
+    const assetKey = getImageAssetKey(file.relativePath);
+    originalImageIds.add(canonicalBeadIdsByAssetKey.get(assetKey) || assetKey);
   }
 
   const assetIds = new Set<string>([
