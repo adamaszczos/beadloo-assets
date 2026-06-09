@@ -3,36 +3,42 @@
     "diameter_mm": 6.00,
     "thickness_mm": 4.00,
     "hole_size_mm": 2.00,
-    "beads_per_gram": 4
+    "beads_per_gram": 4,
+    "weight_per_bead_g": 0.2500
   },
   "5/0": {
     "diameter_mm": 4.50,
     "thickness_mm": 3.00,
     "hole_size_mm": 1.40,
-    "beads_per_gram": 10
+    "beads_per_gram": 10,
+    "weight_per_bead_g": 0.1000
   },
   "6/0": {
     "diameter_mm": 4.00,
     "thickness_mm": 2.70,
     "hole_size_mm": 1.30,
-    "beads_per_gram": 15
+    "beads_per_gram": 15,
+    "weight_per_bead_g": 0.0667
   },
   "8/0": {
     "diameter_mm": 3.00,
     "thickness_mm": 2.00,
     "hole_size_mm": 1.00,
-    "beads_per_gram": 39
+    "beads_per_gram": 39,
+    "weight_per_bead_g": 0.0256
   },
   "11/0": {
     "diameter_mm": 2.00,
     "thickness_mm": 1.30,
     "hole_size_mm": 0.80,
-    "beads_per_gram": 110
+    "beads_per_gram": 110,
+    "weight_per_bead_g": 0.0090
   },
   "15/0": {
     "diameter_mm": 1.50,
     "thickness_mm": 1.00,
     "hole_size_mm": 0.70,
-    "beads_per_gram": 250
+    "beads_per_gram": 250,
+    "weight_per_bead_g": 0.0040
   }
 }

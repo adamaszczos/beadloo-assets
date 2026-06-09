@@ -2,21 +2,29 @@
     "15/0" : {
         "height_mm" : 1.30,
         "length_mm": 1.15,
-        "hole_size_mm": 0.65
+        "hole_size_mm": 0.65,
+        "weight_per_bead_g": 0.0029,
+        "beads_per_gram": 350
     },
     "11/0" : {
         "height_mm" : 1.60,
         "length_mm": 1.30,
-        "hole_size_mm": 0.80
+        "hole_size_mm": 0.80,
+        "weight_per_bead_g": 0.005,
+        "beads_per_gram": 200
     },
     "10/0" : {
         "height_mm" : 2.20,
         "length_mm": 1.70,
-        "hole_size_mm": 1.00
+        "hole_size_mm": 1.00,
+        "weight_per_bead_g": 0.0093,
+        "beads_per_gram": 108
     },
     "8/0" : {
         "height_mm" : 3.00,
         "length_mm": 2.75,
-        "hole_size_mm": 1.50
+        "hole_size_mm": 1.50,
+        "weight_per_bead_g": 0.0333,
+        "beads_per_gram": 30
     }
 }
