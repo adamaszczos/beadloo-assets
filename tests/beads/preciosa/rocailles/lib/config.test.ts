@@ -34,7 +34,9 @@ describe('getPreciosaRocaillesDimensions', () => {
       diameter_min_mm: 2.2,
       diameter_max_mm: 2.4,
       diameter_mm: 2.3,
+      thickness_mm: 1.7,
       beads_per_gram: 91,
+      weight_per_bead_g: 0.01099,
     });
   });
 

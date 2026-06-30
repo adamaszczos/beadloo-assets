@@ -14,7 +14,8 @@ scripts/beads/
 ├── common/              # Shared across all bead brands
 │   ├── lib/paths.ts     # Central path resolution (BEADS_ROOT, getBeadTypeDirectory, etc.)
 │   ├── lib/blob.ts      # Vercel Blob diff + upload (manifest-based SHA-256)
-│   ├── lib/thumbnails.ts# 16×16 / 48×48 derivative generation (Sharp + SVG overlay)
+│   ├── lib/beadRender.ts# Single-bead 16×16 renderer (shape/material/finish from metadata)
+│   ├── lib/thumbnails.ts# Derivatives: 16×16 rendered bead (beadRender) + 48×48 centre crop
 │   └── *.ts             # Brand-agnostic scripts (extract-colors, generate-metadata, validate)
 ├── miyuki/
 │   ├── common/          # Shared across Miyuki bead types (scrape-metadata)

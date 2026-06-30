@@ -79,7 +79,8 @@ scripts/beads/
 │   └── lib/
 │       ├── paths.ts                # Central path resolution (BEADS_ROOT, etc.)
 │       ├── blob.ts                 # Vercel Blob diff + upload (manifest-based SHA-256)
-│       └── thumbnails.ts           # 16×16 / 48×48 derivative generation (Sharp)
+│       ├── beadRender.ts           # Single-bead 16×16 renderer (metadata + finish driven)
+│       └── thumbnails.ts           # Derivatives: 16×16 rendered bead + 48×48 centre crop
 ├── miyuki/                         # Miyuki brand
 │   ├── common/
 │   │   └── scrape-metadata.ts      # Web scraper for Miyuki bead metadata
@@ -114,7 +115,7 @@ All sync scripts follow the same pipeline:
 
 1. **Scrape** — fetch the online catalog for the brand
 2. **Download** — pull missing original images
-3. **Thumbnails** — generate 16×16 and 48×48 derivatives (with SVG overlays for Miyuki)
+3. **Thumbnails** — render the **16×16** single bead (shape/material/finish read from each bead's `.metadata.json` sidecar, colour sampled from the source photo) and a **48×48** centre crop of the source. The 16×16 render requires the metadata sidecar to exist first (written earlier in the run); without it, the legacy centre-crop is used as a fallback.
 4. **Colors** — extract dominant colors from images
 5. **Metadata** — build consolidated metadata files
 6. **Validate** — integrity checks on the resulting data
@@ -236,10 +237,24 @@ These modules are shared across all brands. They are imported by the sync/blob s
 |--------|---------|
 | `common/lib/paths.ts` | Central path resolution (`BEADS_ROOT`, `getBeadTypeDirectory`, etc.) |
 | `common/lib/blob.ts` | Manifest-based SHA-256 diff and Vercel Blob upload |
-| `common/lib/thumbnails.ts` | 16×16 and 48×48 derivative generation via Sharp (with optional SVG overlay for Miyuki) |
+| `common/lib/beadRender.ts` | Renders an authentic single bead into the 16×16 space from the bead's metadata (shape/material/finish) + a colour sampled from the source photo. See "16×16 bead rendering" below. |
+| `common/lib/thumbnails.ts` | Derivative generation via Sharp: the 16×16 single-bead render (delegates to `beadRender.ts`) and the 48×48 centre crop of the source |
 | `common/extract-colors.ts` | Dominant color extraction from bead images and per-size color mapping JSON generation |
 | `common/generate-metadata.ts` | Consolidated metadata TypeScript generation |
 | `common/validate-bead-type.ts` | Data integrity validation |
+
+## 16×16 Bead Rendering
+
+The `_16x16.jpg` thumbnails are the images used by Beadloo's **bead-pattern preview**, so they must read as a single recognisable bead, not a crop of the source pile photo (every source image is a photo of dozens of loose beads). `common/lib/beadRender.ts` renders one stylised-but-authentic bead per output, driven entirely by the bead's own `.metadata.json`:
+
+- **Colour** — sampled from the source photo (perceptual, centre-weighted dominant; iridescent beads also sample a hue palette, picasso beads an earthy speckle tone).
+- **Shape** (`metadata.shape`) — `Delica` → a horizontal **tube** (cylinder); everything else → a **round** bead.
+- **Material** (`glassGroup` + `finish`) — **glass** (translucent, luminous core, bright rim), **metal** (reflective banding), or **opaque** (solid soft sheen).
+- **Finish modifiers** (`finish`/`galvanized`/`plating`) — `matte` (frosted), `luster`/`pearl`, `lined`/`silver-lined` (bright core), `iris` (AB/Rainbow/Special Coating → multi-hue oil-slick sheen), `picasso`/`travertine` (earthy mottle), `cornelian` (white core), `silk`/glass-enamel (satin streak).
+
+The bead fills the frame **edge-to-edge (no margin)** with slightly **concave left/right ends** that hint the hole openings, composited on a dark background (`#0d0d0d`; JPEG has no alpha). The renderer is deterministic. The **48×48** derivative is intentionally left as a plain centre crop of the source — it is not used by the preview feature.
+
+> If a bead has no `.metadata.json` sidecar, `thumbnails.ts` falls back to the legacy centre-crop (and the Miyuki SVG overlay when an `overlay` is passed).
 
 ## pnpm Scripts
 

@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import sharp from 'sharp';
+import { renderBeadThumbnail, type BeadMetadata } from './beadRender.js';
 
 // ============================================================================
 // Types
@@ -36,6 +37,37 @@ export function needsRegeneration(sourcePath: string, outputPath: string, force:
   const sourceStat = fs.statSync(sourcePath);
   const outputStat = fs.statSync(outputPath);
   return sourceStat.mtimeMs > outputStat.mtimeMs;
+}
+
+/**
+ * Whether the 16x16 render is stale. Unlike a plain {@link needsRegeneration}, the 16x16 depends on
+ * BOTH the source photo and the metadata sidecar, so a metadata-only change must also trigger a
+ * re-render — otherwise a finish/shape fix in the sidecar would never take. Callers (including
+ * dry-run estimators) must use this rather than re-deriving the rule, so the two stay in sync.
+ */
+export function needs16x16Regeneration(
+  sourcePath: string,
+  thumb16Path: string,
+  metadataPath: string,
+  force: boolean
+): boolean {
+  if (needsRegeneration(sourcePath, thumb16Path, force)) {
+    return true;
+  }
+  return (
+    fs.existsSync(metadataPath) &&
+    fs.existsSync(thumb16Path) &&
+    fs.statSync(metadataPath).mtimeMs > fs.statSync(thumb16Path).mtimeMs
+  );
+}
+
+/** Read the bead's metadata sidecar (written next to the thumbnail) for finish-aware rendering. */
+function readBeadMetadata(metadataPath: string): BeadMetadata | undefined {
+  try {
+    return JSON.parse(fs.readFileSync(metadataPath, 'utf-8')) as BeadMetadata;
+  } catch {
+    return undefined;
+  }
 }
 
 // ============================================================================
@@ -157,9 +189,15 @@ export async function generateDerivatives(
     generated48 = true;
   }
 
-  // --- 16x16 centered crop (with optional SVG overlay for Miyuki) ---
-  if (needsRegeneration(sourcePath, thumb16Path, force)) {
-    if (overlay) {
+  // --- 16x16 single-bead render, driven by the bead's metadata ---
+  const metadataPath = path.join(outDirectory, `${baseName}.metadata.json`);
+  if (needs16x16Regeneration(sourcePath, thumb16Path, metadataPath, force)) {
+    const beadMetadata = readBeadMetadata(metadataPath);
+    if (beadMetadata) {
+      // Render a single authentic bead (shape + material + finish from metadata, colour from photo).
+      await renderBeadThumbnail(sourcePath, beadMetadata, thumb16Path);
+    } else if (overlay) {
+      // Fallback (no metadata sidecar): legacy Miyuki centre-crop + SVG overlay.
       // Miyuki path: 32x32 intermediate crop → 16x16, then SVG composite
       const minCrop = 32;
       let pipeline = sharp(sourcePath, { limitInputPixels: false });
@@ -190,7 +228,7 @@ export async function generateDerivatives(
         .jpeg({ quality: 90 })
         .toFile(thumb16Path);
     } else {
-      // TOHO path: simple centered crop → 16x16
+      // Fallback (no metadata sidecar): legacy simple centred crop → 16x16
       const cropSize = Math.min(width, height);
       const left = Math.max(0, Math.floor((width - cropSize) / 2));
       const top = Math.max(0, Math.floor((height - cropSize) / 2));

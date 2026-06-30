@@ -1,6 +1,6 @@
 {
   "name": "@adamaszczos/beadloo-assets",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Beadloo bead image and metadata assets",
   "private": false,
   "license": "MIT",
@@ -18,6 +18,7 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "beads:miyuki:delica:sync": "tsx scripts/beads/miyuki/delica/sync.ts",
     "beads:miyuki:delica:blob": "tsx scripts/beads/miyuki/delica/blob.ts",
     "beads:miyuki:round_rocailles:sync": "tsx scripts/beads/miyuki/round_rocailles/sync.ts",
@@ -28,13 +29,14 @@
     "beads:toho:round:blob": "tsx scripts/beads/toho/round/blob.ts"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
-    "@vercel/blob": "^2.0.0",
-    "dotenv": "^17.2.3",
-    "node-html-parser": "^7.0.1",
-    "sharp": "^0.34.3",
-    "tsx": "^4.20.4",
-    "typescript": "^5",
-    "vitest": "^4.1.2"
+    "@types/node": "^26.0.1",
+    "@vercel/blob": "^2.5.0",
+    "@vitest/coverage-v8": "4.1.9",
+    "dotenv": "^17.4.2",
+    "node-html-parser": "^8.0.3",
+    "sharp": "^0.35.2",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
   }
 }

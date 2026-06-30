@@ -392,7 +392,14 @@ function writeMetadataSidecar(
   }
 
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, `${JSON.stringify(metadata, null, 2)}\n`, "utf-8");
+  const serialized = `${JSON.stringify(metadata, null, 2)}\n`;
+  // Skip rewriting an identical sidecar so its mtime stays put. An unconditional rewrite every run
+  // would make the sidecar permanently "newer" than the 16x16 thumbnail and force needs16x16Regeneration
+  // to re-render the entire catalog on every sync, even when nothing changed.
+  if (fileExists(outputPath) && fs.readFileSync(outputPath, "utf-8") === serialized) {
+    return false;
+  }
+  fs.writeFileSync(outputPath, serialized, "utf-8");
   return true;
 }
 

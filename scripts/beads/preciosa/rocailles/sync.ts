@@ -11,7 +11,7 @@ import {
   getBeadTypeDirectory,
   getDownloadedBeadTypeDirectory,
 } from '../../common/lib/paths.js';
-import { generateDerivatives, needsRegeneration } from '../../common/lib/thumbnails.js';
+import { generateDerivatives, needs16x16Regeneration, needsRegeneration } from '../../common/lib/thumbnails.js';
 import {
   PRECIOSA_ROCAILLES_SIZES,
   type PreciosaRocaillesSize,
@@ -766,11 +766,12 @@ async function generateThumbnailsForSize(
     const baseName = path.basename(sourcePath, path.extname(sourcePath));
     const crop48Path = path.join(outputDir, `${baseName}_48x48.jpg`);
     const thumb16Path = path.join(outputDir, `${baseName}_16x16.jpg`);
+    const metadataPath = path.join(outputDir, `${baseName}.metadata.json`);
 
     try {
       if (dryRun) {
         const wouldGenerate48 = needsRegeneration(sourcePath, crop48Path, force);
-        const wouldGenerate16 = needsRegeneration(sourcePath, thumb16Path, force);
+        const wouldGenerate16 = needs16x16Regeneration(sourcePath, thumb16Path, metadataPath, force);
         const count = Number(wouldGenerate16) + Number(wouldGenerate48);
         generated += count;
         if (verbose && count > 0) {
