@@ -201,13 +201,17 @@ describe('sampleBead', () => {
     expect(out.base.r).toBeGreaterThan(out.base.b);
   });
 
-  it('falls back to mid-grey for a degenerate all-black source', async () => {
+  it('returns black (not a washed-out grey) for an all-black source', async () => {
     const dir = createTemporaryDirectory('beadrender-sample-');
     const src = path.join(dir, 'black.jpg');
     await createSolidImage(src, { r: 0, g: 0, b: 0 });
 
+    // The robust sampler reports the true colour of a genuinely black bead rather than the old
+    // forced mid-grey; the mid-grey guard now only fires for an empty (zero-pixel) input.
     const out = await sampleBead(src, classifyBead({ glassGroup: 'Opaque' }));
-    expect(out.base).toEqual({ r: 128, g: 128, b: 128 });
+    expect(out.base.r).toBeLessThan(8);
+    expect(out.base.g).toBeLessThan(8);
+    expect(out.base.b).toBeLessThan(8);
   });
 
   it('produces iris hue stops + a smoky body for iridescent beads', async () => {

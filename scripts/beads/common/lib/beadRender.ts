@@ -14,6 +14,7 @@
  * composited on a dark background (JPEG has no alpha).
  */
 import sharp from 'sharp';
+import { sampleBaseColor, colorHintsFromInfo, calibrateToTarget } from './colorSampler.js';
 
 export const RENDER_BG = '#0d0d0d';
 const SS = 192; // supersample resolution; downscaled to 16 for clean anti-aliasing
@@ -143,11 +144,20 @@ export interface BeadSample {
 }
 
 export async function sampleBead(src: string, info: BeadInfo): Promise<BeadSample> {
+  // The body colour now comes from the shared robust sampler (centre-crop, OKLab, adaptive trimmed
+  // mean) — the single source of truth shared with the published `colorMappings` hex.
+  const base: RGB = await sampleBaseColor(src, colorHintsFromInfo(info));
+  const out: BeadSample = { base };
+
+  // Iridescence (iris) and earthy mottle (picasso) need extra colour cues — a dark body tone, the
+  // dominant hue spread, and the darkest speckle — that the single base colour can't carry. Only
+  // these finishes pay for the second decode pass; every other bead is done above.
+  if (!info.iris && !info.picasso) return out;
+
   const N = 56;
   // Force sRGB so the raw buffer is always 3 bytes/pixel: a grayscale (1ch) or CMYK (4ch) source
   // would otherwise misalign the stride-of-3 reads below (poisoning the average with NaN or wrong hues).
   const { data } = await sharp(src, { limitInputPixels: false }).resize(N, N, { fit: 'fill' }).toColourspace('srgb').removeAlpha().raw().toBuffer({ resolveWithObject: true });
-  let wr = 0, wg = 0, wb = 0, tw = 0;
   let dr = 0, dg = 0, db = 0, dn = 0;
   let darkest: [number, number, number] = [999, 999, 999];
   const hueW = new Array(360).fill(0) as number[];
@@ -155,19 +165,11 @@ export async function sampleBead(src: string, info: BeadInfo): Promise<BeadSampl
     const r = data[i], g = data[i + 1], b = data[i + 2];
     const br = (r + g + b) / 3;
     if (br < 16 || br > 244) continue;
-    const idx = i / 3;
-    const px = idx % N, py = Math.floor(idx / N);
-    const cw = Math.max(0.1, 1 - Math.hypot(px - N / 2, py - N / 2) / (N / 2));
-    const w = Math.pow(br / 255, 0.5) * cw;
-    wr += r * w; wg += g * w; wb += b * w; tw += w;
     if (br < 150) { dr += r; dg += g; db += b; dn++; }
     if (br < (darkest[0] + darkest[1] + darkest[2]) / 3) darkest = [r, g, b];
     const [h, s] = rgb2hsl(r, g, b);
     if (s > 0.18) hueW[Math.round(h * 360) % 360] += s;
   }
-  // Degenerate sources (all-black / all-white photos) leave no in-range pixels; fall back to mid-grey.
-  const base: RGB = tw > 0 ? { r: wr / tw, g: wg / tw, b: wb / tw } : { r: 128, g: 128, b: 128 };
-  const out: BeadSample = { base };
   if (info.iris) {
     out.smoky = dn ? { r: dr / dn, g: dg / dn, b: db / dn } : base;
     const sm = hueW.map((_, i) => { let s = 0; for (let d = -8; d <= 8; d++) s += hueW[(i + d + 360) % 360]; return s; });
@@ -335,8 +337,19 @@ export async function renderBeadThumbnail(
   const info = classifyBead(metadata);
   const sample = await sampleBead(sourcePath, info);
   const buf = renderBead(sample, info);
-  await sharp(buf, { raw: { width: SS, height: SS, channels: 4 } })
+
+  // Downscale to the final 16x16 FIRST (keeping the coverage alpha), THEN calibrate. The shader's
+  // edge-darkening, vignette and rim lighting — plus the lanczos downscale itself — otherwise pull
+  // the thumbnail's mean systematically dark/off. Calibrating at final resolution against the
+  // coverage-weighted mean lands the bead's area-average exactly on the true sampled colour (so the
+  // 16x16 is consistent with the colorMappings hex) while a uniform OKLab shift keeps the 3D look.
+  // Done before flatten so the near-black background corners never enter the average.
+  const small = await sharp(buf, { raw: { width: SS, height: SS, channels: 4 } })
     .resize(16, 16, { fit: 'fill', kernel: 'lanczos3' })
+    .raw()
+    .toBuffer();
+  calibrateToTarget(small, sample.base);
+  await sharp(small, { raw: { width: 16, height: 16, channels: 4 } })
     .flatten({ background: RENDER_BG })
     .jpeg({ quality: 90 })
     .toFile(outPath);

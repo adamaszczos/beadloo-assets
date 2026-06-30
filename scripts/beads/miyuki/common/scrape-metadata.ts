@@ -4,8 +4,8 @@
  * 
  * Scrapes bead metadata from the official Miyuki website directory.
  * 
- * URL Pattern: https://www.miyuki-beads.co.jp/directory/{beadId-lowercase}-delica-beads-{size}/
- * Example: DB2271 → https://www.miyuki-beads.co.jp/directory/db2271-delica-beads-11-0/
+ * URL Pattern: https://directory.miyuki-beads.co.jp/{beadId-lowercase}-delica-beads-{size}/
+ * Example: DB2271 → https://directory.miyuki-beads.co.jp/db2271-delica-beads-11-0/
  * 
  * Extracts metadata from "Additional information" table:
  * - Shape, Size, Color Group, Glass Group, Finish, Dyed, Galvanized, Plating
@@ -54,7 +54,8 @@ const SHAPE_SLUG: Record<MiyukiShape, string> = {
   'round-rocailles': 'round-rocailles',
 };
 
-const BASE_URL = 'https://www.miyuki-beads.co.jp/directory';
+// The catalogue moved to the directory.* subdomain (the old www.../directory/ path now 404s).
+const BASE_URL = 'https://directory.miyuki-beads.co.jp';
 const REQUEST_DELAY_MS = 1000; // Be respectful to the server
 
 // ============================================================================

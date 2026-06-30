@@ -40,9 +40,9 @@ describe('constructImageUrl', () => {
       beadId: '1',
       size: '15',
       name: '#1 Round Rocailles 15/0',
-      imageUrl: 'https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/15-1-324x324.jpg',
+      imageUrl: 'https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/15-1-324x324.jpg',
     });
-    expect(result).toBe('https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/15-1.jpg');
+    expect(result).toBe('https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/15-1.jpg');
   });
 
   it('returns full-size URL when already clean', () => {
@@ -50,9 +50,9 @@ describe('constructImageUrl', () => {
       beadId: '1',
       size: '15',
       name: '#1 Round Rocailles 15/0',
-      imageUrl: 'https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/15-1.jpg',
+      imageUrl: 'https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/15-1.jpg',
     });
-    expect(result).toBe('https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/15-1.jpg');
+    expect(result).toBe('https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/15-1.jpg');
   });
 
   it('handles bead IDs with letter suffixes', () => {
@@ -60,9 +60,9 @@ describe('constructImageUrl', () => {
       beadId: '1F',
       size: '15',
       name: '#1F Round Rocailles 15/0',
-      imageUrl: 'https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/15-1F-324x324.jpg',
+      imageUrl: 'https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/15-1F-324x324.jpg',
     });
-    expect(result).toBe('https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/15-1F.jpg');
+    expect(result).toBe('https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/15-1F.jpg');
   });
 
   it('constructs a fallback URL when no imageUrl provided', () => {
@@ -71,7 +71,7 @@ describe('constructImageUrl', () => {
       size: '15',
       name: '#1 Round Rocailles 15/0',
     });
-    expect(result).toBe('https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/15-1.jpg');
+    expect(result).toBe('https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/15-1.jpg');
   });
 
   it('constructs fallback URL for size 2', () => {
@@ -80,7 +80,7 @@ describe('constructImageUrl', () => {
       size: '2',
       name: '#3201 Round Rocailles 2/0',
     });
-    expect(result).toBe('https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/2-3201.jpg');
+    expect(result).toBe('https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/2-3201.jpg');
   });
 });
 
@@ -92,8 +92,8 @@ describe('constructFallbackImageUrls', () => {
       name: '#2370 Round Rocailles 11/0',
     });
     expect(result).toEqual([
-      'https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/2370-RR-11.jpg',
-      'https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/11-0_2370.jpg',
+      'https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/2370-RR-11.jpg',
+      'https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/11-0_2370.jpg',
     ]);
   });
 
@@ -104,8 +104,8 @@ describe('constructFallbackImageUrls', () => {
       name: '#1F Round Rocailles 15/0',
     });
     expect(result).toEqual([
-      'https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/1F-RR-15.jpg',
-      'https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/15-0_1F.jpg',
+      'https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/1F-RR-15.jpg',
+      'https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/15-0_1F.jpg',
     ]);
   });
 
@@ -115,6 +115,6 @@ describe('constructFallbackImageUrls', () => {
       size: '11',
       name: '#4281 Round Rocailles 11/0',
     });
-    expect(result[1]).toBe('https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/11-0_4281.jpg');
+    expect(result[1]).toBe('https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/11-0_4281.jpg');
   });
 });

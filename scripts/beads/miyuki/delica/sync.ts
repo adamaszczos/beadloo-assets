@@ -63,8 +63,11 @@ type SyncSummary = {
 // Configuration
 // ============================================================================
 
-const MIYUKI_BASE_URL = 'https://www.miyuki-beads.co.jp';
-const DIRECTORY_URL = `${MIYUKI_BASE_URL}/directory/shop/`;
+// The seed-bead catalogue moved to the directory.* subdomain (the old
+// www.miyuki-beads.co.jp/directory/shop/ path now 404s). Both the WooCommerce listings and the
+// full-size upload images live under this host.
+const MIYUKI_DIRECTORY_BASE_URL = 'https://directory.miyuki-beads.co.jp';
+const DIRECTORY_URL = `${MIYUKI_DIRECTORY_BASE_URL}/shop/`;
 const REQUEST_DELAY_MS = 1500;
 
 const DELICA_DIR = getBeadTypeDirectory('miyuki-delica');
@@ -164,22 +167,12 @@ export async function scrapePage(
         continue;
       }
 
-      let imageUrl: string | undefined;
-
-      const srcsetMatch = productHtml.match(/srcset="([^"]+)"/i);
-      if (srcsetMatch) {
-        const srcsetParts = srcsetMatch[1].split(',');
-        for (const part of srcsetParts) {
-          const trimmed = part.trim();
-          if (trimmed.match(new RegExp(`${sizeConfig.prefix}\\d+\\.jpg`, 'i'))) {
-            imageUrl = trimmed.split(' ')[0];
-            break;
-          }
-        }
-      }
-
+      // Prefer the srcset's largest-width candidate — that is the full-size original
+      // (e.g. `…/DB0001.jpg 400w`) — which is robust to non-standard upload folders/filenames such
+      // as `…/2026/05/DB0750_400.jpg`. Fall back to the (possibly thumbnailed) <img src>.
+      let imageUrl = pickLargestSrcsetUrl(productHtml);
       if (!imageUrl) {
-        const imgMatch = productHtml.match(/<img[^>]*src="([^"]+)"/i);
+        const imgMatch = productHtml.match(/<img[^>]*\bsrc="([^"]+)"/i);
         imageUrl = imgMatch ? imgMatch[1] : undefined;
       }
 
@@ -300,18 +293,34 @@ export function findMissingBeads(
 // Image Download
 // ============================================================================
 
+/** Pick the full-size image URL from a product card's srcset (its largest-width candidate). */
+export function pickLargestSrcsetUrl(html: string): string | undefined {
+  const srcset = html.match(/srcset="([^"]+)"/i);
+  if (!srcset) return undefined;
+  let best: { url: string; width: number } | undefined;
+  for (const part of srcset[1].split(',')) {
+    const [url, descriptor] = part.trim().split(/\s+/);
+    if (!url) continue;
+    const width = descriptor && /^\d+w$/i.test(descriptor) ? parseInt(descriptor, 10) : 0;
+    if (!best || width > best.width) best = { url, width };
+  }
+  return best?.url;
+}
+
 export function constructImageUrl(beadListing: BeadListing): string {
   if (beadListing.imageUrl) {
-    const match = beadListing.imageUrl.match(/(https:\/\/[^"'\s]+\/(DB[LMS]?\d+))(?:-\d+x\d+)?\.jpg/i);
-    if (match) {
-      return `${match[1]}.jpg`;
+    // Strip any WordPress -WxH thumbnail suffix to get the full-size original, regardless of the
+    // upload folder/date or filename suffix (e.g. …/2026/05/DB0750_400-324x324.jpg → …/DB0750_400.jpg).
+    const full = beadListing.imageUrl.replace(/-\d+x\d+(\.(?:jpe?g|png|webp))(?=$|\?)/i, '$1');
+    if (/\.(?:jpe?g|png|webp)(?:$|\?)/i.test(full)) {
+      return full;
     }
   }
-  // Fallback: strip the prefix (DB, DBL, DBM, DBS) to get the number, then reconstruct
+  // Legacy fallback for the common 2024/06 uploads when no listing image was captured.
   const prefixMatch = beadListing.beadId.match(/^(DB[LMS]?)(\d+)$/i);
   const prefix = prefixMatch ? prefixMatch[1].toUpperCase() : 'DB';
   const number = prefixMatch ? prefixMatch[2].padStart(4, '0') : '0000';
-  return `https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/${prefix}${number}.jpg`;
+  return `${MIYUKI_DIRECTORY_BASE_URL}/wp-content/uploads/2024/06/${prefix}${number}.jpg`;
 }
 
 async function downloadMissingBeads(

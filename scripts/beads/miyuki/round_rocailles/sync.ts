@@ -63,8 +63,11 @@ type SyncSummary = {
 // Configuration
 // ============================================================================
 
-const MIYUKI_BASE_URL = 'https://www.miyuki-beads.co.jp';
-const DIRECTORY_URL = `${MIYUKI_BASE_URL}/directory/shop/`;
+// The seed-bead catalogue moved to the directory.* subdomain (the old
+// www.miyuki-beads.co.jp/directory/shop/ path now 404s). Both the WooCommerce listings and the
+// full-size upload images live under this host.
+const MIYUKI_DIRECTORY_BASE_URL = 'https://directory.miyuki-beads.co.jp';
+const DIRECTORY_URL = `${MIYUKI_DIRECTORY_BASE_URL}/shop/`;
 const REQUEST_DELAY_MS = 1500;
 
 const RR_DIR = getBeadTypeDirectory('miyuki-round_rocailles');
@@ -211,22 +214,11 @@ export async function scrapePage(
         continue;
       }
 
-      let imageUrl: string | undefined;
-
-      const srcsetMatch = productHtml.match(/srcset="([^"]+)"/i);
-      if (srcsetMatch) {
-        const srcsetParts = srcsetMatch[1].split(',');
-        for (const part of srcsetParts) {
-          const trimmed = part.trim();
-          if (trimmed.match(new RegExp(`${sizeConfig.size}-\\d+[A-Z]*\\.jpg`, 'i'))) {
-            imageUrl = trimmed.split(' ')[0];
-            break;
-          }
-        }
-      }
-
+      // Prefer the srcset's largest-width candidate — the full-size original (e.g. `…/11-1.jpg 400w`) —
+      // which is robust to non-standard upload folders/filenames. Fall back to the <img src>.
+      let imageUrl = pickLargestSrcsetUrl(productHtml);
       if (!imageUrl) {
-        const imgMatch = productHtml.match(/<img[^>]*src="([^"]+)"/i);
+        const imgMatch = productHtml.match(/<img[^>]*\bsrc="([^"]+)"/i);
         imageUrl = imgMatch ? imgMatch[1] : undefined;
       }
 
@@ -339,6 +331,20 @@ export function findMissingBeads(
 // Image Download
 // ============================================================================
 
+/** Pick the full-size image URL from a product card's srcset (its largest-width candidate). */
+export function pickLargestSrcsetUrl(html: string): string | undefined {
+  const srcset = html.match(/srcset="([^"]+)"/i);
+  if (!srcset) return undefined;
+  let best: { url: string; width: number } | undefined;
+  for (const part of srcset[1].split(',')) {
+    const [url, descriptor] = part.trim().split(/\s+/);
+    if (!url) continue;
+    const width = descriptor && /^\d+w$/i.test(descriptor) ? parseInt(descriptor, 10) : 0;
+    if (!best || width > best.width) best = { url, width };
+  }
+  return best?.url;
+}
+
 /**
  * Constructs the full-resolution image URL for a Round Rocailles bead.
  *
@@ -347,22 +353,23 @@ export function findMissingBeads(
  */
 export function constructImageUrl(beadListing: BeadListing): string {
   if (beadListing.imageUrl) {
-    // Try to extract the full-size URL from a (possibly thumbnailed) scraped URL
-    const match = beadListing.imageUrl.match(/(https:\/\/[^"'\s]+\/(\d+-\d+[A-Z]*))(?:-\d+x\d+)?\.jpg/i);
-    if (match) {
-      return `${match[1]}.jpg`;
+    // Strip any WordPress -WxH thumbnail suffix to get the full-size original, regardless of the
+    // upload folder/date or filename suffix (robust to newer uploads like …/2026/05/…_400.jpg).
+    const full = beadListing.imageUrl.replace(/-\d+x\d+(\.(?:jpe?g|png|webp))(?=$|\?)/i, '$1');
+    if (/\.(?:jpe?g|png|webp)(?:$|\?)/i.test(full)) {
+      return full;
     }
   }
   // Fallback: construct from bead ID and size
-  return `https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/${beadListing.size}-${beadListing.beadId}.jpg`;
+  return `${MIYUKI_DIRECTORY_BASE_URL}/wp-content/uploads/2024/06/${beadListing.size}-${beadListing.beadId}.jpg`;
 }
 
 export function constructFallbackImageUrls(beadListing: BeadListing): string[] {
   return [
     // Pattern 2: <beadId>-RR-<size>.jpg  (e.g. 2370-RR-11.jpg)
-    `https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/${beadListing.beadId}-RR-${beadListing.size}.jpg`,
+    `${MIYUKI_DIRECTORY_BASE_URL}/wp-content/uploads/2024/06/${beadListing.beadId}-RR-${beadListing.size}.jpg`,
     // Pattern 3: <size>-0_<beadId>.jpg    (e.g. 11-0_4281.jpg)
-    `https://www.miyuki-beads.co.jp/directory/wp-content/uploads/2024/06/${beadListing.size}-0_${beadListing.beadId}.jpg`,
+    `${MIYUKI_DIRECTORY_BASE_URL}/wp-content/uploads/2024/06/${beadListing.size}-0_${beadListing.beadId}.jpg`,
   ];
 }
 

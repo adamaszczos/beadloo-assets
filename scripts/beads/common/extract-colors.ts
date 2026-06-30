@@ -19,6 +19,8 @@ import {
   getGeneratedBeadTypeDataDirectory,
   getGeneratedColorDataPath,
 } from './lib/paths.js';
+import { sampleBaseColorHex, colorHintsFromInfo } from './lib/colorSampler.js';
+import { classifyBead, type BeadMetadata } from './lib/beadRender.js';
 
 // ============================================================================
 // Types
@@ -59,9 +61,11 @@ export interface BeadColorSource {
   beadId: string;
   imagePath: string | null;
   source: 'original' | 'thumbnail-48' | 'thumbnail-16' | 'fallback';
+  /** Full metadata sidecar (when present) so colour sampling can be finish-aware. */
+  metadata?: BeadMetadata;
 }
 
-interface MetadataSidecar {
+interface MetadataSidecar extends BeadMetadata {
   beadId?: string;
 }
 
@@ -78,57 +82,16 @@ function rgbToHex(r: number, g: number, b: number): string {
 }
 
 /**
- * Extract dominant color from image using Sharp
- * Uses perceptual weighting for accurate visual representation
+ * Extract the dominant colour of a bead from its (multi-bead pile) source photo.
+ *
+ * Delegates to the shared robust sampler (centre-crop → OKLab → adaptive trimmed mean), so the
+ * published `colorMappings` hex and the 16x16 render base colour are produced by exactly one
+ * algorithm. `metadata` lets the sampler be finish-aware (e.g. suppress metallic sheen).
  */
-async function extractDominantColor(imagePath: string): Promise<string> {
+async function extractDominantColor(imagePath: string, metadata?: BeadMetadata): Promise<string> {
   try {
-    const sharp = (await import('sharp')).default;
-    
-    const { data } = await sharp(imagePath)
-      .resize(24, 24, { 
-        fit: 'cover',
-        position: 'center'
-      })
-      .raw()
-      .toBuffer({ resolveWithObject: true });
-    
-    let weightedR = 0, weightedG = 0, weightedB = 0, totalWeight = 0;
-    
-    for (let i = 0; i < data.length; i += 3) {
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
-      
-      const brightness = (r + g + b) / 3;
-      if (brightness < 15 || brightness > 245) continue;
-      
-      const pixelIndex = Math.floor(i / 3);
-      const x = pixelIndex % 24;
-      const y = Math.floor(pixelIndex / 24);
-      const centerX = 12, centerY = 12;
-      const distanceFromCenter = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
-      
-      const brightnessWeight = Math.pow(brightness / 255, 0.5);
-      const centerWeight = Math.max(0.1, 1 - distanceFromCenter / 12);
-      const weight = brightnessWeight * centerWeight;
-      
-      weightedR += r * weight;
-      weightedG += g * weight;
-      weightedB += b * weight;
-      totalWeight += weight;
-    }
-    
-    if (totalWeight === 0) {
-      throw new Error('No valid pixels found');
-    }
-    
-    const avgR = Math.round(weightedR / totalWeight);
-    const avgG = Math.round(weightedG / totalWeight);
-    const avgB = Math.round(weightedB / totalWeight);
-    
-    return rgbToHex(avgR, avgG, avgB);
-    
+    const hints = colorHintsFromInfo(classifyBead(metadata ?? {}));
+    return await sampleBaseColorHex(imagePath, hints);
   } catch (error) {
     throw new Error(`Color extraction failed: ${error}`);
   }
@@ -236,13 +199,16 @@ function getImageAssetKey(relativePath: string): string {
   return normalizeRelativePath(relativePath.slice(0, -path.extname(relativePath).length));
 }
 
-function getMetadataBeadId(filePath: string, fallbackId: string): string {
+function readMetadataSidecar(filePath: string): MetadataSidecar | null {
   try {
-    const metadata = JSON.parse(fs.readFileSync(filePath, 'utf-8')) as MetadataSidecar;
-    return typeof metadata.beadId === 'string' && metadata.beadId.trim() ? metadata.beadId.trim() : fallbackId;
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as MetadataSidecar;
   } catch {
-    return fallbackId;
+    return null;
   }
+}
+
+function resolveMetadataBeadId(metadata: MetadataSidecar | null, fallbackId: string): string {
+  return metadata && typeof metadata.beadId === 'string' && metadata.beadId.trim() ? metadata.beadId.trim() : fallbackId;
 }
 
 export function collectBeadColorSources(directory: string, originalDir?: string): BeadColorSource[] {
@@ -252,6 +218,7 @@ export function collectBeadColorSources(directory: string, originalDir?: string)
 
   const sources = new Map<string, BeadColorSource>();
   const canonicalBeadIdsByAssetKey = new Map<string, string>();
+  const metadataByBeadId = new Map<string, BeadMetadata>();
 
   const registerSource = (source: BeadColorSource): void => {
     const existing = sources.get(source.beadId);
@@ -269,8 +236,12 @@ export function collectBeadColorSources(directory: string, originalDir?: string)
       }
 
       const assetKey = file.relativePath.replace(/\.metadata\.json$/, '');
-      const beadId = getMetadataBeadId(file.absolutePath, assetKey);
+      const metadata = readMetadataSidecar(file.absolutePath);
+      const beadId = resolveMetadataBeadId(metadata, assetKey);
       canonicalBeadIdsByAssetKey.set(assetKey, beadId);
+      if (metadata) {
+        metadataByBeadId.set(beadId, metadata);
+      }
       registerSource({
         beadId,
         imagePath: null,
@@ -320,7 +291,12 @@ export function collectBeadColorSources(directory: string, originalDir?: string)
     }
   }
 
-  return Array.from(sources.values()).sort((left, right) => left.beadId.localeCompare(right.beadId));
+  return Array.from(sources.values())
+    .map((source) => {
+      const metadata = metadataByBeadId.get(source.beadId);
+      return metadata ? { ...source, metadata } : source;
+    })
+    .sort((left, right) => left.beadId.localeCompare(right.beadId));
 }
 
 // ============================================================================
@@ -420,14 +396,14 @@ async function processDirectory(
   }
 
   for (const beadSource of beadSources) {
-    const { beadId, imagePath, source } = beadSource;
+    const { beadId, imagePath, source, metadata } = beadSource;
 
     try {
       if (!imagePath) {
         throw new Error('No image asset available');
       }
 
-      let dominantColor = await extractDominantColor(imagePath);
+      let dominantColor = await extractDominantColor(imagePath, metadata);
 
       // Ensure color is unique
       const originalColor = dominantColor;

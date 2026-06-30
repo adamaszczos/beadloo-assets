@@ -37,3 +37,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local scratch / analysis artifacts
+/.scratch
+/outputs/color-accuracy-*.png
