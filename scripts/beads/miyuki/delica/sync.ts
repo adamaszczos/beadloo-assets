@@ -28,6 +28,7 @@ import { generateMetadata } from '../../common/generate-metadata.js';
 import { validateBeadType } from '../../common/validate-bead-type.js';
 import { findBeadsWithoutMetadata, scrapeMultipleBeads } from '../common/scrape-metadata.js';
 import { generateDerivatives, type MiyukiOverlayInfo } from '../../common/lib/thumbnails.js';
+import sharp from 'sharp';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -230,6 +231,17 @@ export async function scrapeAllPages(sizes: string[]): Promise<BeadListing[]> {
 // Local Bead Detection
 // ============================================================================
 
+export async function isUndersizedOriginal(imagePath: string): Promise<boolean> {
+  try {
+    const metadata = await sharp(imagePath).metadata();
+    const width = metadata.width ?? 0;
+    const height = metadata.height ?? 0;
+    return width <= 100 && height <= 100;
+  } catch {
+    return false;
+  }
+}
+
 export function getExistingBeads(size: string): Set<string> {
   const existing = new Set<string>();
   const sizeConfig = SIZE_CONFIG.find((c) => c.size === size);
@@ -242,6 +254,17 @@ export function getExistingBeads(size: string): Set<string> {
       if (file.endsWith('.jpg') && !file.includes('_16x16') && !file.includes('_48x48')) {
         const beadId = path.basename(file, '.jpg').toUpperCase();
         if (beadId.startsWith(expectedPrefix)) {
+          // Check if file is an undersized 48x48 thumbnail instead of a full original
+          const fullPath = path.join(downloadedSizeDir, file);
+          try {
+            const stats = fs.statSync(fullPath);
+            // If file size is under 5KB or dimensions under 100px, don't count as existing original
+            if (stats.size < 5000) {
+              continue;
+            }
+          } catch {
+            // ignore stat errors
+          }
           existing.add(beadId);
         }
       }
