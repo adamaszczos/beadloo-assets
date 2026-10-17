@@ -1,0 +1,4 @@
+beadId,glassGroup,finish,dyed,galvanized,plating,source
+DB0665,Opaque,"Frosted (Matte), Outside-Dyed",Outside Dyed,Non-galvanized,Non-Plating,"durability.tsv 'Matte Opaque - Dyed'; 10 of the 11 directory beads with that string carry exactly these values (2026-10-17)"
+DB1130,Opaque,Non-Extra Finish,Non Dyed,Non-galvanized,Non-Plating,"durability.tsv 'Opaque'; 25 of the 26 directory beads with that string carry exactly these values (2026-10-17)"
+DB1140,Opaque,Non-Extra Finish,Non Dyed,Non-galvanized,Non-Plating,"durability.tsv 'Opaque'; 25 of the 26 directory beads with that string carry exactly these values (2026-10-17)"

@@ -6,5 +6,6 @@
   "finish": "Plating",
   "dyed": "Non Dyed",
   "galvanized": "Non-galvanized",
-  "plating": "Silver"
+  "plating": "Silver",
+  "status": "Discontinued"
 }

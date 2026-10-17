@@ -1,44 +1,60 @@
 {
+  "$comment": "Miyuki Round Rocailles per size: diameter_mm is the editor's cell height, thickness_mm the cell length; beads_per_gram feeds weight estimates. Official figures per issue adamaszczos/beadloo#203 decision 14 (the English site wins where sources disagree, except 6/0 diameter: decision D2 keeps the catalogue and Style & Size sheet). Tested against sources/miyuki/size-tables.json.",
+  "1/0": {
+    "diameter_mm": 6.5,
+    "thickness_mm": 4.55,
+    "hole_size_mm": 2.4,
+    "beads_per_gram": 3.3,
+    "weight_per_bead_g": 0.303,
+    "source": "https://www.miyuki-beads.co.jp/english/seedbeads/seedgrain.html (EE beads: 6.5 mm, hole 2.4 mm, 22 per 10 cm, 3.3 per g; length derived 100/22)"
+  },
   "2/0": {
-    "diameter_mm": 6.00,
-    "thickness_mm": 4.00,
-    "hole_size_mm": 2.00,
+    "diameter_mm": 6.0,
+    "thickness_mm": 4.0,
+    "hole_size_mm": 2.0,
     "beads_per_gram": 4,
-    "weight_per_bead_g": 0.2500
+    "weight_per_bead_g": 0.25,
+    "unverified": true,
+    "source": "diameter from https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/07/STYLE-AND-SIZE.pdf; hole, weight and length have no official figure (this size is absent from the site and the catalogue)"
   },
   "5/0": {
-    "diameter_mm": 4.50,
-    "thickness_mm": 3.00,
-    "hole_size_mm": 1.40,
-    "beads_per_gram": 10,
-    "weight_per_bead_g": 0.1000
+    "diameter_mm": 5.0,
+    "thickness_mm": 3.33,
+    "hole_size_mm": 2.0,
+    "beads_per_gram": 7.2,
+    "weight_per_bead_g": 0.1389,
+    "source": "https://www.miyuki-beads.co.jp/english/seedbeads/seedgrain.html (E beads: 5.0 mm, hole 2.0 mm, 30 per 10 cm, 7.2 per g; length derived 100/30)"
   },
   "6/0": {
-    "diameter_mm": 4.00,
-    "thickness_mm": 2.70,
-    "hole_size_mm": 1.30,
-    "beads_per_gram": 15,
-    "weight_per_bead_g": 0.0667
+    "diameter_mm": 4.0,
+    "thickness_mm": 2.94,
+    "hole_size_mm": 1.5,
+    "beads_per_gram": 12,
+    "weight_per_bead_g": 0.0833,
+    "source": "diameter 4.0 mm from catalogue GB-6 (2026-09), size table and https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/07/STYLE-AND-SIZE.pdf (decision D2; the English site states 4.5 mm, not used); hole 1.5 mm, 34 per 10 cm, 12 per g from https://www.miyuki-beads.co.jp/english/seedbeads/seedgrain.html; length derived 100/34"
   },
   "8/0": {
-    "diameter_mm": 3.00,
-    "thickness_mm": 2.00,
-    "hole_size_mm": 1.00,
+    "diameter_mm": 3.0,
+    "thickness_mm": 2.0,
+    "hole_size_mm": 1.1,
     "beads_per_gram": 39,
-    "weight_per_bead_g": 0.0256
+    "weight_per_bead_g": 0.0256,
+    "source": "https://www.miyuki-beads.co.jp/english/seedbeads/seedgrain.html (3.0 mm, hole 1.1 mm, 47 per 10 cm, 39 per g); length kept as Beadloo had it"
   },
   "11/0": {
-    "diameter_mm": 2.00,
-    "thickness_mm": 1.30,
-    "hole_size_mm": 0.80,
+    "diameter_mm": 2.0,
+    "thickness_mm": 1.3,
+    "hole_size_mm": 0.8,
     "beads_per_gram": 110,
-    "weight_per_bead_g": 0.0090
+    "weight_per_bead_g": 0.009,
+    "source": "https://www.miyuki-beads.co.jp/english/seedbeads/seedgrain.html (2.0 mm, hole 0.8 mm, 69 per 10 cm, 110 per g); length kept as Beadloo had it"
   },
   "15/0": {
-    "diameter_mm": 1.50,
-    "thickness_mm": 1.00,
-    "hole_size_mm": 0.70,
+    "diameter_mm": 1.5,
+    "thickness_mm": 1.0,
+    "hole_size_mm": 0.7,
     "beads_per_gram": 250,
-    "weight_per_bead_g": 0.0040
+    "weight_per_bead_g": 0.004,
+    "source": "https://www.miyuki-beads.co.jp/english/seedbeads/seedgrain.html (1.5 mm, hole 0.7 mm, 100 per 10 cm, 250 per g); length kept as Beadloo had it"
   }
 }

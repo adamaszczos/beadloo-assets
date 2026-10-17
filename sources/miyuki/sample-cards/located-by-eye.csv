@@ -1,0 +1,33 @@
+colour_no,card,pdf,page,display_x,display_y,display_width,note,cell_box,bead_box
+3255,13/3R,13-3R.pdf,1,770,1148,1414,Inside Color column; E3255 between E3254 and E3256,,
+677,44/2R,44-2R.pdf,1,785,1231,1414,second column; between #676 and #678; box set by eye: bottom third of the merged #675/#676/#677 cell,"1920,3248,402,130","2322,3248,722,130"
+463,853/R,853-R.pdf,1,180,487,1414,Metallic; between 462 and 464; box set by eye: bottom half of the merged 462/463 cell,"326,1251,330,112","656,1251,458,112"
+2067,853/R,853-R.pdf,1,1070,651,1414,fourth column; between 2066 and 2068; box set by eye: top half of the merged 2067/2068 cell,"2714,1702,317,112","3031,1702,462,112"
+2068,853/R,853-R.pdf,1,1070,693,1414,fourth column; between 2067 and 2069; box set by eye: bottom half of the merged 2067/2068 cell,"2714,1814,317,112","3031,1814,462,112"
+1139,866R,866R.pdf,2,480,942,1414,second column; between 1138 and 1140; box set by eye: bottom half of the merged 1138/1139 cell,"1137,2491,331,116","1468,2491,432,116"
+159D,black cover,black-cover.pdf,1,455,1056,1417,Transparent column 2; 159L 159 159D,,
+203,black cover,black-cover.pdf,2,768,886,1414,Inside Color Luster; between 202 and 204; box set by eye: number cell as found; bead box from the column's bead width,"1921,2318,255,89","2176,2318,524,89"
+262,black cover,black-cover.pdf,2,1080,278,1414,Inside Color Rainbow; first row; the detector found no cell here: box set one row above the 263 cell,"2748,689,254,91","3002,689,533,91"
+270,black cover,black-cover.pdf,2,1080,551,1414,Inside Color Rainbow; between 269 and 271,,
+1349,black cover,black-cover.pdf,3,1075,341,1414,fourth column; between 1348 and 1350; the detector found no cell here: box set from the column's neighbours (row pitch) and the column's bead width,"2745,865,246,89","2991,865,521,89"
+1350,black cover,black-cover.pdf,3,1075,375,1414,fourth column; between 1349 and 1431; the detector found no cell here: box set from the column's neighbours (row pitch) and the column's bead width,"2745,955,246,89","2991,955,521,89"
+1431,black cover,black-cover.pdf,3,1075,409,1414,fourth column; between 1350 and 1433; the detector found no cell here: box set from the column's neighbours (row pitch) and the column's bead width,"2745,1045,246,89","2991,1045,521,89"
+1433,black cover,black-cover.pdf,3,1075,443,1414,fourth column; between 1431 and 1436; the detector found no cell here: box set from the column's neighbours (row pitch) and the column's bead width,"2745,1135,246,89","2991,1135,521,89"
+133L,mud cover,mud-cover.pdf,1,170,526,1414,Transparent; between 132 and 133; box set by eye: bottom quarter of the merged 131/132L/132/133L cell,"308,1368,275,106","583,1368,534,106"
+1406,mud cover,mud-cover.pdf,1,470,371,1414,second column top (Transparent Dyed); the detector found no cell here: box set from the column's neighbours (row pitch) and the column's bead width,"1117,949,275,106","1392,949,532,106"
+1619,mud cover,mud-cover.pdf,3,165,684,1414,Semi Frost Dyed; between 1618 and 1620; box set by eye: top half of the merged 1619/1620 cell,"300,1796,273,106","573,1796,531,106"
+1377,mud cover,mud-cover.pdf,4,165,520,1414,Opaque Dyed; between 1376 and 1378; box set by eye: top third of the merged 1377/1378/1379 cell,"305,1352,271,106","576,1352,530,106"
+1379,mud cover,mud-cover.pdf,4,165,598,1414,Opaque Dyed; between 1378 and 1381; box set by eye: bottom third of the merged 1377/1378/1379 cell,"305,1564,271,106","576,1564,530,106"
+1469,mud cover,mud-cover.pdf,4,165,832,1414,Opaque Dyed; between 1465 and 1471; box set by eye: third quarter of the merged 1464/1465/1469/1471 cell,"305,2197,271,105","576,2197,530,105"
+2531,mud cover,mud-cover.pdf,4,165,1264,1414,Opaque Dyed; between 1685 and 2538,,
+2538,mud cover,mud-cover.pdf,4,165,1303,1414,Opaque Dyed; between 2531 and 2540,,
+598,mud cover,mud-cover.pdf,4,767,403,1414,Fancy column; between 597 and 599; the detector found no cell here: box set from the column's neighbours (row pitch) and the column's bead width,"1910,1035,271,107","2181,1035,534,107"
+1054,mud cover,mud-cover.pdf,4,1050,950,1414,Galvanize; between 1052 and 1061; the detector found no cell here: box set from the column's neighbours (row pitch) and the column's bead width,"2711,2516,272,106","2983,2516,532,106"
+1061,mud cover,mud-cover.pdf,4,1050,990,1414,Galvanize; between 1054 and 1072L; the detector found no cell here: box set from the column's neighbours (row pitch) and the column's bead width,"2711,2622,272,106","2983,2622,532,106"
+3272,(official elsewhere),76-4R.pdf,1,205,1458,1416,Round Beads table; second row of the first column; box set by eye: bottom half of the merged 3271/3272 cell; bead box as wide as the 3276 bead cell of the same column,"342,3520,319,152","661,3520,613,152"
+3271SH,76/4R,76-4R.pdf,1,205,1407,1416,Round Beads table; first row of the first column; box set by eye: top half of the merged 3271/3272 cell; bead box as wide as the 3276 bead cell of the same column,"342,3368,319,152","661,3368,613,152"
+3272SH,76/4R,76-4R.pdf,1,205,1458,1416,Round Beads table; second row of the first column; box set by eye: bottom half of the merged 3271/3272 cell; bead box as wide as the 3276 bead cell of the same column,"342,3520,319,152","661,3520,613,152"
+3278SH,76/4R,76-4R.pdf,1,585,1458,1416,Round Beads table; second row of the middle column; box set by eye: top half of the merged 3278/3279 cell,"1273,3519,313,154","1586,3519,589,154"
+3279SH,76/4R,76-4R.pdf,1,585,1509,1416,Round Beads table; third row of the middle column; box set by eye: bottom half of the merged 3278/3279 cell,"1273,3673,313,154","1586,3673,589,154"
+3273SH,76/4R,76-4R.pdf,1,,,,box set by eye: number cell as found; bead box from the column's bead width; bead box as wide as the 3276 bead cell of the same column,"342,3673,319,151","661,3673,613,151"
+3274SH,76/4R,76-4R.pdf,1,,,,bead box as wide as the 3276 bead cell of the same column,"340,3824,321,155","661,3824,613,155"

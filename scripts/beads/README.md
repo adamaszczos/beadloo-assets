@@ -21,7 +21,7 @@ pnpm beads:miyuki:delica:sync -- --local-only
 # See what Vercel Blob is missing without uploading
 pnpm beads:miyuki:delica:blob
 
-# Upload new/changed originals to Vercel Blob
+# Upload originals Vercel Blob does not have yet (add --with-changed to also replace changed ones)
 pnpm beads:miyuki:delica:blob -- --upload
 
 # Full local sync for Miyuki Round Rocailles
@@ -82,8 +82,15 @@ scripts/beads/
 │       ├── beadRender.ts           # Single-bead 16×16 renderer (metadata + finish driven)
 │       └── thumbnails.ts           # Derivatives: 16×16 rendered bead + 48×48 centre crop
 ├── miyuki/                         # Miyuki brand
+│   ├── audit.ts                    # beads/ vs the official sources (registry coverage, missing colours)
+│   ├── catalogue/parse-gb6.ts      # Cell parse of the printed catalogue GB-6
 │   ├── common/
-│   │   └── scrape-metadata.ts      # Web scraper for Miyuki bead metadata
+│   │   ├── directory-catalog.ts    # Store API enumerator (throttled, fails on unparsed names)
+│   │   ├── directory-products.ts   # Pure product-name/SKU parsers + attributes → sidecar
+│   │   ├── sync-pipeline.ts        # Shared download/sidecar/registry steps
+│   │   ├── official-lists.ts       # durability.tsv / color_change.tsv parsers
+│   │   ├── registry.ts             # sources/miyuki/registry/<type>.csv
+│   │   └── sidecar-diff.ts         # Proof: attributes reproduce the existing sidecars
 │   ├── delica/                     # Miyuki Delica specific
 │   │   ├── sync.ts                 # Full sync pipeline
 │   │   ├── sync.test.ts            # Tests
@@ -120,6 +127,26 @@ All sync scripts follow the same pipeline:
 5. **Metadata** — build consolidated metadata files
 6. **Validate** — integrity checks on the resulting data
 
+### Miyuki: the directory dump comes first
+
+Both Miyuki syncs read `sources/miyuki/directory/products.json`, a reduced dump of the directory's
+WooCommerce Store API, instead of scraping shop pages:
+
+```bash
+pnpm beads:miyuki:directory -- --fetch        # 43 throttled requests (1.5 s apart), writes the dump, cross-checks the sitemap
+pnpm beads:miyuki:directory                   # report on the committed dump (offline)
+pnpm beads:miyuki:audit                       # beads/ vs the official sources: registry coverage, missing colours by source
+pnpm beads:miyuki:audit -- --write-registry   # bootstrap provenance rows for beads that have none
+pnpm beads:miyuki:catalogue -- --pdf <GB-6.pdf> [--crops]   # cell parse of the printed catalogue
+```
+
+The enumerator exits 1 when any Delica or Round Rocailles product name does not parse: a bead is never
+dropped silently (the old shop scraper lost 53 round rocailles and 2 Delica that way). It never guesses
+URLs either; the directory's Wordfence blocks a client that produces too many 404s per minute, and a
+block lasts hours. Image URLs and metadata come from the dump (`images[0].src`, the attribute terms).
+Every added bead gets a row in `sources/miyuki/registry/<type>.csv`; `sources/miyuki/README.md`
+documents the committed official data.
+
 ### Miyuki Delica Sync (`miyuki/delica/sync.ts`)
 
 ```bash
@@ -128,8 +155,9 @@ pnpm beads:miyuki:delica:sync [options]
 
 | Flag | Description |
 |------|-------------|
-| `--local-only` | Skip scraping and downloading; rebuild from local files only |
+| `--local-only` | Skip the dump and downloads; rebuild from local files only |
 | `--sizes 11,15` | Limit to specific sizes (default: `8,10,11,15`) |
+| `--dump <path>` | Read another directory dump |
 | `--dry-run` | Report what would change without writing |
 | `--force` | Force-regenerate thumbnails even when up to date |
 | `--verbose` | Detailed progress output |
@@ -142,8 +170,10 @@ pnpm beads:miyuki:round_rocailles:sync [options]
 
 | Flag | Description |
 |------|-------------|
-| `--local-only` | Skip scraping and downloading; rebuild from local files only |
-| `--sizes 11,15` | Limit to specific sizes (default: `2,5,6,8,11,15`) |
+| `--local-only` | Skip the dump and downloads; rebuild from local files only |
+| `--sizes 11,15` | Limit to specific sizes (default: `1,2,5,6,8,11,15`) |
+| `--exclude-square-hole` | Hold back square-hole listings (ID `<n>SH`); they are added by default |
+| `--dump <path>` | Read another directory dump |
 | `--dry-run` | Report what would change without writing |
 | `--force` | Force-regenerate thumbnails even when up to date |
 | `--verbose` | Detailed progress output |
@@ -191,7 +221,8 @@ pnpm beads:miyuki:delica:blob [options]
 
 | Flag | Description |
 |------|-------------|
-| `--upload` | Upload new/changed originals (without this flag, only reports the diff) |
+| `--upload` | Upload originals the store does not have yet (without this flag, only reports the diff); a live original is never replaced |
+| `--with-changed` | With `--upload`, also replace originals whose bytes changed locally |
 | `--sizes 11,15` | Limit to specific sizes (default: `8,10,11,15`) |
 
 ### Miyuki Round Rocailles Blob (`miyuki/round_rocailles/blob.ts`)
@@ -202,8 +233,9 @@ pnpm beads:miyuki:round_rocailles:blob [options]
 
 | Flag | Description |
 |------|-------------|
-| `--upload` | Upload new/changed originals (without this flag, only reports the diff) |
-| `--sizes 11,15` | Limit to specific sizes (default: `2,5,6,8,11,15`) |
+| `--upload` | Upload originals the store does not have yet (without this flag, only reports the diff); a live original is never replaced |
+| `--with-changed` | With `--upload`, also replace originals whose bytes changed locally |
+| `--sizes 11,15` | Limit to specific sizes (default: `1,2,5,6,8,11,15`) |
 
 ### Preciosa Rocailles Blob (`preciosa/rocailles/blob.ts`)
 

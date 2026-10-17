@@ -1,0 +1,257 @@
+{
+  "$comment": "Official Miyuki size figures, transcribed on 2026-10-16 from the pages in `sources`. Beadloo's dimension tables (beads/miyuki/<type>/<type>.json) are tested against this file. Lengths are not published by Miyuki; Beadloo derives a cell length as 100 / beadsPer10cm where a value is marked derived.",
+  "sources": {
+    "englishSiteSizeTable": {
+      "url": "https://www.miyuki-beads.co.jp/english/seedbeads/seedgrain.html",
+      "fetched": "2026-10-16",
+      "gives": "diameter, hole, beads per kg, beads per 10 cm per size; round hole and square hole share one table"
+    },
+    "englishSiteRound": {
+      "url": "https://www.miyuki-beads.co.jp/english/seedbeads/shape/round.html",
+      "fetched": "2026-10-16"
+    },
+    "englishSiteDelica": {
+      "url": "https://www.miyuki-beads.co.jp/english/seedbeads/shape/delica.html",
+      "fetched": "2026-10-16",
+      "gives": "Delica and Delica Cut figures"
+    },
+    "catalogueGB6": {
+      "url": "https://www.miyuki-beads.co.jp/english/wp-content/uploads/sites/2/2026/09/GB-6.pdf",
+      "published": "2026-09",
+      "gives": "size table (diameter, hole) and colour numbers per size; Japanese"
+    },
+    "styleAndSizeSheet": {
+      "url": "https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/07/STYLE-AND-SIZE.pdf",
+      "gives": "round-rocaille diameters for round hole and square hole, 15/0 to 1/0; older scanned sheet"
+    }
+  },
+  "roundRocailles": {
+    "$comment": "Per size: figures from each official source that states them. `decided` is the value Beadloo uses (issue #203 decision 14: the English site wins where sources disagree; cell lengths at 15/0, 11/0 and 8/0 stay as Beadloo had them; 6/0, 5/0 and 1/0 lengths are derived). 12/0, 10/0 and 9/0 have only a diameter and are not offered.",
+    "15/0": {
+      "englishSite": {
+        "diameterMm": 1.5,
+        "holeMm": 0.7,
+        "beadsPer10cm": 100,
+        "beadsPerGram": 250
+      },
+      "catalogueGB6": {
+        "diameterMm": 1.5,
+        "holeMm": 0.7
+      },
+      "styleAndSize": {
+        "diameterMm": 1.5
+      },
+      "decided": {
+        "diameterMm": 1.5,
+        "holeMm": 0.7,
+        "beadsPerGram": 250,
+        "lengthMm": 1.0,
+        "lengthSource": "beadloo-existing"
+      }
+    },
+    "12/0": {
+      "styleAndSize": {
+        "diameterMm": 1.8
+      }
+    },
+    "11/0": {
+      "englishSite": {
+        "diameterMm": 2.0,
+        "holeMm": 0.8,
+        "beadsPer10cm": 69,
+        "beadsPerGram": 110
+      },
+      "catalogueGB6": {
+        "diameterMm": 2.0,
+        "holeMm": 0.8
+      },
+      "styleAndSize": {
+        "diameterMm": 2.0
+      },
+      "decided": {
+        "diameterMm": 2.0,
+        "holeMm": 0.8,
+        "beadsPerGram": 110,
+        "lengthMm": 1.3,
+        "lengthSource": "beadloo-existing"
+      }
+    },
+    "10/0": {
+      "styleAndSize": {
+        "diameterMm": 2.2
+      }
+    },
+    "9/0": {
+      "styleAndSize": {
+        "diameterMm": 2.5
+      }
+    },
+    "8/0": {
+      "englishSite": {
+        "diameterMm": 3.0,
+        "holeMm": 1.1,
+        "beadsPer10cm": 47,
+        "beadsPerGram": 39
+      },
+      "catalogueGB6": {
+        "diameterMm": 3.0,
+        "holeMm": 1.1
+      },
+      "styleAndSize": {
+        "diameterMm": 3.0
+      },
+      "decided": {
+        "diameterMm": 3.0,
+        "holeMm": 1.1,
+        "beadsPerGram": 39,
+        "lengthMm": 2.0,
+        "lengthSource": "beadloo-existing"
+      }
+    },
+    "6/0": {
+      "englishSite": {
+        "diameterMm": 4.5,
+        "holeMm": 1.5,
+        "beadsPer10cm": 34,
+        "beadsPerGram": 12
+      },
+      "catalogueGB6": {
+        "diameterMm": 4.0,
+        "holeMm": 1.5
+      },
+      "styleAndSize": {
+        "diameterMm": 4.0
+      },
+      "decided": {
+        "diameterMm": 4.0,
+        "holeMm": 1.5,
+        "beadsPerGram": 12,
+        "lengthMm": 2.94,
+        "lengthSource": "derived 100/34",
+        "diameterSource": "catalogue GB-6 and the Style & Size sheet (decision D2, 2026-10-17); the English site states 4.5 mm, recorded here and not used"
+      }
+    },
+    "5/0": {
+      "englishSite": {
+        "diameterMm": 5.0,
+        "holeMm": 2.0,
+        "beadsPer10cm": 30,
+        "beadsPerGram": 7.2,
+        "alias": "E beads"
+      },
+      "catalogueGB6": {
+        "diameterMm": 5.0,
+        "holeMm": 2.0
+      },
+      "styleAndSize": {
+        "diameterMm": 5.0
+      },
+      "decided": {
+        "diameterMm": 5.0,
+        "holeMm": 2.0,
+        "beadsPerGram": 7.2,
+        "lengthMm": 3.33,
+        "lengthSource": "derived 100/30"
+      }
+    },
+    "2/0": {
+      "styleAndSize": {
+        "diameterMm": 6.0
+      },
+      "decided": {
+        "diameterMm": 6.0,
+        "holeMm": 2.0,
+        "beadsPerGram": 4,
+        "lengthMm": 4.0,
+        "lengthSource": "beadloo-existing",
+        "unverified": "only the diameter has an official source"
+      }
+    },
+    "1/0": {
+      "englishSite": {
+        "diameterMm": 6.5,
+        "holeMm": 2.4,
+        "beadsPer10cm": 22,
+        "beadsPerGram": 3.3,
+        "alias": "EE beads"
+      },
+      "catalogueGB6": {
+        "diameterMm": 6.5,
+        "holeMm": 2.9
+      },
+      "styleAndSize": {
+        "diameterMm": 6.5
+      },
+      "decided": {
+        "diameterMm": 6.5,
+        "holeMm": 2.4,
+        "beadsPerGram": 3.3,
+        "lengthMm": 4.55,
+        "lengthSource": "derived 100/22"
+      }
+    }
+  },
+  "delica": {
+    "$comment": "English site (shape/delica.html). Cut beads share the non-cut geometry (issue #203 decision 11) and differ in weight. Beadloo's lengths (1.15 / 1.30 / 1.70 / 2.75) are within 1.7 % of 100/beadsPer10cm and stay.",
+    "15/0": {
+      "prefix": "DBS",
+      "diameterMm": 1.3,
+      "holeMm": 0.65,
+      "beadsPer10cm": 88,
+      "beadsPerKg": 350000,
+      "beadsPerGram": 350,
+      "cut": {
+        "prefix": "DBSC",
+        "holeMm": 0.65,
+        "beadsPer10cm": 88,
+        "beadsPerKg": 400000,
+        "beadsPerGram": 400
+      }
+    },
+    "11/0": {
+      "prefix": "DB",
+      "diameterMm": 1.6,
+      "holeMm": 0.8,
+      "beadsPer10cm": 77,
+      "beadsPerKg": 200000,
+      "beadsPerGram": 200,
+      "cut": {
+        "prefix": "DBC",
+        "holeMm": 0.8,
+        "beadsPer10cm": 77,
+        "beadsPerKg": 230000,
+        "beadsPerGram": 230
+      }
+    },
+    "10/0": {
+      "prefix": "DBM",
+      "diameterMm": 2.2,
+      "holeMm": 1.0,
+      "beadsPer10cm": 59,
+      "beadsPerKg": 108000,
+      "beadsPerGram": 108,
+      "cut": {
+        "prefix": "DBMC",
+        "holeMm": 1.05,
+        "beadsPer10cm": 59,
+        "beadsPerKg": 111000,
+        "beadsPerGram": 111
+      }
+    },
+    "8/0": {
+      "prefix": "DBL",
+      "diameterMm": 3.0,
+      "holeMm": 1.5,
+      "beadsPer10cm": 37,
+      "beadsPerKg": 30000,
+      "beadsPerGram": 30,
+      "cut": {
+        "prefix": "DBLC",
+        "holeMm": 1.45,
+        "beadsPer10cm": 38,
+        "beadsPerKg": 36000,
+        "beadsPerGram": 36
+      }
+    }
+  }
+}

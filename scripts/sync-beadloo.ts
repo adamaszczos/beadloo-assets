@@ -6,7 +6,7 @@
  * own with `pnpm beadloo:sync`). It completes the integration that the npm package alone can't:
  *
  *   1. Bumps Beadloo's `@adamaszczos/beadloo-assets` dependency to this package's version.
- *   2. Copies the per-size `*-colors.json` + `*-metadata.json` from `generated/data/` into Beadloo's
+ *   2. Copies the per-size `*-colors.json`, `*-metadata.json` and `*-aliases.json` from `generated/data/` into Beadloo's
  *      `src/lib/beads/metadata/` — these carry the colorMappings the live preview consumes and are
  *      NOT shipped in the npm package (which only contains `beads/**`).
  *   3. (unless skipped) Runs `pnpm install` in Beadloo to pull the new package version, then its
@@ -19,6 +19,7 @@
  *   pnpm beadloo:sync --dir /path/to/beadloo
  *   pnpm beadloo:sync --no-install          # copy files + bump version only (no pnpm install)
  *   pnpm beadloo:sync --no-thumbnails       # skip refreshing public/beads
+ *   pnpm beadloo:sync --no-bump             # never touch Beadloo's package.json (development mirror)
  *   pnpm beadloo:sync --dry-run             # report what would change, write nothing
  *
  * The target can also be set with BEADLOO_DIR.
@@ -35,6 +36,7 @@ interface Options {
   dir: string;
   install: boolean;
   thumbnails: boolean;
+  bump: boolean;
   dryRun: boolean;
 }
 
@@ -45,6 +47,7 @@ function parseArgs(argv: string[]): Options {
     dir: path.resolve(dir),
     install: !argv.includes('--no-install'),
     thumbnails: !argv.includes('--no-thumbnails'),
+    bump: !argv.includes('--no-bump'),
     dryRun: argv.includes('--dry-run'),
   };
 }
@@ -67,6 +70,29 @@ function bumpDependency(packageJsonPath: string, version: string, dryRun: boolea
   return 'updated';
 }
 
+/** The dimension tables Beadloo reads for geometry and weight (issue #203 Phase 2): assets repo path → path under Beadloo's metadata dir. */
+const DIMENSION_TABLES: Array<[string, string]> = [
+  ['beads/miyuki/delica/delica.json', 'miyuki/delica/delica.json'],
+  ['beads/miyuki/round_rocailles/round_rocailles.json', 'miyuki/round_rocailles/round_rocailles.json'],
+];
+
+function copyDimensionTables(metadataDir: string, dryRun: boolean): { copied: number; changed: number } {
+  let copied = 0, changed = 0;
+  for (const [from, to] of DIMENSION_TABLES) {
+    const src = path.join(ASSET_REPO_ROOT, from);
+    if (!fs.existsSync(src)) continue;
+    const dest = path.join(metadataDir, to);
+    const isChanged = !fs.existsSync(dest) || fs.readFileSync(dest, 'utf-8') !== fs.readFileSync(src, 'utf-8');
+    copied++;
+    if (isChanged) changed++;
+    if (!dryRun) {
+      fs.mkdirSync(path.dirname(dest), { recursive: true });
+      fs.copyFileSync(src, dest);
+    }
+  }
+  return { copied, changed };
+}
+
 /** Mirror every per-size colors/metadata JSON from generated/data into Beadloo's metadata dir. */
 function copyMetadataJson(metadataDir: string, dryRun: boolean): { copied: number; changed: number } {
   let copied = 0, changed = 0;
@@ -74,7 +100,7 @@ function copyMetadataJson(metadataDir: string, dryRun: boolean): { copied: numbe
     for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
       const src = path.join(dir, entry.name);
       if (entry.isDirectory()) { walk(src); continue; }
-      if (!/-(?:colors|metadata)\.json$/.test(entry.name)) continue; // skip bead-metadata.ts, .DS_Store, …
+      if (!/-(?:colors|metadata|aliases)\.json$/.test(entry.name)) continue; // skip bead-metadata.ts, .DS_Store, …
       const rel = path.relative(GENERATED_DATA_DIR, src);
       const dest = path.join(metadataDir, rel);
       const isChanged = !fs.existsSync(dest) || fs.readFileSync(dest, 'utf-8') !== fs.readFileSync(src, 'utf-8');
@@ -110,17 +136,23 @@ function main(): void {
     return; // exit 0 — safe for CI publishes
   }
 
-  // 1) dependency version
-  const depResult = bumpDependency(beadlooPkgPath, version, opts.dryRun);
-  if (depResult === 'missing') {
-    console.warn(`⚠ ${PACKAGE_NAME} is not a dependency in Beadloo's package.json — leaving it as-is.`);
+  // 1) dependency version (skipped with --no-bump: the development mirror while the package is unpublished)
+  if (opts.bump) {
+    const depResult = bumpDependency(beadlooPkgPath, version, opts.dryRun);
+    if (depResult === 'missing') {
+      console.warn(`⚠ ${PACKAGE_NAME} is not a dependency in Beadloo's package.json — leaving it as-is.`);
+    } else {
+      console.log(`• dependency ${PACKAGE_NAME} → ${version} (${depResult})`);
+    }
   } else {
-    console.log(`• dependency ${PACKAGE_NAME} → ${version} (${depResult})`);
+    console.log(`• dependency bump skipped (--no-bump); Beadloo's package.json untouched`);
   }
 
   // 2) colorMappings + metadata JSON
   const { copied, changed } = copyMetadataJson(metadataDir, opts.dryRun);
   console.log(`• metadata JSON: ${copied} files mirrored (${changed} changed) → src/lib/beads/metadata/`);
+  const tables = copyDimensionTables(metadataDir, opts.dryRun);
+  console.log(`• dimension tables: ${tables.copied} mirrored (${tables.changed} changed) → src/lib/beads/metadata/`);
 
   if (opts.dryRun) {
     console.log('\nDry-run complete — no files written, no install run.');
