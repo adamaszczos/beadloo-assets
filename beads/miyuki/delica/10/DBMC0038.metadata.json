@@ -1,0 +1,11 @@
+{
+  "shape": "Delica",
+  "size": "10/0",
+  "glassGroup": "Opaque",
+  "finish": "Plating",
+  "dyed": "Non Dyed",
+  "galvanized": "Non-galvanized",
+  "plating": "Palladium",
+  "cut": "Cut",
+  "colorAccuracy": "swatch"
+}

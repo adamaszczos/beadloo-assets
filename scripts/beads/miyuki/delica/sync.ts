@@ -3,32 +3,52 @@
  * Miyuki Delica Bead Sync Script
  *
  * Full local pipeline:
- * 1. Scrape bead listings from the official Miyuki directory
- * 2. Download missing bead images
- * 3. Scrape metadata for beads missing .metadata.json sidecars
- * 4. Generate 16×16 (with SVG overlay) and 48×48 thumbnails
+ * 1. Read the committed directory dump (`pnpm beads:miyuki:directory -- --fetch` refreshes it) and
+ *    download the originals of listings Beadloo does not have yet, from the image URL the Store API
+ *    gave for the product (nothing is guessed)
+ * 2. Write the metadata sidecar of every bead that lacks one, from the product's attribute terms
+ * 3. Record each added bead in `sources/miyuki/registry/delica.csv`
+ * 4. Generate 16×16 (single-bead render) and 48×48 thumbnails
  * 5. Extract dominant colors and rebuild color datasets
  * 6. Generate consolidated metadata
  * 7. Validate output files
  *
+ * Matte and lined finishes (`*F`, `*L`) sometimes come back as a 48×48 placeholder instead of the
+ * original; such a download is discarded and reported, never kept as an original.
+ *
  * Usage:
- *   pnpm beads:miyuki:delica:sync               Full pipeline (scrape + download + build)
- *   pnpm beads:miyuki:delica:sync --local-only   Skip scraping/downloading, rebuild local data only
- *   pnpm beads:miyuki:delica:sync --dry-run      Report what would change without writing files
- *   pnpm beads:miyuki:delica:sync --force         Force-regenerate thumbnails
- *   pnpm beads:miyuki:delica:sync --sizes 11,15   Limit to specific sizes
- *   pnpm beads:miyuki:delica:sync --verbose        Detailed output
+ *   pnpm beads:miyuki:delica:sync                      Full pipeline (dump + download + build)
+ *   pnpm beads:miyuki:delica:sync -- --local-only      Skip downloading, rebuild local data only
+ *   pnpm beads:miyuki:delica:sync -- --dry-run         Report what would change without writing files
+ *   pnpm beads:miyuki:delica:sync -- --force           Force-regenerate thumbnails
+ *   pnpm beads:miyuki:delica:sync -- --sizes 11,15     Limit to specific sizes
+ *   pnpm beads:miyuki:delica:sync -- --dump <path>     Use another dump file
+ *   pnpm beads:miyuki:delica:sync -- --verbose         Detailed output
  */
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { GENERATED_DATA_DIR, getBeadTypeDirectory, getDownloadedBeadTypeDirectory } from '../../common/lib/paths.js';
+import sharp from 'sharp';
+import { getBeadTypeDirectory, getDownloadedBeadTypeDirectory } from '../../common/lib/paths.js';
 import { extractColors } from '../../common/extract-colors.js';
 import { generateMetadata } from '../../common/generate-metadata.js';
 import { validateBeadType } from '../../common/validate-bead-type.js';
-import { findBeadsWithoutMetadata, scrapeMultipleBeads } from '../common/scrape-metadata.js';
 import { generateDerivatives, type MiyukiOverlayInfo } from '../../common/lib/thumbnails.js';
-import sharp from 'sharp';
+import { loadDirectoryListings } from '../common/directory-catalog.js';
+import { generateAliasFiles } from '../common/aliases.js';
+import type { DirectoryListing } from '../common/directory-products.js';
+import {
+  REQUEST_DELAY_MS,
+  delay,
+  describeListings,
+  downloadImage,
+  findNewListings,
+  getKnownBeadIds,
+  hasSidecar,
+  isOriginalImageFile,
+  recordDirectoryListings,
+  writeSidecarFromListing,
+} from '../common/sync-pipeline.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -37,25 +57,22 @@ dotenv.config();
 // Types
 // ============================================================================
 
-interface BeadListing {
-  beadId: string;
-  size: string;
-  name: string;
-  imageUrl?: string;
-}
-
-type SyncOptions = {
+export type SyncOptions = {
   sizes: string[];
   dryRun: boolean;
   verbose: boolean;
   localOnly: boolean;
   force: boolean;
+  dumpPath?: string;
 };
 
 type SyncSummary = {
-  scraped: number;
+  listed: number;
   downloaded: number;
-  metadataScraped: number;
+  discardedPlaceholders: number;
+  sidecarsWritten: number;
+  registryRowsAdded: number;
+  conflicts: number;
   derivativesGenerated: number;
   colorsRebuilt: number;
 };
@@ -64,394 +81,96 @@ type SyncSummary = {
 // Configuration
 // ============================================================================
 
-// The seed-bead catalogue moved to the directory.* subdomain (the old
-// www.miyuki-beads.co.jp/directory/shop/ path now 404s). Both the WooCommerce listings and the
-// full-size upload images live under this host.
-const MIYUKI_DIRECTORY_BASE_URL = 'https://directory.miyuki-beads.co.jp';
-const DIRECTORY_URL = `${MIYUKI_DIRECTORY_BASE_URL}/shop/`;
-const REQUEST_DELAY_MS = 1500;
-
-const DELICA_DIR = getBeadTypeDirectory('miyuki-delica');
-const DELICA_DOWNLOADED_DIR = getDownloadedBeadTypeDirectory('miyuki-delica');
-const BEAD_TYPE = 'miyuki-delica';
-
-const SIZE_CONFIG = [
-  { size: '8', prefix: 'DBL', filter: '8-0' },
-  { size: '10', prefix: 'DBM', filter: '10-0' },
-  { size: '11', prefix: 'DB', filter: '11-0' },
-  { size: '15', prefix: 'DBS', filter: '15-0' },
-];
-
-const VALID_SIZES = SIZE_CONFIG.map((c) => c.size);
+const BEAD_TYPE = 'miyuki-delica' as const;
+const DELICA_DIR = getBeadTypeDirectory(BEAD_TYPE);
+const DELICA_DOWNLOADED_DIR = getDownloadedBeadTypeDirectory(BEAD_TYPE);
+export const VALID_SIZES = ['8', '10', '11', '15'];
+/** A real original is far larger than the 48×48 placeholder the directory serves for some matte finishes. */
+const MIN_ORIGINAL_BYTES = 5000;
 
 // ============================================================================
-// Helper Functions
-// ============================================================================
-
-export function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-export function parseBeadName(name: string): { beadId: string; size: string } | null {
-  const match = name.match(/^(DB[LMS]?)(\d+)\s+Delica\s+Beads\s+(\d+)\/0/i);
-  if (!match) {
-    return null;
-  }
-  const prefix = match[1];
-  const number = match[2];
-  const size = match[3];
-  return { beadId: `${prefix}${number}`, size };
-}
-
-export async function fetchHtml(url: string): Promise<string> {
-  const response = await fetch(url, {
-    headers: {
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
-      Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    },
-  });
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-  }
-  return response.text();
-}
-
-async function downloadImage(url: string, outputPath: string): Promise<void> {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-  }
-  const buffer = await response.arrayBuffer();
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, Buffer.from(buffer));
-}
-
-// ============================================================================
-// Directory Scraping
-// ============================================================================
-
-export async function scrapePage(
-  pageNum: number,
-  sizeConfig: (typeof SIZE_CONFIG)[0]
-): Promise<BeadListing[]> {
-  const url =
-    pageNum === 1
-      ? `${DIRECTORY_URL}?filter_shape=db&filter_size=${sizeConfig.filter}`
-      : `${DIRECTORY_URL}page/${pageNum}/?filter_shape=db&filter_size=${sizeConfig.filter}`;
-
-  console.log(`  [Size ${sizeConfig.size}] Fetching page ${pageNum}...`);
-
-  try {
-    const html = await fetchHtml(url);
-    const beads: BeadListing[] = [];
-
-    const productRegex =
-      /<a[^>]*class="[^"]*woocommerce-LoopProduct-link[^"]*"[^>]*>([\s\S]*?)<\/a>/gi;
-
-    let match;
-    while ((match = productRegex.exec(html)) !== null) {
-      const productHtml = match[1];
-
-      const nameMatch = productHtml.match(
-        /<h[23][^>]*class="[^"]*woocommerce-loop-product__title[^"]*"[^>]*>([^<]+)<\/h[23]>/i
-      );
-      if (!nameMatch) continue;
-
-      const name = nameMatch[1].trim();
-      const parsed = parseBeadName(name);
-      if (!parsed) continue;
-
-      if (parsed.size !== sizeConfig.size) {
-        console.warn(
-          `  [Size ${sizeConfig.size}] Unexpected size ${parsed.size} for bead ${parsed.beadId}`
-        );
-        continue;
-      }
-
-      // Prefer the srcset's largest-width candidate — that is the full-size original
-      // (e.g. `…/DB0001.jpg 400w`) — which is robust to non-standard upload folders/filenames such
-      // as `…/2026/05/DB0750_400.jpg`. Fall back to the (possibly thumbnailed) <img src>.
-      let imageUrl = pickLargestSrcsetUrl(productHtml);
-      if (!imageUrl) {
-        const imgMatch = productHtml.match(/<img[^>]*\bsrc="([^"]+)"/i);
-        imageUrl = imgMatch ? imgMatch[1] : undefined;
-      }
-
-      beads.push({ beadId: parsed.beadId, size: parsed.size, name, imageUrl });
-    }
-
-    return beads;
-  } catch (error) {
-    console.error(`  [Size ${sizeConfig.size}] Failed to scrape page ${pageNum}:`, error);
-    return [];
-  }
-}
-
-export async function scrapeAllPages(sizes: string[]): Promise<BeadListing[]> {
-  console.log('\nScraping Miyuki directory...\n');
-  const allBeads: BeadListing[] = [];
-  const activeSizeConfigs = SIZE_CONFIG.filter((c) => sizes.includes(c.size));
-
-  for (const sizeConfig of activeSizeConfigs) {
-    console.log(`  Processing size ${sizeConfig.size} (${sizeConfig.prefix} prefix)...`);
-    let pageNum = 1;
-    let hasMorePages = true;
-    let sizeTotal = 0;
-
-    while (hasMorePages) {
-      const beads = await scrapePage(pageNum, sizeConfig);
-      if (beads.length === 0) {
-        hasMorePages = false;
-      } else {
-        allBeads.push(...beads);
-        sizeTotal += beads.length;
-        console.log(`    Found ${beads.length} beads on page ${pageNum}`);
-        pageNum++;
-        if (pageNum > 50) {
-          console.warn('    Reached page limit (50), stopping');
-          hasMorePages = false;
-        }
-        if (hasMorePages) {
-          await delay(REQUEST_DELAY_MS);
-        }
-      }
-    }
-
-    console.log(`  Size ${sizeConfig.size} complete: ${sizeTotal} beads\n`);
-    if (sizeConfig !== activeSizeConfigs[activeSizeConfigs.length - 1]) {
-      await delay(REQUEST_DELAY_MS);
-    }
-  }
-
-  console.log(`  Total beads found across all sizes: ${allBeads.length}\n`);
-  return allBeads;
-}
-
-// ============================================================================
-// Local Bead Detection
+// Helpers
 // ============================================================================
 
 export async function isUndersizedOriginal(imagePath: string): Promise<boolean> {
   try {
     const metadata = await sharp(imagePath).metadata();
-    const width = metadata.width ?? 0;
-    const height = metadata.height ?? 0;
-    return width <= 100 && height <= 100;
+    return (metadata.width ?? 0) <= 100 && (metadata.height ?? 0) <= 100;
   } catch {
     return false;
   }
 }
 
-export function getExistingBeads(size: string): Set<string> {
-  const existing = new Set<string>();
-  const sizeConfig = SIZE_CONFIG.find((c) => c.size === size);
-  const expectedPrefix = sizeConfig?.prefix || 'DB';
+// ============================================================================
+// Step 1: directory dump → downloads, sidecars, registry
+// ============================================================================
 
-  // Only check downloaded/ for originals — thumbnails in beads/ alone are not sufficient
-  const downloadedSizeDir = path.join(DELICA_DOWNLOADED_DIR, size);
-  if (fs.existsSync(downloadedSizeDir)) {
-    for (const file of fs.readdirSync(downloadedSizeDir)) {
-      if (file.endsWith('.jpg') && !file.includes('_16x16') && !file.includes('_48x48')) {
-        const beadId = path.basename(file, '.jpg').toUpperCase();
-        if (beadId.startsWith(expectedPrefix)) {
-          // Check if file is an undersized 48x48 thumbnail instead of a full original
-          const fullPath = path.join(downloadedSizeDir, file);
-          try {
-            const stats = fs.statSync(fullPath);
-            // If file size is under 5KB or dimensions under 100px, don't count as existing original
-            if (stats.size < 5000) {
-              continue;
-            }
-          } catch {
-            // ignore stat errors
-          }
-          existing.add(beadId);
-        }
+async function syncFromDirectory(options: SyncOptions, summary: SyncSummary): Promise<void> {
+  const { listings, conflicts } = loadDirectoryListings(BEAD_TYPE, { dumpPath: options.dumpPath });
+  summary.listed = listings.length;
+  summary.conflicts = conflicts.length;
+
+  console.log(`Directory dump: ${listings.length} Delica listings`);
+  for (const listing of conflicts) {
+    console.warn(`  skipped (name/prefix conflict): ${listing.name} [${listing.sku}]: ${listing.conflicts.join('; ')}`);
+  }
+
+  const added: DirectoryListing[] = [];
+  for (const size of options.sizes) {
+    const known = getKnownBeadIds(BEAD_TYPE, size, MIN_ORIGINAL_BYTES);
+    const fresh = findNewListings(listings, size, known);
+    console.log(`  Size ${size}: ${known.size} known, ${listings.filter((l) => l.size === size).length} listed, ${fresh.length} new${fresh.length ? ` (${describeListings(fresh)})` : ''}`);
+    if (options.dryRun) continue;
+
+    for (const listing of fresh) {
+      if (!listing.imageUrl) {
+        console.warn(`    ${listing.beadId}: the directory lists no image; held out`);
+        continue;
       }
-    }
-  }
-
-  return existing;
-}
-
-export function findMissingBeads(
-  scrapedBeads: BeadListing[],
-  sizes: string[]
-): Map<string, BeadListing[]> {
-  console.log('Analyzing local bead inventory...\n');
-  const missingBySize = new Map<string, BeadListing[]>();
-  const activeSizeConfigs = SIZE_CONFIG.filter((c) => sizes.includes(c.size));
-
-  for (const sizeConfig of activeSizeConfigs) {
-    const size = sizeConfig.size;
-    const existing = getExistingBeads(size);
-    const scrapedForSize = scrapedBeads.filter((b) => b.size === size);
-
-    const normalizeBeadId = (id: string): string => {
-      const match = id.match(/^([A-Z]+)(\d+)$/i);
-      if (!match) return id;
-      return `${match[1].toUpperCase()}${match[2].padStart(4, '0')}`;
-    };
-
-    const normalizedExisting = new Set(Array.from(existing).map(normalizeBeadId));
-    const missing = scrapedForSize.filter((bead) => !normalizedExisting.has(normalizeBeadId(bead.beadId)));
-
-    console.log(`  Size ${size} (${sizeConfig.prefix} prefix):`);
-    console.log(`    Existing: ${existing.size}`);
-    console.log(`    Found on website: ${scrapedForSize.length}`);
-    console.log(`    Missing: ${missing.length}`);
-
-    if (missing.length > 0) {
-      missingBySize.set(size, missing);
-      const preview = missing.slice(0, 5).map((b) => b.beadId).join(', ');
-      console.log(`    Missing beads: ${preview}${missing.length > 5 ? ', ...' : ''}`);
-    }
-  }
-
-  console.log('');
-  return missingBySize;
-}
-
-// ============================================================================
-// Image Download
-// ============================================================================
-
-/** Pick the full-size image URL from a product card's srcset (its largest-width candidate). */
-export function pickLargestSrcsetUrl(html: string): string | undefined {
-  const srcset = html.match(/srcset="([^"]+)"/i);
-  if (!srcset) return undefined;
-  let best: { url: string; width: number } | undefined;
-  for (const part of srcset[1].split(',')) {
-    const [url, descriptor] = part.trim().split(/\s+/);
-    if (!url) continue;
-    const width = descriptor && /^\d+w$/i.test(descriptor) ? parseInt(descriptor, 10) : 0;
-    if (!best || width > best.width) best = { url, width };
-  }
-  return best?.url;
-}
-
-export function constructImageUrl(beadListing: BeadListing): string {
-  if (beadListing.imageUrl) {
-    // Strip any WordPress -WxH thumbnail suffix to get the full-size original, regardless of the
-    // upload folder/date or filename suffix (e.g. …/2026/05/DB0750_400-324x324.jpg → …/DB0750_400.jpg).
-    const full = beadListing.imageUrl.replace(/-\d+x\d+(\.(?:jpe?g|png|webp))(?=$|\?)/i, '$1');
-    if (/\.(?:jpe?g|png|webp)(?:$|\?)/i.test(full)) {
-      return full;
-    }
-  }
-  // Legacy fallback for the common 2024/06 uploads when no listing image was captured.
-  const prefixMatch = beadListing.beadId.match(/^(DB[LMS]?)(\d+)$/i);
-  const prefix = prefixMatch ? prefixMatch[1].toUpperCase() : 'DB';
-  const number = prefixMatch ? prefixMatch[2].padStart(4, '0') : '0000';
-  return `${MIYUKI_DIRECTORY_BASE_URL}/wp-content/uploads/2024/06/${prefix}${number}.jpg`;
-}
-
-async function downloadMissingBeads(
-  missingBySize: Map<string, BeadListing[]>,
-  options: SyncOptions,
-  summary: SyncSummary
-): Promise<void> {
-  let totalMissing = 0;
-  for (const beads of missingBySize.values()) {
-    totalMissing += beads.length;
-  }
-
-  if (totalMissing === 0) {
-    console.log('No missing beads found.\n');
-    return;
-  }
-
-  if (options.dryRun) {
-    console.log('DRY RUN - Would download the following beads:\n');
-    for (const [size, beads] of missingBySize.entries()) {
-      console.log(`  Size ${size}: ${beads.map((b) => b.beadId).join(', ')}`);
-    }
-    console.log('');
-    return;
-  }
-
-  console.log(`Downloading ${totalMissing} missing beads...\n`);
-
-  for (const [size, beads] of missingBySize.entries()) {
-    const sizeConfig = SIZE_CONFIG.find((c) => c.size === size);
-    const prefix = sizeConfig?.prefix || 'DB';
-
-    console.log(`  Size ${size} (${prefix} prefix, ${beads.length} beads):`);
-
-    for (const bead of beads) {
-      const imageUrl = constructImageUrl(bead);
-      const match = bead.beadId.match(/^[A-Z]+(\d+)$/i);
-      const number = match ? match[1].padStart(4, '0') : '0000';
-      const filename = `${prefix}${number}.jpg`;
-      const outputPath = path.join(DELICA_DOWNLOADED_DIR, size, filename);
-
+      const outputPath = path.join(DELICA_DOWNLOADED_DIR, size, `${listing.beadId}.jpg`);
       try {
-        await downloadImage(imageUrl, outputPath);
-        if (options.verbose) {
-          console.log(`    Downloaded ${bead.beadId} -> ${filename}`);
+        await downloadImage(listing.imageUrl, outputPath);
+        if (await isUndersizedOriginal(outputPath)) {
+          fs.unlinkSync(outputPath);
+          summary.discardedPlaceholders += 1;
+          console.warn(`    ${listing.beadId}: the directory served a placeholder (≤100 px); discarded, try again later`);
+        } else {
+          summary.downloaded += 1;
+          if (options.verbose) console.log(`    downloaded ${listing.beadId} ← ${listing.imageUrl}`);
+          added.push(listing);
         }
-        summary.downloaded += 1;
-        await delay(REQUEST_DELAY_MS);
       } catch (error) {
-        console.warn(
-          `    Failed ${bead.beadId}: ${error instanceof Error ? error.message : error}`
-        );
+        console.warn(`    failed ${listing.beadId}: ${error instanceof Error ? error.message : error}`);
       }
+      await delay(REQUEST_DELAY_MS);
     }
   }
 
-  console.log('');
+  if (options.dryRun) return;
+
+  for (const listing of listings) {
+    if (!options.sizes.includes(listing.size)) continue;
+    if (hasSidecar(BEAD_TYPE, listing.size, listing.beadId)) continue;
+    if (!fs.existsSync(path.join(DELICA_DOWNLOADED_DIR, listing.size, `${listing.beadId}.jpg`))) continue;
+    if (writeSidecarFromListing(BEAD_TYPE, listing) === 'written') summary.sidecarsWritten += 1;
+  }
+
+  summary.registryRowsAdded = recordDirectoryListings(BEAD_TYPE, added);
 }
 
 // ============================================================================
-// Build Pipeline (metadata, thumbnails, colors)
+// Build Pipeline (thumbnails, colors, metadata)
 // ============================================================================
 
 function readMetadataSidecar(filePath: string): MiyukiOverlayInfo | undefined {
   try {
-    const raw = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-    return raw as MiyukiOverlayInfo;
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as MiyukiOverlayInfo;
   } catch {
     return undefined;
   }
 }
 
-async function scrapeMetadataForSize(
-  size: string,
-  verbose: boolean
-): Promise<number> {
-  const downloadedDir = getDownloadedBeadTypeDirectory(BEAD_TYPE, size);
-  const beadDir = getBeadTypeDirectory(BEAD_TYPE, size);
-  if (!fs.existsSync(downloadedDir)) return 0;
-
-  const beadsWithoutMetadata = findBeadsWithoutMetadata(downloadedDir, beadDir);
-  if (beadsWithoutMetadata.length === 0) {
-    if (verbose) console.log(`  All beads in size ${size} already have metadata`);
-    return 0;
-  }
-
-  console.log(`  Found ${beadsWithoutMetadata.length} beads without metadata in size ${size}`);
-  const results = await scrapeMultipleBeads(beadsWithoutMetadata, size, 1000);
-  let scraped = 0;
-
-  for (const result of results) {
-    if (result.success && result.metadata) {
-      const metadataPath = path.join(beadDir, `${result.beadId}.metadata.json`);
-      fs.writeFileSync(metadataPath, `${JSON.stringify(result.metadata, null, 2)}\n`, 'utf-8');
-      scraped++;
-    } else if (verbose) {
-      console.warn(`    Skipped ${result.beadId}: ${result.error}`);
-    }
-  }
-
-  return scraped;
-}
-
-async function generateThumbnailsForSize(
-  size: string,
-  force: boolean,
-  verbose: boolean
-): Promise<number> {
+async function generateThumbnailsForSize(size: string, force: boolean, verbose: boolean): Promise<number> {
   const downloadedSizeDir = path.join(DELICA_DOWNLOADED_DIR, size);
   if (!fs.existsSync(downloadedSizeDir)) return 0;
 
@@ -459,37 +178,22 @@ async function generateThumbnailsForSize(
   fs.mkdirSync(outputSizeDir, { recursive: true });
 
   let generated = 0;
-  const files = fs.readdirSync(downloadedSizeDir).filter(
-    (f) => f.endsWith('.jpg') && !f.includes('_16x16') && !f.includes('_48x48')
-  );
-
-  for (const file of files) {
+  for (const file of fs.readdirSync(downloadedSizeDir).filter(isOriginalImageFile)) {
     const sourcePath = path.join(downloadedSizeDir, file);
-    const metaPath = path.join(outputSizeDir, file.replace('.jpg', '.metadata.json'));
-    const overlay = readMetadataSidecar(metaPath);
-
+    const overlay = readMetadataSidecar(path.join(outputSizeDir, file.replace(/\.jpe?g$/i, '.metadata.json')));
     try {
       const result = await generateDerivatives(sourcePath, { force, overlay, outputDir: outputSizeDir });
       const count = Number(result.generated16) + Number(result.generated48);
       generated += count;
-      if (verbose && count > 0) {
-        console.log(`    Generated derivatives for ${file}`);
-      }
+      if (verbose && count > 0) console.log(`    Generated derivatives for ${file}`);
     } catch (error) {
-      console.warn(
-        `    Failed derivatives for ${file}: ${error instanceof Error ? error.message : error}`
-      );
+      console.warn(`    Failed derivatives for ${file}: ${error instanceof Error ? error.message : error}`);
     }
   }
-
   return generated;
 }
 
-async function rebuildSizeData(
-  size: string,
-  options: SyncOptions,
-  summary: SyncSummary
-): Promise<void> {
+async function rebuildSizeData(size: string, options: SyncOptions, summary: SyncSummary): Promise<void> {
   if (!options.dryRun) {
     const extractionResult = await extractColors({
       beadType: BEAD_TYPE,
@@ -511,68 +215,43 @@ async function rebuildSizeData(
 
 async function runMiyukiDelicaSync(options: SyncOptions): Promise<SyncSummary> {
   const summary: SyncSummary = {
-    scraped: 0,
+    listed: 0,
     downloaded: 0,
-    metadataScraped: 0,
+    discardedPlaceholders: 0,
+    sidecarsWritten: 0,
+    registryRowsAdded: 0,
+    conflicts: 0,
     derivativesGenerated: 0,
     colorsRebuilt: 0,
   };
 
-  // Step 1: Scrape directory & download missing beads
   if (!options.localOnly) {
-    const scrapedBeads = await scrapeAllPages(options.sizes);
-    summary.scraped = scrapedBeads.length;
-
-    if (scrapedBeads.length === 0) {
-      console.error('No beads found on website. Check if the site structure changed.');
-      process.exit(1);
-    }
-
-    const missingBySize = findMissingBeads(scrapedBeads, options.sizes);
-    await downloadMissingBeads(missingBySize, options, summary);
+    await syncFromDirectory(options, summary);
   }
 
-  // Step 2: Scrape metadata for beads without sidecars
-  console.log('Scraping metadata for beads without sidecars...');
-  for (const size of options.sizes) {
-    summary.metadataScraped += await scrapeMetadataForSize(size, options.verbose);
-  }
-
-  // Step 3: Generate thumbnails
   console.log('\nGenerating thumbnails...');
   for (const size of options.sizes) {
-    const generated = await generateThumbnailsForSize(size, options.force, options.verbose);
+    const generated = options.dryRun ? 0 : await generateThumbnailsForSize(size, options.force, options.verbose);
     summary.derivativesGenerated += generated;
     console.log(`  Size ${size}: ${generated} derivatives generated`);
   }
 
-  // Step 4: Extract colors per size
   console.log('\nExtracting colors...');
   for (const size of options.sizes) {
     await rebuildSizeData(size, options, summary);
   }
 
-  // Step 5: Generate consolidated metadata
   if (!options.dryRun) {
     console.log('\nGenerating consolidated metadata...');
-    const metaResult = await generateMetadata({
-      beadType: BEAD_TYPE,
-      sizes: options.sizes,
-      inputDir: DELICA_DIR,
-      verbose: options.verbose,
-    });
-    if (!metaResult.success) {
-      throw new Error('Metadata generation failed');
-    }
-  }
+    const metaResult = await generateMetadata({ beadType: BEAD_TYPE, sizes: options.sizes, inputDir: DELICA_DIR, verbose: options.verbose });
+    if (!metaResult.success) throw new Error('Metadata generation failed');
 
-  // Step 6: Validate
-  if (!options.dryRun) {
+    console.log('\nRegenerating alias files...');
+    generateAliasFiles({ verbose: options.verbose });
+
     console.log('\nValidating output files...');
     const validation = validateBeadType({ beadType: BEAD_TYPE });
-    if (!validation.success) {
-      console.warn('Validation reported issues — check output above');
-    }
+    if (!validation.success) console.warn('Validation reported issues — check output above');
   }
 
   return summary;
@@ -582,22 +261,20 @@ async function runMiyukiDelicaSync(options: SyncOptions): Promise<SyncSummary> {
 // CLI
 // ============================================================================
 
-function parseArgs(argv: string[]): SyncOptions {
+export function parseArgs(argv: string[]): SyncOptions {
   const sizesArgIndex = argv.indexOf('--sizes');
   const requestedSizes =
     sizesArgIndex >= 0 && argv[sizesArgIndex + 1]
-      ? argv[sizesArgIndex + 1]
-          .split(',')
-          .map((v) => v.trim())
-          .filter((v) => VALID_SIZES.includes(v))
+      ? argv[sizesArgIndex + 1].split(',').map((v) => v.trim()).filter((v) => VALID_SIZES.includes(v))
       : [...VALID_SIZES];
-
+  const dumpArgIndex = argv.indexOf('--dump');
   return {
     sizes: requestedSizes,
     dryRun: argv.includes('--dry-run'),
     verbose: argv.includes('--verbose'),
     localOnly: argv.includes('--local-only'),
     force: argv.includes('--force'),
+    ...(dumpArgIndex >= 0 && argv[dumpArgIndex + 1] ? { dumpPath: argv[dumpArgIndex + 1] } : {}),
   };
 }
 
@@ -605,10 +282,11 @@ function printUsage(): void {
   console.log(`Usage: tsx scripts/beads/miyuki/delica/sync.ts [options]
 
 Options:
-  --local-only    Skip scraping/downloading, rebuild local data only
+  --local-only    Skip the directory dump and downloads, rebuild local data only
   --sizes 11,15   Limit processing to specific sizes (default: all)
   --dry-run       Report what would change without writing files
   --force         Force-regenerate thumbnails even when up to date
+  --dump <path>   Read another directory dump (default: sources/miyuki/directory/products.json)
   --verbose       Print detailed progress
 `);
 }
@@ -621,7 +299,6 @@ async function main(): Promise<void> {
   }
 
   const options = parseArgs(argv);
-
   console.log('\n' + '='.repeat(70));
   console.log('MIYUKI DELICA SYNC');
   console.log('='.repeat(70));
@@ -630,11 +307,14 @@ async function main(): Promise<void> {
   const summary = await runMiyukiDelicaSync(options);
 
   console.log(`\nMiyuki Delica sync summary`);
-  console.log(`  sizes processed:      ${options.sizes.join(', ')}`);
-  console.log(`  scraped listings:     ${summary.scraped}`);
-  console.log(`  downloaded images:    ${summary.downloaded}`);
-  console.log(`  metadata scraped:     ${summary.metadataScraped}`);
-  console.log(`  derivatives generated: ${summary.derivativesGenerated}`);
+  console.log(`  sizes processed:        ${options.sizes.join(', ')}`);
+  console.log(`  directory listings:     ${summary.listed}`);
+  console.log(`  downloaded images:      ${summary.downloaded}`);
+  console.log(`  discarded placeholders: ${summary.discardedPlaceholders}`);
+  console.log(`  sidecars written:       ${summary.sidecarsWritten}`);
+  console.log(`  registry rows added:    ${summary.registryRowsAdded}`);
+  console.log(`  name/prefix conflicts:  ${summary.conflicts}`);
+  console.log(`  derivatives generated:  ${summary.derivativesGenerated}`);
   console.log(`  color datasets rebuilt: ${summary.colorsRebuilt}`);
   console.log(`\nCompleted in ${((Date.now() - startedAt) / 1000).toFixed(1)}s`);
 }

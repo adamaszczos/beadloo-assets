@@ -7,7 +7,7 @@
  *
  * Usage:
  *   pnpm beads:miyuki:round_rocailles:blob                Report diff only
- *   pnpm beads:miyuki:round_rocailles:blob --upload        Upload new/changed assets
+ *   pnpm beads:miyuki:round_rocailles:blob --upload        Upload new assets (add --with-changed to also replace changed originals)
  *   pnpm beads:miyuki:round_rocailles:blob --sizes 11,15   Limit to specific sizes
  */
 
@@ -21,7 +21,7 @@ import {
 dotenv.config();
 
 const BEAD_TYPE = 'miyuki-round_rocailles';
-const ALL_SIZES = ['2', '5', '6', '8', '11', '15'];
+const ALL_SIZES = ['1', '2', '5', '6', '8', '11', '15'];
 
 function parseArgs(argv: string[]) {
   const sizesArgIndex = argv.indexOf('--sizes');
@@ -36,6 +36,7 @@ function parseArgs(argv: string[]) {
   return {
     sizes,
     upload: argv.includes('--upload'),
+    newOnly: !argv.includes('--with-changed'),
   };
 }
 
@@ -46,7 +47,8 @@ async function main(): Promise<void> {
     console.log(`Usage: tsx scripts/beads/miyuki/round_rocailles/blob.ts [options]
 
 Options:
-  --upload        Upload new/changed original images to Vercel Blob
+  --upload        Upload new original images to Vercel Blob (never replaces live originals)
+  --with-changed  With --upload: also replace originals whose bytes changed locally
   --sizes 11,15   Limit to specific sizes (default: all)
 `);
     return;
@@ -63,7 +65,7 @@ Options:
       throw new Error('BLOB_READ_WRITE_TOKEN is required for --upload');
     }
     console.log('\nUploading new/changed Miyuki Round Rocailles assets to Vercel Blob...');
-    await uploadBlobAssets(diff, BEAD_TYPE);
+    await uploadBlobAssets(diff, BEAD_TYPE, { newOnly: options.newOnly });
     console.log('Upload complete.');
   } else {
     console.log('  upload skipped (pass --upload to transfer assets)');

@@ -1,0 +1,1296 @@
+DB#	Seed#	old#	廃番	Discontinued	ガラス種類／加工名	Glass Type / Finish	A：変色	B：色剥げ	C：色落ち
+DB1	451				メタリック	Metallic	2	2	2
+DB2	452				メタリック	Metallic	2	2	2
+DB3	453				メタリック	Metallic	2	2	2
+DB4	454				メタリック	Metallic	2	2	2
+DB5	455	401R			ギョク　レインボー	Opaque - AB	2	2	2
+DB6	456				メタリック	Metallic	2	2	2
+DB7	458				メタリック	Metallic	2	2	2
+DB10	401				ギョク	Opaque	1	1	1
+DB11	459				メタリック	Metallic	2	3	2
+DB12	460				メタリック	Metallic	2	3	2
+DB21	190				ニッケルメッキ	Nickel Plated	2	3	2
+DB22	457				メタリック	Metallic	2	3	2
+DB22L	457L				スキ　ゴールドラスター	Transparent - Gold Luster	2	3	2
+DB23	462				メタリック　レインボー	Metallic - AB	2	2	2
+DB24	1958				メタリック　レインボー	Metallic - AB	2	2	2
+DB25	1959				メタリック　レインボー	Metallic - AB	2	2	2
+DB26	1960				メタリック	Metallic	2	2	2
+DB27	468	1961			メタリック　レインボー	Metallic - AB	2	2	2
+DB29	188				ニッケルメッキ　レインボー	Nickel Plated - AB	2	2	2
+DB31	191				24金メッキ	24kt Gold Plated	2	3	2
+DB31L	191L				24金メッキ	24kt Gold Plated	2	3	2
+DB32	192		廃番	Discontinued	ロジウムメッキ	Rhodium Plated	2	3	2
+DB33	195				24金引き	24kt Gold Lined	2	2	3
+DB34	193				24金メッキ	24kt Gold Plated	2	3	2
+DB35	1051	181			外銀	Galvanized	3	4	4
+DB36	N/A		廃番	Discontinued	スズメッキ	Tin Plated	2	3	2
+DB37	197				銅引き	Copper Lined	3	4	3
+DB38	194				パラジウムメッキ	Palladium Plated	2	3	2
+DB40	187				銅メッキ	Copper Plated	3	4	4
+DB41	1	131S			銀引き	Silver Lined	3	3	3
+DB42	3	132S			銀引き	Silver Lined	3	3	3
+DB43	10	140S			銀引き	Silver Lined	3	3	3
+DB44	18	148S			銀引き	Silver Lined	3	3	3
+DB45	8	138S			銀引き	Silver Lined	3	3	3
+DB46	16	146S			銀引き	Silver Lined	3	3	3
+DB47	20	151S			銀引き	Silver Lined	3	3	3
+DB48	21	152S			銀引き	Silver Lined	3	3	3
+DB50	160	901			スキ　ラスター	Transparent - Luster	2	2	2
+DB51	250	131R			スキ　レインボー	Transparent - AB	2	2	2
+DB52	281				中染め　レインボー	Color Lined - AB	3	2	4
+DB53	273				中染め　レインボー	Color Lined - AB	2	2	3
+DB54	275				中染め　レインボー	Color Lined - AB	3	2	4
+DB55	272				中染め　レインボー	Color Lined - AB	3	2	4
+DB56	264				中染め　レインボー	Color Lined - AB	3	2	4
+DB57	278				中染め　レインボー	Color Lined - AB	3	2	4
+DB58	279				中染め　レインボー	Color Lined - AB	3	2	4
+DB59	274				中染め　レインボー	Color Lined - AB	3	2	3
+DB60	277	2148			中染め　レインボー	Color Lined - AB	2	2	3
+DB61	N/A				中染め	Color Lined	3	2	4
+DB62	363				中染め	Color Lined	3	2	4
+DB63	353				中染め　レインボー	Color Lined - AB	3	2	4
+DB64	2195				中染め	Color Lined	3	2	4
+DB65	2196				中染め	Color Lined	3	2	4
+DB66	284				中染め	Color Lined	2	2	3
+DB67	2197				中染め	Color Lined	2	2	3
+DB68	N/A				中染め	Color Lined	2	2	3
+DB69	2199				中染め	Color Lined	3	2	4
+DB70	2200				中染め	Color Lined	3	2	4
+DB71	266	2144			中染め　レインボー	Color Lined - AB	3	2	4
+DB72	2201				中染め	Color Lined	3	2	3
+DB73	2202				中染め	Color Lined	3	2	4
+DB74	N/A				中染め	Color Lined	3	2	4
+DB75	N/A				中染め　レインボー	Color Lined - AB	2	2	3
+DB76	2205				中染め　レインボー	Color Lined - AB	2	2	3
+DB77	2206				中染め　レインボー	Color Lined - AB	2	2	3
+DB78	2207				中染め	Color Lined	3	2	4
+DB79	2208				中染め　レインボー	Color Lined - AB	2	2	3
+DB80	2209				中染め	Color Lined	3	2	4
+DB81	2210				中染め	Color Lined	2	2	3
+DB82	265				中染め　レインボー	Color Lined - AB	3	2	4
+DB83	2212				中染め　レインボー	Color Lined - AB	3	2	4
+DB84	263				中染め　レインボー	Color Lined - AB	3	2	4
+DB85	339	2168			中染め　レインボー	Color Lined - AB	3	2	4
+DB86	283				中染め　レインボー	Color Lined - AB	3	2	4
+DB87	357	2213			中染め　レインボー	Color Lined - AB	3	2	4
+DB88	N/A				中染め　レインボー	Color Lined - AB	3	2	4
+DB89	343				中染め　レインボー	Color Lined - AB	3	2	4
+DB91	342				中染め　レインボー	Color Lined - AB	2	2	3
+DB98	166				スキ　ラスター	Transparent - Luster	2	2	2
+DB99	162				スキ　ラスター	Transparent - Luster	2	2	2
+DB100	251	132R			スキ　レインボー	Transparent - AB	2	2	2
+DB101	2439				スキ　焼付けラスター	Transparent - Glazed Luster	2	3	2
+DB102	310				スキ　ゴールドラスター	Transparent - Gold Luster	4	3	3
+DB103	301				スキ　ゴールドラスター　レインボー	Transparent - Gold Luster - AB	2	2	2
+DB104	302				スキ　ゴールドラスター　レインボー	Transparent - Gold Luster - AB	2	2	2
+DB105	315				スキ　ゴールドラスター	Transparent - Gold Luster	2	2	2
+DB106-1	366-1				スキ　ガラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB107	2440				スキ　ゴールドラスター　レインボー	Transparent - Gold Luster - AB	2	3	2
+DB108	2441				スキ　ゴールドラスター	Transparent - Gold Luster	4	3	3
+DB109	2442				スキ　焼付けラスター　レインボー	Transparent - Glazed Luste - AB	2	3	2
+DB110	2443				スキ　ゴールドラスター　レインボー	Transparent - Gold Luste - AB	4	3	2
+DB111	2444				スキ　ゴールドラスター　レインボー	Transparent - Gold Luster - AB	3	3	2
+DB112	2445				スキ　焼付けラスター	Transparent - Glazed Luster	2	3	2
+DB113	1880				スキ　ゴールドラスター	Transparent - Gold Luster	4	3	2
+DB114	1881				スキ　ゴールドラスター	Transparent - Gold Luster	2	3	2
+DB115	1882				スキ　ゴールドラスター	Transparent - Gold Luster	4	3	3
+DB116	1883				スキ　ゴールドラスター	Transparent - Gold Luster	2	3	2
+DB117	1884				スキ　ゴールドラスター	Transparent - Gold Luster	2	3	2
+DB118	N/A				スキ　ゴールドラスター	Transparent - Gold Luster	3	3	2
+DB119	N/A				スキ　ゴールドラスター	Transparent - Gold Luster	3	3	2
+DB120	N/A				スキ　ゴールドラスター	Transparent - Gold Luster	2	2	2
+DB121	1887				スキ　ゴールドラスター	Transparent - Gold Luster	4	3	3
+DB122	1888				スキ　ゴールドラスター　レインボー	Transparent - Gold Luster - AB	2	2	2
+DB123	1886				スキ　ゴールドラスター	Transparent - Gold Luster	4	3	3
+DB124	1889				スキ　ゴールドラスター	Transparent - Gold Luster	3	3	2
+DB125	1890				スキ　ゴールドラスター　レインボー	Transparent - Gold Luster - AB	2	2	2
+DB126	1891				スキ　ゴールドラスター　レインボー	Transparent - Gold Luster - AB	2	2	2
+DB127	1892				スキ　ゴールドラスター　レインボー	Transparent - Gold Luster - AB	2	2	2
+DB128	1893				スキ　ゴールドラスター　レインボー	Transparent - Gold Luster - AB	2	2	2
+DB129	1894				スキ　ゴールドラスター	Transparent - Gold Luster	2	2	2
+DB131	1895				ギョク　ゴールドラスター	Opaque - Gold Luster	2	2	2
+DB132	1896				ギョク　ゴールドラスター	Opaque - Gold Luster	2	2	2
+DB133	1897				スキ　ゴールドラスター　レインボー	Transparent - Gold Luster - AB	2	2	2
+DB134	1898				スキ　ゴールドラスター　レインボー	Transparent - Gold Luster - AB	2	2	2
+DB135	1899				スキ　ゴールドラスター　レインボー	Transparent - Gold Luster - AB	2	2	2
+DB141	131				スキ	Transparent	1	1	1
+DB144	5	134S			銀引き	Silver Lined	3	3	3
+DB145	6	136S			銀引き	Silver Lined	3	3	3
+DB146	12	142S			銀引き	Silver Lined	3	3	3
+DB147	14	143S			銀引き	Silver Lined	3	3	3
+DB148	27	16D			銀引き	Silver Lined	3	3	3
+DB149	25	149S			銀引き	Silver Lined	3	3	3
+DB150	29	135S			銀引き	Silver Lined	3	3	3
+DB151	253	138R			スキ　レインボー	Transparent - AB	2	2	2
+DB152	179	146R			スキ　レインボー	Transparent - AB	2	2	2
+DB157	487				ギョク　レインボー	Qpaque - AB	2	2	2
+DB158	478	410R			ギョク　レインボー	Qpaque - AB	2	2	2
+DB159	475	407R			ギョク　レインボー	Qpaque - AB	2	2	2
+DB160	472	404R			ギョク　レインボー	Qpaque - AB	2	2	2
+DB161	474	406R			ギョク　レインボー	Qpaque - AB	2	2	2
+DB162	476	408R			ギョク　レインボー	Qpaque - AB	2	2	2
+DB163	480	411R			ギョク　レインボー	Qpaque - AB	2	2	2
+DB164	482	413R			ギョク　レインボー	Qpaque - AB	2	2	2
+DB165	484	414R			ギョク　レインボー	Qpaque - AB	2	2	2
+DB166	481	412R			ギョク　レインボー	Qpaque - AB	2	2	2
+DB167	483				ギョク　レインボー	Qpaque - AB	2	2	2
+DB168	489D				ギョク　レインボー	Qpaque - AB	2	2	2
+DB169	479	416R			ギョク　レインボー	Qpaque - AB	2	2	2
+DB170	257	134R			スキ　レインボー	Transparent - AB	2	2	2
+DB171	252	136R			スキ　レインボー	Transparent - AB	2	2	2
+DB172	254	140R			スキ　レインボー	Transparent - AB	2	2	2
+DB173	256	142R			スキ　レインボー	Transparent - AB	2	2	2
+DB174	258	143R			スキ　レインボー	Transparent - AB	2	2	2
+DB175	289	156R			スキ　レインボー	Transparent - AB	2	2	2
+DB176	260	148R			スキ　レインボー	Transparent - AB	2	2	2
+DB177	291	149R			スキ　レインボー	Transparent - AB	2	2	2
+DB178	177	151R			スキ　レインボー	Transparent - AB	2	2	2
+DB179	249	152R			スキ　レインボー	Transparent - AB	2	2	2
+DB180	256	135R			スキ　レインボー	Transparent - AB	2	2	2
+DB181	971				銅引き	Copper Lined	3	4	3
+DB182	972				銅引き	Copper Lined	3	4	3
+DB183	973				銅引き	Copper Lined	3	4	3
+DB184	974				銅引き	Copper Lined	3	4	3
+DB191	198				銅引き	Copper Lined	3	4	3
+DB200	402				ギョク	Opaque	1	1	1
+DB201	420	655			ギョク　ラスター	Qpaque - Luster	2	2	2
+DB202	471	402R			ギョク　レインボー	Qpaque - AB	2	2	2
+DB203	594				ギョク　焼付ラスター	Opaque - Glazed Luster	2	3	2
+DB204	595				ギョク　焼付けラスター	Opaque - Glazed Luster	2	3	2
+DB205	593				ギョク　焼付けラスター	Opaque - Glazed Luster	2	3	2
+DB206-1	N/A				ギョク　ガラスエナメル	Opaque - Glass Enamel	2	2	2
+DB207-1	596-1				ギョク　ガラスエナメル　レインボー	Opaque - Glass Enamel - AB	2	2	2
+DB208	597				ギョク　ゴールドラスター	Opaque - Gold Luster	3	3	2
+DB209-1	598-1				ギョク　ガラスエナメル	Opaque - Glass Enamel	2	2	2
+DB210	599				ギョク　ゴールドラスター	Opaque - Gold Luster	2	3	2
+DB211	600				ギョク　ゴールドラスター	Opaque - Gold Luster	2	3	2
+DB214	1943				ギョク　ラスター	Qpaque - Luster	2	2	2
+DB215	N/A				ギョク　ラスター	Qpaque - Luster	2	2	2
+DB216	1945				ギョク　ラスター	Qpaque - Luster	2	2	2
+DB217	2470				ギョク　ゴールドラスター	Opaque - Gold Luster	2	3	2
+DB218	N/A				ギョク　ゴールドラスター	Opaque - Gold Luster	2	3	2
+DB220	550				アラバス	Alabaster	1	1	1
+DB221	551				銀引き	Silver Lined	3	3	3
+DB222	470				アラバス　レインボー	Alabaster - AB	2	2	2
+DB223	691				アラバス　銀引き　レインボー	Alabaster - Silver Lined - AB	3	3	3
+DB230	196				アラバス　24金引き	Alabaster - 24kt Gold Lined	2	2	3
+DB231	511				セイロン	Ceylon	2	2	2
+DB232	514				セイロン　中染め	Ceylon - Color Lined	2	2	3
+DB233	516				セイロン　中染め	Ceylon - Color Lined	2	2	3
+DB234	N/A				セイロン　中染め	Ceylon - Color Lined	3	2	4
+DB235	539				セイロン　中染め	Ceylon - Color Lined	2	2	3
+DB236	535				セイロン　中染め	Ceylon - Color Lined	2	2	3
+DB237	520				セイロン　中染め	Ceylon - Color Lined	3	2	4
+DB238	536				セイロン　中染め	Ceylon - Color Lined	2	2	3
+DB239	522				セイロン　中染め	Ceylon - Color Lined	3	2	4
+DB240	N/A				セイロン　中染め	Ceylon - Color Lined	3	2	4
+DB241	N/A				セイロン　中染め	Ceylon - Color Lined	3	2	4
+DB242	N/A				セイロン　中染め	Ceylon - Color Lined	3	2	4
+DB243	545				セイロン　中染め	Ceylon - Color Lined	2	2	3
+DB244	517				セイロン　中染め	Ceylon - Color Lined	3	2	4
+DB245	518				セイロン　中染め	Ceylon - Color Lined	3	2	4
+DB246	544				セイロン　中染め	Ceylon - Color Lined	3	2	4
+DB247	N/A				セイロン　中染め	Ceylon - Color Lined	3	2	4
+DB248	534				セイロン　中染め	Ceylon - Color Lined	3	2	4
+DB249	N/A				セイロン　中染め	Ceylon - Color Lined	3	2	4
+DB250	N/A				セイロン　中染め	Ceylon - Color Lined	2	2	3
+DB251	1865				ギョク　ゴールドラスター	Opaque - Gold Luster	2	3	2
+DB252	1866				ギョク　ゴールドラスター	Opaque - Gold Luster	2	3	2
+DB253	1867				ギョク　ゴールドラスター	Opaque - Gold Luster	3	3	2
+DB254	1962				メタリック	Metallic	3	3	3
+DB256	N/A				セイロン　中染め	Ceylon - Color Lined	2	2	3
+DB257	524				セイロン　中染め	Ceylon - Color Lined	3	2	4
+DB261-1	N/A				ギョク　ガラスエナメル	Opaque - Glass Enamel	2	2	2
+DB262	N/A				ギョク　焼付けラスター	Opaque - Glazed Luster	2	3	2
+DB263-1	N/A				ギョク　ガラスエナメル　ラスター	Opaque- Glass Enamel - Luster	2	2	2
+DB264-1	N/A				ギョク　ガラスエナメル　ラスター	Opaque- Glass Enamel - Luster	2	2	2
+DB265	N/A				ギョク　ゴールドラスター	Opaque - Gold Luster	2	3	2
+DB266	N/A				ギョク　焼付けラスター	Opaque - Glazed Luster	2	3	2
+DB267-1	N/A				ギョク　ガラスエナメル　ラスター	Opaque- Glass Enamel - Luster	2	2	2
+DB268-1	2479-1				ギョク　ガラスエナメル　ラスター	Opaque- Glass Enamel - Luster	2	2	2
+DB271	1105				中染め	Color-Lined	2	2	3
+DB272	2238				中染め	Color Lined	3	2	4
+DB273	N/A				中染め	Color Lined	2	2	3
+DB274	2240				中染め	Color-Lined	2	2	3
+DB275	2241				中染め	Color-Lined	3	2	4
+DB276	2242				中染め　レインボー	Color Lined - AB	3	2	4
+DB277	2243				中染め	Color-Lined	2	2	3
+DB278	2244				中染め	Color-Lined	2	2	3
+DB279	N/A				中染め	Color-Lined	3	2	4
+DB280	N/A				中染め	Color-Lined	2	2	3
+DB281	2247				中染め	Color-Lined	3	2	4
+DB282	1820				中染め	Color Lined	3	2	4
+DB283	N/A				中染め	Color Lined	3	2	4
+DB284	1827				中染め	Color Lined	2	2	3
+DB285	1828				中染め	Color Lined	3	2	4
+DB286	347				中染め	Color Lined	3	2	4
+DB287	N/A				中染め	Color Lined	3	2	4
+DB288	3550				中染め	Color Lined	2	2	3
+DB295	2248				中染め	Color Lined	2	2	3
+DB296	2249				中染め	Color Lined	3	2	4
+DB297	367				中染め	Color Lined	3	2	4
+DB301	2001	1254			つや消し　メタリック	Matte Metallic	2	2	2
+DB306	2065				つや消し　メタリック	Matte Metallic	2	3	3
+DB307	2002				つや消し　メタリック	Matte Metallic	2	2	2
+DB310	401-F	2003			ギョク　つや消し	Matte Opaque	1	1	1
+DB311	2004				つや消し　メタリック	Matte Metallic	3	3	2
+DB312	2005				メタリック　つや消し　レインボー	Matte Metallic - AB	2	2	2
+DB321	190F				つや消し　ニッケルメッキ	Matte Nickel Plated	2	3	2
+DB322	2006	1255			メタリック　つや消し	Matte Metallic	2	3	2
+DB322L 	2006L				スキ　つや消し　焼付けラスター	Matte Transparent - Glazed Luster	2	3	2
+DB323	2007				メタリック　つや消し　レインボー	Matte Metallic - AB	2	2	2
+DB324	2008	1256			メタリック　つや消し　レインボー	Matte Metallic - AB	2	2	2
+DB325	2009				メタリック　つや消し　レインボー	Matte Metallic - AB	2	2	2
+DB327	2066				つや消し　メタリック	Matte Metallic	2	2	2
+DB331	191F				つや消し　24K　金メッキ	Matte 24K Gold Plated	2	3	2
+DB334	193F				つや消し　24K　金メッキ	Matte 24K Gold Plated	2	3	2
+DB335	N/A				つや消し　外銀	Matte Galvanize	4	4	4
+DB336	N/A		廃番	Discontinued	つや消し　スズメッキ	Matte Tin Plated	2	3	2
+DB338	194F				つや消し　パラジウムメッキ	Matte Palladium Plated	2	3	2
+DB340	N/A				つや消し　銅メッキ	Matte Copper Plated	4	4	4
+DB351	402FR	471F			ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB352	2021				ギョク　つや消し　焼付けラスター	Matte Opaque - Glazed Luster	2	3	3
+DB353	2022	1231			ギョク　つや消し　焼付けラスター	Matte Opaque - Glazed Luster	2	3	3
+DB354-1	2023-1				ギョク　つや消し　ガラスエナメル	Matte Opaque - Glass Enamel	2	2	2
+DB355	2024				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	4	4	4
+DB356-1	2025-1				ギョク　つや消し　ガラスエナメル	Matte Opaque - Glass Enamel	2	2	2
+DB357-1	2026-1				ギョク　つや消し　ガラスエナメル	Matte Opaque - Glass Enamel	2	2	2
+DB361	N/A				ギョク　つや消し　ラスター	Matte Opaque - Luster	2	2	2
+DB362	2076				ギョク　つや消し　ラスター	Matte Opaque - Luster	2	2	2
+DB371	2032				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	2	3	2
+DB372	2033				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - AB	2	2	2
+DB373	2031				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - AB	2	2	2
+DB374	2028				ギョク　つや消し　焼付けラスター	Matte Opaque - Glazed Luster	2	3	3
+DB375	2029				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	4	3	3
+DB376	2030				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - AB	2	2	2
+DB377	2039				ギョク　つや消し　焼付けラスター	Matte Opaque - Glazed Luster	2	3	3
+DB378	2040				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	2	3	3
+DB379	2034				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	4	4	3
+DB380	2035				スキ　つや消し　ゴールドラスター　レインボー	Matte Transparent - Gold Luster - Rainbow	2	2	2
+DB381	N/A				スキ　つや消し　ゴールドラスター 外色付け	Matte Transparent - Gold Luster - Dyed	3	3	3
+DB382	N/A				スキ　つや消し　焼付けラスター	Matte Transparent - Glazed Luster	2	3	3
+DB383	N/A				スキ　つや消し　ゴールドラスター 外色付け	Matte Transparent - Gold Luster - Dyed	3	3	3
+DB384-1	N/A				スキ　つや消し　ガラスエナメル	Matte Transparent - Glass Enamel	2	2	2
+DB385	N/A				ギョク　つや消し　焼付けラスター	Matte Opaque - Glazed Luster	3	3	3
+DB386	N/A				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	2	3	3
+DB387-1	N/A				スキ　つや消し　ガラスエナメル	Matte Transparent - Glass Enamel	2	2	2
+DB388	N/A				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	4	3	3
+DB389	N/A				ギョク　つや消し　焼付けラスター	Matte Opaque - Glazed Luster	2	3	3
+DB390	N/A				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	3	3	3
+DB391-1	N/A				ギョク　つや消し　ガラスエナメル	Matte Opaque - Glass Enamel	2	2	2
+DB410	1053	182			外銀　外色付け	Galvanized - Dyed	2	4	4
+DB411	1072L				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB412	1056				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB413	1057				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB414	N/A				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB415	1058				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB416	1059				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB417	N/A				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB418	1060				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB419	N/A				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB420	1076				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB421	1073				外銀　外色付け	Galvanized - Dyed	3	4	4
+DB422	1077				外銀　外色付け	Galvanized - Dyed	3	4	4
+DB423	N/A				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB424	1071				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB425	N/A				外銀　外色付け	Galvanized - Dyed	3	4	4
+DB426	1074				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB427	1075				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB428	1079				外銀　外色付け	Galvanized - Dyed	3	4	4
+DB429	1081				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB430	1082				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB431	1083				外銀　外色付け	Galvanized - Dyed	3	4	4
+DB432	1084				外銀　外色付け	Galvanized - Dyed	3	4	4
+DB433	1055				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB434	1072				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB435	1067				外銀　外色付け	Galvanized - Dyed	2	4	4
+DB436	1095				外銀　外色付け	Galvanized - Dyed	3	4	4
+DB451	N/A				ニッケルメッキ　外色付け	Nickel Plated - Dyed	2	4	4
+DB452	N/A				ニッケルメッキ　外色付け	Nickel Plated - Dyed	2	4	4
+DB453	N/A				ニッケルメッキ　外色付け	Nickel Plated - Dyed	2	4	4
+DB454	N/A				ニッケルメッキ　外色付け	Nickel Plated - Dyed	2	4	4
+DB455	N/A				ニッケルメッキ　外色付け	Nickel Plated - Dyed	2	4	4
+DB456	N/A				ニッケルメッキ　外色付け	Nickel Plated - Dyed	2	4	4
+DB457	N/A				ニッケルメッキ　外色付け	Nickel Plated - Dyed	2	4	4
+DB458	N/A				ニッケルメッキ　外色付け	Nickel Plated - Dyed	2	4	4
+DB459	N/A				ニッケルメッキ　外色付け	Nickel Plated - Dyed	2	4	4
+DB460	N/A				ニッケルメッキ　外色付け	Nickel Plated - Dyed	2	4	4
+DB461	N/A				ニッケルメッキ　外色付け	Nickel Plated - Dyed	3	4	4
+DB462	N/A				ニッケルメッキ　外色付け	Nickel Plated - Dyed	3	4	4
+DB463	N/A				ニッケルメッキ　外色付け	Nickel Plated - Dyed	3	4	4
+DB464	N/A				ニッケルメッキ　外色付け	Nickel Plated - Dyed	2	4	4
+DB465	N/A				ニッケルメッキ　外色付け	Nickel Plated - Dyed	3	4	4
+DB501	199				24金メッキ　レインボー	24kt Gold Plated - AB	2	2	2
+DB502	N/A		廃番	Discontinued	ロジウムメッキ　レインボー	Rhodium Plated - AB	2	2	2
+DB505	1983				24金メッキ　レインボー	24kt Gold Plated - AB	2	2	2
+DB506	1984				24金メッキ　レインボー	24kt Gold Plated - AB	2	2	2
+DB507	1985				24金メッキ　レインボー	24kt Gold Plated - AB	2	2	2
+DB508	1986				24金メッキ　レインボー	24kt Gold Plated - AB	2	2	2
+DB514	1992				ニッケルメッキ　レインボー	Nickel Plated - AB	2	2	2
+DB541	N/A				パラジウムメッキ　レインボー	Palladium Plated - AB	2	4	4
+DB542	N/A				パラジウムメッキ　レインボー	Palladium Plated - AB	2	4	4
+DB543	N/A				パラジウムメッキ　レインボー	Palladium Plated - AB	2	4	4
+DB544	N/A				パラジウムメッキ　レインボー	Palladium Plated - AB	2	4	4
+DB545	N/A				パラジウムメッキ　レインボー	Palladium Plated - AB	2	4	4
+DB546	N/A				パラジウムメッキ　レインボー	Palladium Plated - AB	2	4	4
+DB551	961		廃番	Discontinued	銀メッキ	Silver Plated	4	4	4
+DB551F	961F		廃番	Discontinued	つや消し　銀メッキ	Matte Silver Plated	4	4	4
+DB601	1434				銀引き　外色付け	Silver Lined - Dyed	3	3	4
+DB602	1419				銀引き　外色付け	Silver Lined - Dyed	3	3	4
+DB603	1420				銀引き　外色付け	Silver Lined - Dyed	3	3	4
+DB604	1421				銀引き　外色付け	Silver Lined - Dyed	3	3	4
+DB605	1422				銀引き　外色付け	Silver Lined - Dyed	2	3	4
+DB606	1423				銀引き　外色付け	Silver Lined - Dyed	3	3	4
+DB607	1424				銀引き　外色付け	Silver Lined - Dyed	2	3	4
+DB608	1425				銀引き　外色付け	Silver Lined - Dyed	2	3	4
+DB609	1426				銀引き　外色付け	Silver Lined - Dyed	3	3	4
+DB610	1427				銀引き　外色付け	Silver Lined - Dyed	3	3	4
+DB611	1428				銀引き　外色付け	Silver Lined - Dyed	3	3	4
+DB612	1429				銀引き　外色付け	Silver Lined - Dyed	2	3	4
+DB613	N/A				銀引き　外色付け	Silver Lined - Dyed	2	3	4
+DB621	552				アラバス　銀引き　外色付け	Alabaster - Silver Lined - Dyed	3	3	4
+DB622	553				アラバス　銀引き　外色付け	Alabaster - Silver Lined - Dyed	2	3	4
+DB623	554				アラバス　銀引き　外色付け	Alabaster - Silver Lined - Dyed	2	3	4
+DB624	555				アラバス　銀引き　外色付け	Alabaster - Silver Lined - Dyed	2	3	4
+DB625	556				アラバス　銀引き　外色付け	Alabaster - Silver Lined - Dyed	2	3	4
+DB626	571				アラバス　銀引き　外色付け	Alabaster - Silver Lined - Dyed	2	3	4
+DB627	572				アラバス　銀引き　外色付け	Alabaster - Silver Lined - Dyed	2	3	4
+DB628	573				アラバス　銀引き　外色付け	Alabaster - Silver Lined - Dyed	2	3	4
+DB629	574				アラバス　銀引き　外色付け	Alabaster - Silver Lined - Dyed	2	3	4
+DB630	576				アラバス　銀引き　外色付け	Alabaster - Silver Lined - Dyed	2	3	4
+DB631	650				アラバス　銀引き　外色付け	Alabaster - Silver Lined - Dyed	2	3	4
+DB635	37				シルク	Silk	1	1	1
+DB651	1478				ギョク　外色付け	Opaque - Dyed	2	4	4
+DB652	1475				ギョク　外色付け	Opaque - Dyed	2	4	4
+DB653	1479				ギョク　つや消し　外色付け	Matte Opaque - Dyed	3	4	4
+DB654	1464				ギョク　外色付け	Opaque - Dyed	3	4	4
+DB655	N/A				ギョク　外色付け	Opaque - Dyed	2	4	4
+DB656	N/A				ギョク　外色付け	Opaque - Dyed	2	4	4
+DB657	N/A				ギョク　外色付け	Opaque - Dyed	2	4	4
+DB658	1483				ギョク　外色付け	Opaque - Dyed	2	4	4
+DB659	N/A				ギョク　外色付け	Opaque - Dyed	2	4	4
+DB660	N/A				ギョク　外色付け	Opaque - Dyed	2	4	4
+DB661	1486				ギョク　外色付け	Opaque - Dyed	3	4	4
+DB662	N/A				ギョク　外色付け	Opaque - Dyed	3	4	4
+DB663	1488				ギョク　外色付け	Opaque - Dyed	2	4	4
+DB664	N/A				ギョク　外色付け	Opaque - Dyed	3	4	4
+DB665 	N/A				ギョク　つや消し　外色付け	Matte Opaque - Dyed	3	3	4
+DB670	2549				シルク　レインボー	Silk - AB	2	2	2
+DB671	2550				銀引き	Silver Lined	3	3	3
+DB672	2591				シルク　焼付けラスター	Silk - Glazed Luster	3	3	2
+DB673	2592				シルク　焼付けラスター	Silk - Glazed Luster	3	3	2
+DB674	2593				シルク　焼付けラスター	Silk - Glazed Luster	3	3	2
+DB675-1	N/A				シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB676	N/A		廃番	Discontinued	シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB677	N/A		廃番	Discontinued	シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB678	2597				シルク　ゴールドラスター	Silk - Gold Luster	2	2	2
+DB679	N/A		廃番	Discontinued	シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB680	2565				アラバス　銀引き　レインボー	Silk - Silver Lined - AB	3	3	3
+DB681	1625				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB682	N/A				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB683	1639				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB684	1638				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB685	1627				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB686	1631				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB687	1628				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB688	N/A				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB689	1630				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB690	1642				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB691	N/A				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB692	1643				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB693	1653				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB694	1654				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB695	1655				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB696	1656				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB697	1657				銀引き　半つや消し　外色付け	Semi Matte -  Silver Lined - Dyed	3	3	4
+DB702	132				スキ	Transparent	1	1	1
+DB703	138				スキ	Transparent	1	1	1
+DB704	140				スキ	Transparent	1	1	1
+DB705	146				スキ	Transparent	1	1	1
+DB706	148				スキ	Transparent	1	1	1
+DB707	151				スキ	Transparent	1	1	1
+DB708	152				スキ	Transparent	1	1	1
+DB709	134				スキ	Transparent	1	1	1
+DB710	136				スキ	Transparent	1	1	1
+DB711	142				スキ	Transparent	1	1	1
+DB712	143				スキ	Transparent	1	1	1
+DB713	156	146D			スキ	Transparent	1	1	1
+DB714	149				スキ	Transparent	1	1	1
+DB715	135				スキ	Transparent	1	1	1
+DB721	404				ギョク	Opaque	1	1	1
+DB722	406				ギョク	Opaque	1	1	1
+DB723	408				ギョク	Opaque	1	1	1
+DB724	411				ギョク	Opaque	1	1	1
+DB725	413				ギョク	Opaque	1	1	1
+DB726	414				ギョク	Opaque	1	1	1
+DB727	407	408L			ギョク	Opaque	1	1	1
+DB728	410				ギョク	Opaque	1	1	1
+DB729	412				ギョク	Opaque	1	1	1
+DB730	417L				ギョク	Opaque	1	1	1
+DB731	499				ギョク	Opaque	1	1	1
+DB732	492				ギョク	Opaque	1	1	1
+DB733	416				ギョク	Opaque	1	1	1
+DB734	409				ギョク	Opaque	1	1	1
+DB735	500				ギョク	Opaque	1	1	1
+DB741	131F				スキ　つや消し	Matte Transparent	1	1	1
+DB742	132F				スキ　つや消し	Matte Transparent	1	1	1
+DB743	136F				スキ　つや消し	Matte Transparent	1	1	1
+DB744	138F				スキ　つや消し	Matte Transparent	1	1	1
+DB745	140F				スキ　つや消し	Matte Transparent	1	1	1
+DB746	146F				スキ　つや消し	Matte Transparent	1	1	1
+DB747	148F				スキ　つや消し	Matte Transparent	1	1	1
+DB748	151F				スキ　つや消し	Matte Transparent	1	1	1
+DB749	152F				スキ　つや消し	Matte Transparent	1	1	1
+DB750 	402F				ギョク　つや消し	Matte Opaque	1	1	1
+DB751	404F				ギョク　つや消し	Matte Opaque	1	1	1
+DB752	406F				ギョク　つや消し	Matte Opaque	1	1	1
+DB753	408F				ギョク　つや消し	Matte Opaque	1	1	1
+DB754	411F				ギョク　つや消し	Matte Opaque	1	1	1
+DB755	413F				ギョク　つや消し	Matte Opaque	1	1	1
+DB756	414F				ギョク　つや消し	Matte Opaque	1	1	1
+DB757	407F				ギョク　つや消し	Matte Opaque	1	1	1
+DB758	410F				ギョク　つや消し	Matte Opaque	1	1	1
+DB759	412F				ギョク　つや消し	Matte Opaque	1	1	1
+DB760	N/A				ギョク　つや消し	Matte Opaque	1	1	1
+DB761	499F				ギョク　つや消し	Matte Opaque	1	1	1
+DB762	492F				ギョク　つや消し	Matte Opaque	1	1	1
+DB763	416F				ギョク　つや消し	Matte Opaque	1	1	1
+DB764	134F				スキ　つや消し	Matte Transparent	1	1	1
+DB765	142F				スキ　つや消し	Matte Transparent	1	1	1
+DB766	143F				スキ　つや消し	Matte Transparent	1	1	1
+DB767	156F				スキ　つや消し	Matte Transparent	1	1	1
+DB768	149F				スキ　つや消し	Matte Transparent	1	1	1
+DB769	135F				スキ　つや消し	Matte Transparent	1	1	1
+DB771	1601				スキ　つや消し　外色付け	Matte Transparent - Dyed	3	3	4
+DB772	1602				スキ　つや消し　外色付け	Matte Transparent - Dyed	3	3	4
+DB773	1621				スキ　つや消し　外色付け	Matte Transparent - Dyed	3	3	4
+DB774	1609				スキ　つや消し　外色付け	Matte Transparent - Dyed	3	3	4
+DB775	1622				スキ　つや消し　外色付け	Matte Transparent - Dyed	3	3	4
+DB776	N/A				スキ　つや消し　外色付け	Matte Transparent - Dyed	2	3	4
+DB777	N/A				スキ　つや消し　外色付け	Matte Transparent - Dyed	3	3	4
+DB778	N/A				スキ　つや消し　外色付け	Matte Transparent - Dyed	3	3	4
+DB779	N/A				スキ　つや消し　外色付け	Matte Transparent - Dyed	2	3	4
+DB780	N/A				スキ　つや消し　外色付け	Matte Transparent - Dyed	2	3	4
+DB781	N/A				スキ　つや消し　外色付け	Matte Transparent - Dyed	2	3	4
+DB782	N/A				スキ　つや消し　外色付け	Matte Transparent - Dyed	3	3	4
+DB783	N/A				スキ　つや消し　外色付け	Matte Transparent - Dyed	3	3	4
+DB784	N/A				スキ　つや消し　外色付け	Matte Transparent - Dyed	3	3	4
+DB785	N/A				スキ　つや消し　外色付け	Matte Transparent - Dyed	2	3	4
+DB786	N/A				スキ　つや消し　外色付け	Matte Transparent - Dyed	2	3	4
+DB787	N/A				スキ　つや消し　外色付け	Matte Transparent - Dyed	2	3	4
+DB788	N/A				スキ　つや消し　外色付け	Matte Transparent - Dyed	2	3	4
+DB791	1684				ギョク　つや消し　外色付け	Matte Opaque - Dyed	3	3	4
+DB792	1685				ギョク　つや消し　外色付け	Matte Opaque - Dyed	2	3	4
+DB793	1686				ギョク　つや消し　外色付け	Matte Opaque - Dyed	2	3	4
+DB794	N/A				ギョク　つや消し　外色付け	Matte Opaque - Dyed	2	3	4
+DB795	N/A				ギョク　つや消し　外色付け	Matte Opaque - Dyed	3	3	4
+DB796	1674				ギョク　つや消し　外色付け	Matte Opaque - Dyed	3	3	4
+DB797	N/A				ギョク　つや消し　外色付け	Matte Opaque - Dyed	2	3	4
+DB798	N/A				ギョク　つや消し　外色付け	Matte Opaque - Dyed	3	3	4
+DB799	N/A				ギョク　つや消し　外色付け	Matte Opaque - Dyed	3	3	4
+DB800	N/A				ギョク　つや消し　外色付け	Matte Opaque - Dyed	3	3	4
+DB820	N/A		廃番	Discontinued	シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB821	N/A		廃番	Discontinued	シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB822	N/A		廃番	Discontinued	シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB823-1	N/A				シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB824	2555		廃番	Discontinued	シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB825-1	N/A				シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB826	N/A		廃番	Discontinued	シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB827-1	N/A				シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB828-1	N/A				シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB829	2560		廃番	Discontinued	シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB830	N/A		廃番	Discontinued	シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB831-1	2562-1				シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB832	N/A		廃番	Discontinued	シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB833	2564		廃番	Discontinued	シルク　ガラスエナメル	Silk - Glass Enamel	2	2	2
+DB851	131FR	250F			スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB852	132FR	251F			スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB853	134FR	257F			スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB854	136FR				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB855	138FR				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB856	140FR				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB857	135FR	256F			スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB858	146FR	179F			スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB859	156FR				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB860	143FR	258F			スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB861	148FR	260F			スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB862	149FR				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB863	152FR				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB864	151FR	177F			スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB865	135FR				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB866	133FR				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB867	N/A				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB868	155FR				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB869	153FR	255F			スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB870	N/A				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB871	401FR	1215			ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB872	406FR				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB873	407FR				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB874	408FR				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB875	410FR				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB876	416FR				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB877	411FR				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB878	412FR				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB879	413FR				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB880	414FR	1213			ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB881	N/A				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB882	N/A				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB883	492FR				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB884	409FR				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB901	1522				中染め	Color Lined	2	2	3
+DB902	1524				中染め	Color Lined	2	2	3
+DB903	1527				中染め	Color Lined	2	2	3
+DB904	1528				中染め	Color Lined	2	2	3
+DB905	1529				中染め	Color Lined	2	2	3
+DB906	1531				中染め	Color Lined	2	2	3
+DB907	1521				中染め	Color Lined	2	2	3
+DB908	N/A				中染め	Color Lined	2	2	3
+DB909	N/A				中染め	Color Lined	2	2	3
+DB910	1552				中染め	Color Lined	2	2	3
+DB911	N/A				中染め	Color Lined	2	2	3
+DB912	N/A				中染め	Color Lined	2	2	3
+DB913	N/A				中染め	Color Lined	2	2	3
+DB914	1553				中染め	Color Lined	2	2	3
+DB915	1551				中染め	Color Lined	2	2	3
+DB916	N/A				中染め	Color Lined	2	2	3
+DB917	N/A				中染め	Color Lined	2	2	3
+DB918	1555				中染め	Color Lined	2	2	3
+DB919	N/A				中染め	Color Lined	2	2	3
+DB920	1556				中染め	Color Lined	2	2	3
+DB921	N/A				中染め	Color Lined	2	2	3
+DB922	N/A				中染め	Color Lined	2	2	3
+DB923	1558				中染め	Color Lined	2	2	3
+DB924	1554				中染め	Color Lined	2	2	3
+DB925	1559				中染め	Color Lined	2	2	3
+DB981	3051				中染め	Color Lined	2	2	3
+DB982	N/A				中染め	Color Lined	2	2	3
+DB983	N/A				中染め	Color Lined	2	2	3
+DB984	N/A				中染め	Color Lined	2	2	3
+DB985	N/A				中染め	Color Lined	2	2	3
+DB986	3056				中染め	Color Lined	2	2	3
+DB987 	N/A				中染め	Color Lined	3	2	3
+DB988 	N/A				中染め	Color Lined	3	2	3
+DB989 	N/A				中染め	Color Lined	3	2	4
+DB990 	N/A				中染め	Color Lined	2	2	3
+DB991 	N/A				中染め	Color Lined	2	2	3
+DB992 	N/A				中染め	Color Lined	2	2	3
+DB1001	1953				ギョク　レインボー	Qpaque - AB	2	2	2
+DB1002	N/A				メタリック	Metallic	2	2	2
+DB1003	N/A				メタリック	Metallic	2	2	2
+DB1004	1963				メタリック　レインボー	Metallic - AB	2	2	2
+DB1005	1964				メタリック　レインボー	Metallic - AB	2	2	2
+DB1006	1965				メタリック　レインボー	Metallic - AB	2	2	2
+DB1010	1966				ギョク　ゴールドラスター　レインボー	Opaque - Gold Luster - AB	2	2	2
+DB1011	N/A				ギョク　ゴールドラスター　レインボー	Opaque - Gold Luster - AB	2	2	2
+DB1012	N/A				ギョク　ゴールドラスター　レインボー	Opaque - Gold Luster - AB	2	2	2
+DB1013	1969				ギョク　ゴールドラスター　レインボー	Opaque - Gold Luster - AB	2	2	2
+DB1014	1970				ギョク　ゴールドラスター　レインボー	Opaque - Gold Luster - AB	2	2	2
+DB1015	N/A				ギョク　ゴールドラスター　レインボー	Opaque - Gold Luster - AB	2	2	2
+DB1016	N/A				ギョク　ゴールドラスター	Opaque - Gold Luster	2	2	2
+DB1051	2301				メタリック　つや消し　ラスター	Matte Metallic - Luster	2	2	2
+DB1052	N/A				メタリック　つや消し　レインボー	Matte Metallic - AB	2	2	2
+DB1053	N/A				つや消し　メタリック	Matte Metallic	2	2	2
+DB1054	N/A				メタリック　つや消し　レインボー	Matte Metallic - AB	2	2	2
+DB1055	2303				メタリック　つや消し　レインボー	Matte Metallic - AB	2	2	2
+DB1056	2304				メタリック　つや消し　レインボー	Matte Metallic - AB	2	2	2
+DB1061	2331				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB1062	N/A				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB1063	2333				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB1064	N/A				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB1065	N/A				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB1066	2336				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB1067	N/A				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB1101	133	132D			スキ	Transparent	1	1	1
+DB1102	141D				スキ	Transparent	1	1	1
+DB1103	155				スキ	Transparent	1	1	1
+DB1104	153				スキ	Transparent	1	1	1
+DB1105	157				スキ	Transparent	1	1	1
+DB1106	144				スキ	Transparent	1	1	1
+DB1107	158				スキ	Transparent	1	1	1
+DB1108	2405				スキ	Transparent	1	1	1
+DB1109	148D				スキ	Transparent	1	1	1
+DB1110	150				スキ	Transparent	1	1	1
+DB1111	2412				スキ	Transparent	1	1	1
+DB1112	132L				スキ	Transparent	1	1	1
+DB1130 	491				ギョク	Opaque	1	1	1
+DB1131	493				ギョク	Opaque	1	1	1
+DB1132	404D				ギョク	Opaque	1	1	1
+DB1133	405				ギョク	Opaque	1	1	1
+DB1134	419				ギョク	Opaque	1	1	1
+DB1135	501				ギョク	Opaque	1	1	1
+DB1136	412L				ギョク	Opaque	1	1	1
+DB1137	494				ギョク	Opaque	1	1	1
+DB1138	417	495			ギョク	Opaque	1	1	1
+DB1139	498				ギョク	Opaque	1	1	1
+DB1140 	408D				ギョク	Opaque	1	1	1
+DB1151	N/A				半つや消し　外銀　外色付け	Semi Matte - Galvanized - Dyed	2	4	4
+DB1152	N/A				半つや消し　外銀　外色付け	Semi Matte - Galvanized - Dyed	2	4	4
+DB1153	N/A				半つや消し　外銀　外色付け	Semi Matte - Galvanized - Dyed	3	4	4
+DB1154	N/A				半つや消し　外銀　外色付け	Semi Matte - Galvanized - Dyed	2	4	4
+DB1155	N/A				半つや消し　外銀　外色付け	Semi Matte - Galvanized - Dyed	2	4	4
+DB1156	N/A				半つや消し　外銀　外色付け	Semi Matte - Galvanized - Dyed	2	4	4
+DB1157	N/A				半つや消し　外銀　外色付け	Semi Matte - Galvanized - Dyed	3	4	4
+DB1158	N/A				半つや消し　外銀　外色付け	Semi Matte - Galvanized - Dyed	3	4	4
+DB1159	N/A				半つや消し　外銀　外色付け	Semi Matte - Galvanized - Dyed	3	4	4
+DB1162	N/A				つや消し　外銀　外色付け	Matte Galvanize - Dyed	2	4	4
+DB1163	N/A				つや消し　外銀　外色付け	Matte Galvanize - Dyed	3	4	4
+DB1164	N/A				つや消し　外銀　外色付け	Matte Galvanize - Dyed	2	4	4
+DB1165	N/A				つや消し　外銀　外色付け	Matte Galvanize - Dyed	2	4	4
+DB1166	N/A				つや消し　外銀　外色付け	Matte Galvanize - Dyed	2	4	4
+DB1167	N/A				つや消し　外銀　外色付け	Matte Galvanize - Dyed	3	4	4
+DB1168	N/A				つや消し　外銀　外色付け	Matte Galvanize - Dyed	3	4	4
+DB1169	2091				つや消し　外銀　外色付け	Matte Galvanize - Dyed	3	4	4
+DB1170	N/A				つや消し　外銀　外色付け	Matte Galvanize - Dyed	2	4	4
+DB1171	N/A				つや消し　外銀　外色付け	Matte Galvanize - Dyed	2	4	4
+DB1172	N/A				つや消し　外銀　外色付け	Matte Galvanize - Dyed	2	4	4
+DB1173	N/A				つや消し　外銀　外色付け	Matte Galvanize - Dyed	3	4	4
+DB1174	N/A				つや消し　外銀　外色付け	Matte Galvanize - Dyed	2	4	4
+DB1175	N/A				つや消し　外銀　外色付け	Matte Galvanize - Dyed	3	4	4
+DB1176	N/A				つや消し　外銀　外色付け	Matte Galvanize - Dyed	3	3	4
+DB1181	N/A				半つや消し　外銀　外色付け	Semi Matte - Galvanized - Dyed	2	4	4
+DB1182	N/A				半つや消し　外銀　外色付け	Semi Matte - Galvanized - Dyed	2	4	4
+DB1183	N/A				半つや消し　外銀　外色付け	Semi Matte - Galvanized - Dyed	2	4	4
+DB1184	N/A				半つや消し　外銀　外色付け	Semi Matte - Galvanized - Dyed	3	4	4
+DB1185	N/A				半つや消し　外銀　外色付け	Semi Matte - Galvanized - Dyed	2	4	4
+DB1186	N/A				半つや消し　外銀　外色付け	Semi Matte - Galvanized - Dyed	3	4	4
+DB1201	2422	133S			銀引き	Silver Lined	3	3	3
+DB1202	11D				銀引き	Silver Lined	3	3	3
+DB1203	23	155S			銀引き	Silver Lined	3	3	3
+DB1204	13	153S			銀引き	Silver Lined	3	3	3
+DB1205	24	157S			銀引き	Silver Lined	3	3	3
+DB1206	2423	14D			銀引き	Silver Lined	3	3	3
+DB1207	26	158S			銀引き	Silver Lined	3	3	3
+DB1208	2425	2405S			銀引き	Silver Lined	3	3	3
+DB1209	2429	18D			銀引き	Silver Lined	3	3	3
+DB1210	19	150S			銀引き	Silver Lined	3	3	3
+DB1211	2433				銀引き	Silver Lined	3	3	3
+DB1212	2	132L-S			銀引き	Silver Lined	3	3	3
+DB1221	N/A				スキ　ラスター	Transparent - Luster	2	2	2
+DB1222	324D				スキ　ラスター	Transparent - Luster	2	2	2
+DB1223	330	155RL			スキ　ラスター	Transparent - Luster	2	2	2
+DB1224	N/A				スキ　ラスター	Transparent - Luster	2	2	2
+DB1225	320				スキ　ラスター	Transparent - Luster	2	2	2
+DB1226	N/A				スキ　ラスター	Transparent - Luster	2	2	2
+DB1227	395				スキ　ラスター	Transparent - Luster	2	2	2
+DB1228	N/A				スキ　ラスター	Transparent - Luster	2	2	2
+DB1229	321D				スキ　ラスター	Transparent - Luster	2	2	2
+DB1230	175				スキ　ラスター	Transparent - Luster	2	2	2
+DB1231	N/A				スキ　ラスター	Transparent - Luster	2	2	2
+DB1241	2456	133R			スキ　レインボー	Transparent - AB	2	2	2
+DB1242	N/A				スキ　レインボー	Transparent - AB	2	2	2
+DB1243	292	155R			スキ　レインボー	Transparent - AB	2	2	2
+DB1244	294	153R			スキ　レインボー	Transparent - AB	2	2	2
+DB1245	293	157R			スキ　レインボー	Transparent - AB	2	2	2
+DB1246	259	144R			スキ　レインボー	Transparent - AB	2	2	2
+DB1247	288	158R			スキ　レインボー	Transparent - AB	2	2	2
+DB1248	2458	2405R			スキ　レインボー	Transparent - AB	2	2	2
+DB1249	2457	148DR			スキ　レインボー	Transparent - AB	2	2	2
+DB1250	261	150R			スキ　レインボー	Transparent - AB	2	2	2
+DB1251	2462				スキ　レインボー	Transparent - AB	2	2	2
+DB1252	251L				スキ　レインボー	Transparent - AB	2	2	2
+DB1261	133F				スキ　つや消し	Matte Transparent	1	1	1
+DB1262	N/A				スキ　つや消し	Matte Transparent	1	1	1
+DB1263	155F				スキ　つや消し	Matte Transparent	1	1	1
+DB1264	153F				スキ　つや消し	Matte Transparent	1	1	1
+DB1265	N/A				スキ　つや消し	Matte Transparent	1	1	1
+DB1266	144F				スキ　つや消し	Matte Transparent	1	1	1
+DB1267	158F				スキ　つや消し	Matte Transparent	1	1	1
+DB1268	2405F				スキ　つや消し	Matte Transparent	1	1	1
+DB1269	N/A				スキ　つや消し	Matte Transparent	1	1	1
+DB1270	150F				スキ　つや消し	Matte Transparent	1	1	1
+DB1271	N/A				スキ　つや消し	Matte Transparent	1	1	1
+DB1272	N/A				スキ　つや消し	Matte Transparent	1	1	1
+DB1281	N/A				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB1282	158FR				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB1283	2405FR				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB1284	N/A				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB1285	150FR	261F			スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB1286	N/A				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB1287	N/A				スキ　つや消し　レインボー	Matte Transparent - AB	2	2	2
+DB1301	1301				スキ　外色付け	Transparent - Dyed	2	3	4
+DB1302	1302				スキ　外色付け	Transparent - Dyed	2	3	4
+DB1304	1304				スキ　外色付け	Transparent - Dyed	2	3	4
+DB1308	1308				スキ　外色付け	Transparent - Dyed	2	3	4
+DB1310	1310				スキ　外色付け	Transparent - Dyed	3	3	4
+DB1312	1312				スキ　外色付け	Transparent - Dyed	3	3	4
+DB1315	1315				スキ　外色付け	Transparent - Dyed	3	3	4
+DB1318	N/A				スキ　外色付け	Transparent - Dyed	2	3	4
+DB1319	N/A				スキ　外色付け	Transparent - Dyed	2	3	4
+DB1333	1333				銀引き　外色付け	Silver Lined - Dyed	3	3	4
+DB1335	1335				銀引き　外色付け	Silver Lined - Dyed	3	3	4
+DB1338	1338				銀引き　外色付け	Silver Lined - Dyed	2	3	4
+DB1340	1340				銀引き　外色付け	Silver Lined - Dyed	3	3	4
+DB1341	1341				銀引き　外色付け	Silver Lined - Dyed	3	3	4
+DB1342	1342				銀引き　外色付け	Silver Lined - Dyed	3	3	4
+DB1343	1343				銀引き　外色付け	Silver Lined - Dyed	2	3	4
+DB1345	1345				銀引き　外色付け	Silver Lined - Dyed	3	3	4
+DB1347	1346				銀引き　外色付け	Silver Lined - Dyed	2	3	4
+DB1363	1363				ギョク　外色付け	Opaque - Dyed	2	3	4
+DB1371	1371				ギョク　外色付け	Opaque - Dyed	2	3	4
+DB1376	1375				ギョク　外色付け	Opaque - Dyed	3	3	4
+DB1379	1378				ギョク　外色付け	Opaque - Dyed	3	3	4
+DB1391	N/A				銀引き	Silver Lined	2	2	2
+DB1392	N/A				銀引き	Silver Lined	2	2	2
+DB1393	N/A				銀引き	Silver Lined	2	2	2
+DB1401	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1402	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1403	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1404	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1405	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1406	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1407	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1408	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1409	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1410	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1411	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1412	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1413	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1414	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1415	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1416	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1417	N/A		廃番	Discontinued	スキ　ガラスエナメル	Transparent - Glass Enamel	2	2	2
+DB1431	N/A		廃番	Discontinued	銀引き　ガラスエナメル	Silver Lined - Glass Enamel	2	3	3
+DB1432	N/A		廃番	Discontinued	銀引き　ガラスエナメル	Silver Lined - Glass Enamel	2	3	3
+DB1433	N/A		廃番	Discontinued	銀引き　ガラスエナメル	Silver Lined - Glass Enamel	2	3	3
+DB1434	N/A		廃番	Discontinued	銀引き　ガラスエナメル	Silver Lined - Glass Enamel	2	3	3
+DB1435	N/A		廃番	Discontinued	銀引き　ガラスエナメル	Silver Lined - Glass Enamel	2	3	3
+DB1451	2351		廃番	Discontinued	アラバス　銀引き　ガラスエナメル	Alabaster - Silver Lined - Glass Enamel	2	3	3
+DB1452	2352		廃番	Discontinued	アラバス　銀引き　ガラスエナメル	Alabaster - Silver Lined - Glass Enamel	2	3	3
+DB1453	2353		廃番	Discontinued	アラバス　銀引き　ガラスエナメル	Alabaster - Silver Lined - Glass Enamel	2	3	3
+DB1454	2354		廃番	Discontinued	アラバス　銀引き　ガラスエナメル	Alabaster - Silver Lined - Glass Enamel	2	3	3
+DB1455	2355		廃番	Discontinued	アラバス　銀引き　ガラスエナメル	Alabaster - Silver Lined - Glass Enamel	2	3	3
+DB1456	2356		廃番	Discontinued	アラバス　銀引き　ガラスエナメル	Alabaster - Silver Lined - Glass Enamel	2	3	3
+DB1457	2357		廃番	Discontinued	アラバス　銀引き　ガラスエナメル	Alabaster - Silver Lined - Glass Enamel	2	3	3
+DB1458	2358		廃番	Discontinued	アラバス　銀引き　ガラスエナメル	Alabaster - Silver Lined - Glass Enamel	2	3	3
+DB1459	2359		廃番	Discontinued	アラバス　銀引き　ガラスエナメル	Alabaster - Silver Lined - Glass Enamel	2	3	3
+DB1460	N/A		廃番	Discontinued	アラバス　銀引き　ガラスエナメル	Alabaster - Silver Lined - Glass Enamel	2	3	3
+DB1471	N/A		廃番	Discontinued	スキ　ガラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB1472-1	3503-1				スキ　ガラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB1473	3509		廃番	Discontinued	スキ　グラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB1474	N/A		廃番	Discontinued	スキ　ガラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB1475-1	N/A				スキ　ガラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB1476	N/A		廃番	Discontinued	スキ　グラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB1477	N/A		廃番	Discontinued	スキ　ガラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB1478	N/A		廃番	Discontinued	スキ　ガラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB1479-1	N/A				スキ　ガラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB1480	N/A		廃番	Discontinued	スキ　グラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB1481-1	3507-1				スキ　ガラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB1482-1	N/A				スキ　ガラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB1483-1	N/A				スキ　ガラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB1484	3511		廃番	Discontinued	スキ　グラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB1485	N/A		廃番	Discontinued	スキ　ガラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB1486-1	N/A				スキ　ガラスエナメル　ラスター	Transparent - Glass Enamel - Luster	2	2	2
+DB1490-1	N/A				ギョク　ガラスエナメル	Opaque - Glass Enamel	2	2	2
+DB1491-1	N/A				ギョク　ガラスエナメル	Opaque - Glass Enamel	2	2	2
+DB1492-1	N/A				ギョク　ガラスエナメル	Opaque - Glass Enamel	2	2	2
+DB1493-1	N/A				ギョク　ガラスエナメル	Opaque - Glass Enamel	2	2	2
+DB1494-1	N/A				ギョク　ガラスエナメル	Opaque - Glass Enamel	2	2	2
+DB1495-1	N/A				ギョク　ガラスエナメル	Opaque - Glass Enamel	2	2	2
+DB1496-1	3318-1				ギョク　ガラスエナメル	Opaque - Glass Enamel	2	2	2
+DB1497-1	N/A				ギョク　ガラスエナメル	Opaque - Glass Enamel	2	2	2
+DB1498-1	N/A				ギョク　ガラスエナメル	Opaque - Glass Enamel	2	2	2
+DB1500	N/A		廃番	Discontinued	ギョク　ガラスエナメル　レインボー	Opaque - Glass Enamel - AB	2	2	2
+DB1501	N/A		廃番	Discontinued	ギョク　ガラスエナメル　レインボー	Opaque - Glass Enamel - AB	2	2	2
+DB1502	N/A		廃番	Discontinued	ギョク　ガラスエナメル　レインボー	Opaque - Glass Enamel - AB	2	2	2
+DB1503	N/A		廃番	Discontinued	ギョク　ガラスエナメル　レインボー	Opaque - Glass Enamel - AB	2	2	2
+DB1504	N/A		廃番	Discontinued	ギョク　ガラスエナメル　レインボー	Opaque - Glass Enamel - AB	2	2	2
+DB1505	N/A		廃番	Discontinued	ギョク　ガラスエナメル　レインボー	Opaque - Glass Enamel - AB	2	2	2
+DB1506	N/A		廃番	Discontinued	ギョク　ガラスエナメル　レインボー	Opaque - Glass Enamel - AB	2	2	2
+DB1507	N/A		廃番	Discontinued	ギョク　ガラスエナメル　レインボー	Opaque - Glass Enamel - AB	2	2	2
+DB1508	N/A		廃番	Discontinued	ギョク　ガラスエナメル　レインボー	Opaque - Glass Enamel - AB	2	2	2
+DB1510-1	N/A				ギョク　つや消し　ガラスエナメル	Matte Opaque - Glass Enamel	2	2	2
+DB1511-1	N/A				ギョク　つや消し　ガラスエナメル	Matte Opaque - Glass Enamel	2	2	2
+DB1512	N/A		廃番	Discontinued	ギョク　つや消し　ガラスエナメル	Matte Opaque - Glass Enamel	2	2	2
+DB1513	N/A		廃番	Discontinued	ギョク　つや消し　ガラスエナメル	Matte Opaque - Glass Enamel	2	2	2
+DB1514	N/A		廃番	Discontinued	ギョク　つや消し　ガラスエナメル	Matte Opaque - Glass Enamel	2	2	2
+DB1515	N/A		廃番	Discontinued	ギョク　つや消し　ガラスエナメル	Matte Opaque - Glass Enamel	2	2	2
+DB1516-1	N/A				ギョク　つや消し　ガラスエナメル	Matte Opaque - Glass Enamel	2	2	2
+DB1517-1	N/A				ギョク　つや消し　ガラスエナメル	Matte Opaque - Glass Enamel	2	2	2
+DB1518-1	N/A				ギョク　つや消し　ガラスエナメル	Matte Opaque - Glass Enamel	2	2	2
+DB1520	N/A		廃番	Discontinued	ギョク　つや消し　ガラスエナメル　レインボー	Matte Opaque - Glass Enamel - AB	2	2	2
+DB1521	N/A		廃番	Discontinued	ギョク　つや消し　ガラスエナメル　レインボー	Matte Opaque - Glass Enamel - AB	2	2	2
+DB1522	N/A		廃番	Discontinued	ギョク　つや消し　ガラスエナメル　レインボー	Matte Opaque - Glass Enamel - AB	2	2	2
+DB1523	N/A		廃番	Discontinued	ギョク　つや消し　ガラスエナメル　レインボー	Matte Opaque - Glass Enamel - AB	2	2	2
+DB1524	N/A		廃番	Discontinued	ギョク　つや消し　ガラスエナメル　レインボー	Matte Opaque - Glass Enamel - AB	2	2	2
+DB1525	N/A		廃番	Discontinued	ギョク　つや消し　ガラスエナメル　レインボー	Matte Opaque - Glass Enamel - AB	2	2	2
+DB1526	N/A		廃番	Discontinued	ギョク　つや消し　ガラスエナメル　レインボー	Matte Opaque - Glass Enamel - AB	2	2	2
+DB1527	N/A		廃番	Discontinued	ギョク　つや消し　ガラスエナメル　レインボー	Matte Opaque - Glass Enamel - AB	2	2	2
+DB1528	N/A		廃番	Discontinued	ギョク　つや消し　ガラスエナメル　レインボー	Matte Opaque - Glass Enamel - AB	2	2	2
+DB1530-1	N/A				ギョク　ガラスエナメル　ラスター	Opaque- Glass Enamel - Luster	2	2	2
+DB1531-1	N/A				ギョク　ガラスエナメル　ラスター	Opaque- Glass Enamel - Luster	2	2	2
+DB1532-1	N/A				ギョク　ガラスエナメル　ラスター	Opaque- Glass Enamel - Luster	2	2	2
+DB1533-1	N/A				ギョク　ガラスエナメル　ラスター	Opaque- Glass Enamel - Luster	2	2	2
+DB1534-1	N/A				ギョク　ガラスエナメル　ラスター	Opaque- Glass Enamel - Luster	2	2	2
+DB1535-1	N/A				ギョク　ガラスエナメル　ラスター	Opaque- Glass Enamel - Luster	2	2	2
+DB1536-1	N/A				ギョク　ガラスエナメル　ラスター	Opaque- Glass Enamel - Luster	2	2	2
+DB1537-1	N/A				ギョク　ガラスエナメル　ラスター	Opaque- Glass Enamel - Luster	2	2	2
+DB1538-1	N/A				ギョク　ガラスエナメル　ラスター	Opaque- Glass Enamel - Luster	2	2	2
+DB1560 	441				ギョク　ラスター	Qpaque - Luster	2	2	2
+DB1561	442	493RL			ギョク　ラスター	Qpaque - Luster	2	2	2
+DB1562	422D	404D-RL			ギョク　ラスター	Qpaque - Luster	2	2	2
+DB1563	423	653			ギョク　ラスター	Qpaque - Luster	2	2	2
+DB1564	425				ギョク　ラスター	Qpaque - Luster	2	2	2
+DB1565	445				ギョク　ラスター	Qpaque - Luster	2	2	2
+DB1566	448	501RL			ギョク　ラスター	Qpaque - Luster	2	2	2
+DB1567	N/A				ギョク　ラスター	Qpaque - Luster	2	2	2
+DB1568	N/A	494RL			ギョク　ラスター	Qpaque - Luster	2	2	2
+DB1569	432				ギョク　ラスター	Qpaque - Luster	2	2	2
+DB1570	443	498RL			ギョク　ラスター	Qpaque - Luster	2	2	2
+DB1571	488				ギョク　レインボー	Qpaque - AB	2	2	2
+DB1572	472D				ギョク　レインボー	Qpaque - AB	2	2	2
+DB1573	473	405R			ギョク　レインボー	Qpaque - AB	2	2	2
+DB1574	3470	419R			ギョク　レインボー	Qpaque - AB	2	2	2
+DB1575	N/A				ギョク　レインボー	Qpaque - AB	2	2	2
+DB1576	485				ギョク　レインボー	Qpaque - AB	2	2	2
+DB1577	N/A				ギョク　レインボー	Qpaque - AB	2	2	2
+DB1578	N/A	417R			ギョク　レインボー	Qpaque - AB	2	2	2
+DB1579	489				ギョク　レインボー	Qpaque - AB	2	2	2
+DB1581	493F				ギョク　つや消し	Matte Opaque	1	1	1
+DB1582	N/A				ギョク　つや消し	Matte Opaque	1	1	1
+DB1583	405F				ギョク　つや消し	Matte Opaque	1	1	1
+DB1584	419F				ギョク　つや消し	Matte Opaque	1	1	1
+DB1585	501F				ギョク　つや消し	Matte Opaque	1	1	1
+DB1586	N/A				ギョク　つや消し	Matte Opaque	1	1	1
+DB1587	494F				ギョク　つや消し	Matte Opaque	1	1	1
+DB1588	417F	495F			ギョク　つや消し	Matte Opaque	1	1	1
+DB1589	498F				ギョク　つや消し	Matte Opaque	1	1	1
+DB1591	N/A				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB1592	N/A				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB1593	405FR				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB1594	501FR				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB1595	N/A				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB1596	N/A				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB1597	417FR	495FR			ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB1598	N/A				ギョク　つや消し　レインボー	Matte Opaque - AB	2	2	2
+DB1671	3637				中染め	Color Lined	2	2	3
+DB1672	3638				中染め	Color Lined	3	2	4
+DB1673	3639				中染め	Color Lined	3	2	4
+DB1674	3641				中染め	Color Lined	3	2	4
+DB1675	3642				中染め	Color Lined	3	2	4
+DB1676	3643				中染め	Color Lined	3	2	4
+DB1677	3644				中染め	Color Lined	3	2	4
+DB1681	N/A				銀引き	Silver Lined	2	2	3
+DB1682	N/A				銀引き	Silver Lined	2	2	3
+DB1683	N/A				銀引き	Silver Lined	2	2	3
+DB1684	N/A				銀引き	Silver Lined	2	2	3
+DB1685	N/A				銀引き	Silver Lined	2	2	3
+DB1691	N/A				銀引き　レインボー	Silver Lined - AB	2	2	3
+DB1692	N/A				銀引き　レインボー	Silver Lined - AB	2	2	3
+DB1694	N/A				銀引き　レインボー	Silver Lined - AB	2	2	3
+DB1701	3801				中染め	Color Lined	2	2	3
+DB1702	3802				中染め	Color Lined	2	2	3
+DB1703	3805				中染め	Color Lined	2	2	3
+DB1704	3803				中染め	Color Lined	2	2	3
+DB1705	3804				中染め	Color Lined	2	2	3
+DB1706	3815				中染め	Color Lined	2	2	3
+DB1707	3806				中染め	Color Lined	3	2	4
+DB1708	3807				中染め	Color Lined	3	2	4
+DB1709	3808				中染め	Color Lined	3	2	4
+DB1710	N/A				中染め	Color Lined	2	2	3
+DB1711	N/A				中染め	Color Lined	2	2	3
+DB1712	3814				中染め	Color Lined	3	2	4
+DB1731	N/A				アラバス　中染め	Alabaster - Color Lined	2	2	3
+DB1732	N/A				中染め	Color Lined	3	2	4
+DB1733	N/A				アラバス　中染め	Alabaster - Color Lined	2	2	3
+DB1734	N/A				中染め	Color Lined	2	2	3
+DB1735	N/A				中染め	Color Lined	2	2	3
+DB1736	N/A				中染め	Color Lined	2	2	3
+DB1737	N/A				中染め	Color Lined	3	2	4
+DB1738	N/A				中染め	Color Lined	3	2	4
+DB1739	N/A				中染め	Color Lined	2	2	3
+DB1740	N/A				中染め	Color Lined	2	2	3
+DB1741	N/A				中染め	Color Lined	2	2	3
+DB1742	N/A				アラバス　中染め	Alabaster - Color Lined	2	2	3
+DB1743	N/A				中染め	Color Lined	3	2	4
+DB1744	N/A				アラバス　中染め	Alabaster - Color Lined	3	2	4
+DB1745	3523				中染め	Color Lined	2	2	3
+DB1746	N/A				アラバス　中染め	Alabaster - Color Lined	2	2	3
+DB1747	N/A				中染め	Color Lined	3	2	4
+DB1748	N/A				中染め	Color Lined	3	2	4
+DB1749	N/A				アラバス　中染め	Alabaster - Color Lined	3	2	4
+DB1750	N/A				中染め	Color Lined	2	2	3
+DB1751	N/A				中染め	Color Lined	3	2	4
+DB1752	N/A				アラバス　中染め	Alabaster - Color Lined	2	2	3
+DB1753	N/A				アラバス　中染め	Alabaster - Color Lined	2	2	3
+DB1754	N/A				中染め	Color Lined	2	2	3
+DB1755	N/A				中染め	Color Lined	3	2	4
+DB1756	N/A				中染め	Color Lined	2	2	3
+DB1757	3748				中染め	Color Lined	2	2	3
+DB1758	N/A				中染め	Color Lined	2	2	3
+DB1759	3735				中染め	Color Lined	2	2	3
+DB1760	1836				中染め	Color Lined	2	2	3
+DB1761	N/A				アラバス　中染め	Alabaster - Color Lined	2	2	3
+DB1762	N/A				中染め	Color Lined	2	2	3
+DB1763	N/A				中染め	Color Lined	2	2	3
+DB1764	N/A				中染め	Color Lined	2	2	3
+DB1765	N/A				アラバス　中染め	Alabaster - Color Lined	2	2	3
+DB1766	3731				中染め	Color Lined	2	2	3
+DB1767	3532				中染め	Color Lined	2	2	3
+DB1768	N/A				アラバス　中染め	Alabaster - Color Lined	2	2	3
+DB1769	N/A				中染め	Color Lined	2	2	3
+DB1770	N/A				アラバス　中染め	Alabaster - Color Lined	2	2	3
+DB1771	3522				中染め	Color Lined	2	2	3
+DB1772	3535				中染め	Color Lined	2	2	3
+DB1773	N/A				中染め	Color Lined	2	2	3
+DB1774	N/A				アラバス　中染め	Alabaster - Color Lined	3	2	4
+DB1775	N/A				中染め	Color Lined	2	2	3
+DB1776	N/A				中染め	Color Lined	2	2	3
+DB1777	N/A				中染め	Color Lined	2	2	3
+DB1778	N/A				中染め	Color Lined	2	2	3
+DB1779	3761				中染め	Color Lined	2	2	3
+DB1780	3762				中染め	Color Lined	2	2	3
+DB1781	N/A				中染め	Color Lined	2	2	3
+DB1782	3765				中染め	Color Lined	2	2	3
+DB1783	3766				中染め	Color Lined	2	2	3
+DB1784	N/A				中染め	Color Lined	2	2	3
+DB1785	N/A				中染め	Color Lined	2	2	3
+DB1786	3764				中染め	Color Lined	2	2	3
+DB1787	3763				中染め	Color Lined	2	2	3
+DB1788	N/A				中染め	Color Lined	2	2	3
+DB1789	N/A				中染め	Color Lined	2	2	3
+DB1790	N/A				中染め	Color Lined	2	2	3
+DB1791	N/A				中染め	Color Lined	2	2	3
+DB1792	N/A				中染め	Color Lined	2	2	3
+DB1793	N/A				中染め	Color Lined	2	2	3
+DB1801	N/A				シルク　中染め	Silk - Color Lined	2	2	3
+DB1802	N/A				シルク　中染め	Silk - Color Lined	2	2	3
+DB1803	N/A				シルク　中染め	Silk - Color Lined	3	2	4
+DB1804	N/A				シルク　中染め	Silk - Color Lined	2	2	3
+DB1805	N/A				シルク　中染め	Silk - Color Lined	2	2	3
+DB1806	N/A				シルク　中染め	Silk - Color Lined	2	2	3
+DB1807	N/A				シルク　中染め	Silk - Color Lined	2	2	3
+DB1808	N/A				シルク　中染め	Silk - Color Lined	3	2	4
+DB1809	N/A				シルク　中染め	Silk - Color Lined	2	2	3
+DB1810	N/A				シルク　中染め	Silk - Color Lined	2	2	3
+DB1811	N/A				シルク　中染め	Silk - Color Lined	2	2	3
+DB1812	N/A				シルク　中染め	Silk - Color Lined	2	2	3
+DB1813	N/A				シルク　中染め	Silk - Color Lined	2	2	3
+DB1814	N/A				シルク　中染め	Silk - Color Lined	2	2	3
+DB1815	N/A				シルク　中染め	Silk - Color Lined	2	2	3
+DB1816	N/A				シルク　中染め	Silk - Color Lined	2	2	3
+DB1817	N/A				シルク　中染め	Silk - Color Lined	2	2	3
+DB1818	N/A				シルク　中染め	Silk - Color Lined	2	2	3
+DB1831	4201				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1831F	N/A				デュラコート　つや消し　外銀　外色付け	Matte Duracoat - Galvanized - Dyed	2	3	3
+DB1832	4202				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1832F	N/A				デュラコート　つや消し　外銀　外色付け	Matte Duracoat - Galvanized - Dyed	2	3	3
+DB1833	4203				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1833F	N/A				デュラコート　つや消し　外銀　外色付け	Matte Duracoat - Galvanized - Dyed	2	3	3
+DB1834	4204				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1834F	N/A				デュラコート　つや消し　外銀　外色付け	Matte Duracoat - Galvanized - Dyed	2	3	3
+DB1835	4205				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1836	4206				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1837	4207				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1838	4208				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1838F	N/A				デュラコート　つや消し　外銀　外色付け	Matte Duracoat - Galvanized - Dyed	2	3	3
+DB1839	4209				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1840	4210				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1840F	N/A				デュラコート　つや消し　外銀　外色付け	Matte Duracoat - Galvanized - Dyed	2	3	3
+DB1841	4211				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1841F	N/A				デュラコート　つや消し　外銀　外色付け	Matte Duracoat - Galvanized - Dyed	2	3	3
+DB1842	4212				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1842F	N/A				デュラコート　つや消し　外銀　外色付け	Matte Duracoat - Galvanized - Dyed	2	3	3
+DB1843	4213				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1843F	N/A				デュラコート　つや消し　外銀　外色付け	Matte Duracoat - Galvanized - Dyed	2	3	3
+DB1844	4214				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1844F	N/A				デュラコート　つや消し　外銀　外色付け	Matte Duracoat - Galvanized - Dyed	2	3	3
+DB1845	4215				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1846	4216				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1847	4217				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1847F	N/A				デュラコート　つや消し　外銀　外色付け	Matte Duracoat - Galvanized - Dyed	2	3	3
+DB1848	4218				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1849	4219				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1850	4220				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1851	4221				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1851F	N/A				デュラコート　つや消し　外銀　外色付け	Matte Duracoat - Galvanized - Dyed	2	3	3
+DB1852	4222				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB1855	4071				シルク　中染	Silk - Color Lined	3	2	4
+DB1856	4072				シルク　中染	Silk - Color Lined	3	2	4
+DB1857	4073				シルク　中染	Silk - Color Lined	3	2	4
+DB1858	4074				シルク　中染	Silk - Color Lined	3	2	4
+DB1859	N/A				シルク　中染	Silk - Color Lined	3	2	4
+DB1860	4076				シルク　中染	Silk - Color Lined	2	2	3
+DB1861	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1862	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1863	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1864	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1865	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	3	2	3
+DB1866	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1867	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	3	2	3
+DB1868	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1869	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1870	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1871	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1872	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1873	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1874	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1875	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	3	2	3
+DB1876	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1877	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1878	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1879	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1880	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	3	2	3
+DB1881	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1882	N/A				シルク　中染め　レインボー	Silk - Color Lined - AB	2	2	3
+DB1886	N/A				スキ　ラスター	Transparent - Luster	2	2	2
+DB1887	165				スキ　ラスター	Transparent - Luster	2	2	2
+DB1888	172				スキ　ラスター	Transparent - Luster	2	2	2
+DB1889	N/A				スキ　ラスター	Transparent - Luster	2	2	2
+DB1890	321	909			スキ　ラスター	Transparent - Luster	2	2	2
+DB1891	N/A				スキ　ラスター	Transparent - Luster	2	2	2
+DB1892	N/A				スキ　ラスター	Transparent - Luster	2	2	2
+DB1893	N/A				スキ　ラスター	Transparent - Luster	2	2	2
+DB1894	N/A				スキ　ラスター	Transparent - Luster	2	2	2
+DB1895	N/A				スキ　ラスター	Transparent - Luster	2	2	2
+DB1896	176				スキ　ラスター	Transparent - Luster	2	2	2
+DB1897	178				スキ　ラスター	Transparent - Luster	2	2	2
+DB1900	440	491RL			ギョク　ラスター	Qpaque - Luster	2	2	2
+DB1906	N/A				ギョク　ゴールドラスター	Opaque - Gold Luster	4	3	3
+DB1907	N/A				ギョク　ゴールドラスター	Opaque - Gold Luster	3	2	2
+DB1910	409F				ギョク　つや消し	Matte Opaque	1	1	1
+DB1991	N/A				メタリック	Metallic	2	3	2
+DB2031	1119				中染め	Color Lined	3	2	4
+DB2032	1121				中染め	Color Lined	3	2	4
+DB2033	4298				中染め	Color Lined	3	2	4
+DB2034	1122				中染め	Color Lined	3	2	4
+DB2035	4301				中染め	Color Lined	3	2	4
+DB2036	4299				中染め	Color Lined	3	2	4
+DB2037	4302				中染め	Color Lined	3	2	4
+DB2038	4303				中染め	Color Lined	3	2	4
+DB2039	4300				中染め	Color Lined	3	2	4
+DB2040	1120				中染め	Color Lined	3	2	4
+DB2041	N/A				中染め	Color Lined	3	2	4
+DB2042	N/A				中染め	Color Lined	3	2	4
+DB2043	N/A				中染め	Color Lined	3	2	4
+DB2044	N/A				中染め	Color Lined	3	2	4
+DB2045	N/A				中染め	Color Lined	3	2	4
+DB2046	N/A				中染め	Color Lined	3	2	4
+DB2047	N/A				中染め	Color Lined	3	2	4
+DB2048	N/A				中染め	Color Lined	3	2	4
+DB2049	N/A				中染め	Color Lined	3	2	4
+DB2050	N/A				中染め	Color Lined	3	2	4
+DB2051	N/A				中染め	Color Lined	3	2	4
+DB2052	N/A				中染め	Color Lined	3	2	4
+DB2053	N/A				中染め	Color Lined	3	2	4
+DB2054	N/A				中染め	Color Lined	3	2	4
+DB2061	N/A				中染め	Color Lined	3	2	4
+DB2062	N/A				中染め	Color Lined	3	2	4
+DB2063	N/A				中染め	Color Lined	3	2	4
+DB2064	N/A				中染め	Color Lined	3	2	4
+DB2065	N/A				中染め	Color Lined	3	2	4
+DB2066	N/A				中染め	Color Lined	3	2	4
+DB2067	N/A				中染め	Color Lined	3	2	4
+DB2068	N/A				中染め	Color Lined	3	2	4
+DB2101	4451				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2102	4452				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2103	4453				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2104	4454				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2105	4455				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2106	4456				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2107	4457				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2108	4458				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2109	4459				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2110	4460				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2111	4461				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2112	4462				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2113	4463				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2114	4464				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2115	4465				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2116	4466				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2117	4467				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2118	4468				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2119	4469				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2120	4470				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2121	4471				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2122	4472				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2123	4473				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2124	4474				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2125	4475				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2126	4476				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2127	4477				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2128	4478				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2129	4479				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2130	4480				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2131	4481				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2132	4482				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2133	4483				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2134	4484				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2135	4485				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2136	4486				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2137	4487				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2138	4488				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2139	4489				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2140	4490				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2141	4491				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2142	4492				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2143	4493				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2144	4494				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2151	4262				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2152	4265				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2153	4267				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2154	4266				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2155	4271				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2156	4277				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2157	4261				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2158	4264				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2159	4263				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2160	4270				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2161	4268				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2162	4269				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2163	4273				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2164	4272				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2165	4274				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2166	4275				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2167	4276				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2168	4278				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2169	4279				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2170	4280				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2171	4231				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2172	4233				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2173	4234				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2174	4238				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2175	4239				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2176	4242				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2177	4243				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2178	4244				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2179	4245				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2180	4246				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2181	4247				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2182	4248				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2183	4249				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2184	4250				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2185	4251				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2186	4235				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2187	4236				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2188	4240				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2189	4237				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2190	4241				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2191	4281				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2192	4282				デュラコート　銀引き　外色付け	Duracoat - Silver Lined - Dyed	2	3	3
+DB2201	4551				スペシャルコーティング	Czech Special Coating	3	3	3
+DB2203	4557				スペシャルコーティング	Czech Special Coating	3	3	3
+DB2204	4558				スペシャルコーティング	Czech Special Coating	3	3	3
+DB2205	4571				スペシャルコーティング	Czech Special Coating	3	3	3
+DB2206	4572				スペシャルコーティング	Czech Special Coating	3	3	3
+DB2207	4573				スペシャルコーティング	Czech Special Coating	3	3	3
+DB2261	4511				ピカソコーティング	Picasso Coating	2	2	2
+DB2262	4512				ピカソコーティング	Picasso Coating	2	2	2
+DB2263	4513				ピカソコーティング	Picasso Coating	2	2	2
+DB2264	4514				ピカソコーティング	Picasso Coating	2	2	2
+DB2265	4515				ピカソコーティング	Picasso Coating	2	2	2
+DB2267	4517				ピカソコーティング	Picasso Coating	2	2	2
+DB2271	N/A				ギョク　ゴールドラスター　レインボー	Opaque - Gold Luster - AB	2	2	2
+DB2272	N/A				ギョク　ゴールドラスター　レインボー	Opaque - Gold Luster - AB	2	2	2
+DB2273	N/A				ギョク　ゴールドラスター　レインボー	Opaque - Gold Luster - AB	2	2	2
+DB2274	N/A				ギョク　ゴールドラスター　レインボー	Opaque - Gold Luster - AB	2	2	2
+DB2275	N/A				ギョク　ゴールドラスター　レインボー	Opaque - Gold Luster - AB	2	2	2
+DB2281	N/A				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	3	3	3
+DB2282	N/A				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	3	3	3
+DB2283	N/A				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	2	3	3
+DB2284	N/A				ギョク　つや消し　焼付けラスター	Matte Opaque - Glazed Luster	2	3	3
+DB2285	N/A				ギョク　つや消し　焼付けラスター	Matte Opaque - Glazed Luster	2	3	3
+DB2286	N/A				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	2	3	3
+DB2287	N/A				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	3	3	3
+DB2288	N/A				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	2	3	3
+DB2290	N/A				ギョク　つや消し　焼付けラスター	Matte Opaque - Glazed Luster	2	3	3
+DB2291	N/A				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	3	3	3
+DB2292	N/A				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	2	3	3
+DB2293	N/A				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	2	3	3
+DB2294	N/A				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	2	3	3
+DB2295	N/A				ギョク　つや消し　ゴールドラスター	Matte Opaque - Gold Luster	2	3	3
+DB2301	4691				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB2302	4692				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB2303	4693				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - AB	2	2	2
+DB2305	4694				ギョク　つや消し　焼付けラスター　レインボー	Matte Opaque - Glazed Luster - Rainbow	2	2	2
+DB2306	4695				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - AB	2	2	2
+DB2308	4696				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB2309	4697				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB2310	4698				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB2311	4699				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB2312	4700				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - AB	2	2	2
+DB2313	4701				ギョク　つや消し　焼付けラスター　レインボー	Matte Opaque - Glazed Luster - Rainbow	2	2	2
+DB2315	4702				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB2316	N/A				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB2317	4703				ギョク　つや消し　焼付けラスター　レインボー	Matte Opaque - Glazed Luster - Rainbow	2	2	2
+DB2318	4704				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB2319	N/A				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - AB	2	2	2
+DB2320	4705				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB2321	N/A				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB2322	N/A				ギョク　つや消し　ゴールドラスター　レインボー	Matte Opaque - Gold Luster - Rainbow	2	2	2
+DB2351	4641				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2352	4642				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2353	N/A				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2354	N/A				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2355	N/A				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2356	N/A				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2357	N/A				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2358	N/A				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2359	N/A				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2360	N/A				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2361	N/A				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2362	N/A				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2363	N/A				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2364	N/A				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2365	N/A				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2366	N/A				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2367	N/A				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2368	N/A				ギョク　デュラコート　外色付け	Opaque - Duracoat - Dyed	2	3	3
+DB2371	2215				中染め	Color-Lined	3	2	4
+DB2372	3524				中染め	Color Lined	3	2	3
+DB2373	3521				中染め	Color Lined	2	2	3
+DB2374	3528				中染め	Color Lined	3	2	4
+DB2375	3737				中染め	Color Lined	3	2	3
+DB2376	3739				中染め	Color Lined	2	2	3
+DB2377	3530				中染め	Color Lined	2	2	3
+DB2378	3740				中染め	Color Lined	2	2	3
+DB2379	3741				中染め	Color Lined	2	2	3
+DB2380	3742				中染め	Color Lined	2	2	3
+DB2381	3743				中染め	Color Lined	2	2	3
+DB2382	1822				中染め	Color Lined	2	2	3
+DB2383	1824				中染め	Color Lined	2	2	3
+DB2384	2256				中染め	Color Lined	2	2	4
+DB2385	3537				中染め	Color Lined	2	2	3
+DB2386	3539				中染め	Color Lined	2	2	3
+DB2387	3747				中染め	Color Lined	2	2	3
+DB2388	2270				中染め	Color-Lined	3	2	3
+DB2389	3529				中染め	Color Lined	3	2	4
+DB2390	3749				中染め	Color Lined	3	2	3
+DB2391	2268				中染め	Color-Lined	2	2	3
+DB2392	240				中染め	Color Lined	2	2	3
+DB2393	2266				中染め	Color-Lined	2	2	3
+DB2394	2276				中染め	Color-Lined	2	2	3
+DB2395	3645				中染め	Color Lined	3	2	4
+DB2396	3540				中染め	Color Lined	2	2	3
+DB2401	5131				ギョク　ガラスエナメル	Opaque - Glass Enamel	2	2	2
+DB2402	5132				ギョク　ガラスエナメル　ラスター	Opaque- Glass Enamel - Luster	2	2	2
+DB2403	5133				スキ　つや消し　ガラスエナメル	Matte Transparent - Glass Enamel	2	2	2
+DB2404	5134				スキ　つや消し　ガラスエナメル	Matte Transparent - Glass Enamel	2	2	2
+DB2405	5135				スキ　つや消し　ガラスエナメル	Matte Transparent - Glass Enamel	2	2	2
+DB2406	5136				スキ　つや消し　ガラスエナメル	Matte Transparent - Glass Enamel	2	2	2
+DB2407	5137				ギョク　つや消し　ガラスエナメル	Matte Opaque - Glass Enamel	2	2	2
+DB2408	5138				ギョク　つや消し　ガラスエナメル	Matte Opaque - Glass Enamel	2	2	2
+DB2409	5139				ギョク　つや消し　ガラスエナメル	Matte Opaque - Glass Enamel	2	2	2
+DB2501	5101				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2502	5102				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2503	5103				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2504	5104				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2505	5105				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2506	5106				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2507	5107				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2508	5108				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2509	5109				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2510	5110				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2511	5111				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2512	5112				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2513	5113				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2514	5114				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2515	5115				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2516	5116				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2517	5117				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2518 	N/A				デュラコート　外銀　外色付け	Duracoat - Galvanized - Dyed	2	3	3
+DB2521	N/A				24金引き	24kt Gold Lined	2	2	3
+DB2522	953				24金引き	24kt Gold Lined	2	2	3
+DB2523	N/A				24金引き	24kt Gold Lined	2	2	3
+DB2524	957				24金引き	24kt Gold Lined	2	2	3
+DB2525	955				24金引き	24kt Gold Lined	2	2	3

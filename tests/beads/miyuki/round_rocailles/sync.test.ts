@@ -1,120 +1,39 @@
 import { describe, expect, it } from 'vitest';
-import { parseBeadName, constructImageUrl, constructFallbackImageUrls } from '../../../../scripts/beads/miyuki/round_rocailles/sync.js';
+import { parseArgs, VALID_SIZES } from '../../../../scripts/beads/miyuki/round_rocailles/sync.js';
+import { findNewListings, sidecarForListing } from '../../../../scripts/beads/miyuki/common/sync-pipeline.js';
 
-describe('parseBeadName', () => {
-  it('parses simple numeric ID (size 15)', () => {
-    expect(parseBeadName('#1 Round Rocailles 15/0')).toEqual({ beadId: '1', size: '15' });
-    expect(parseBeadName('#3201 Round Rocailles 2/0')).toEqual({ beadId: '3201', size: '2' });
+describe('parseArgs (round rocailles)', () => {
+  it('defaults to every size, square hole included', () => {
+    expect(parseArgs([])).toEqual({ sizes: VALID_SIZES, dryRun: false, verbose: false, localOnly: false, force: false, includeSquareHole: true });
+    expect(parseArgs(['--exclude-square-hole']).includeSquareHole).toBe(false);
+    expect(parseArgs(['--include-square-hole']).includeSquareHole).toBe(true);
   });
 
-  it('parses ID with letter suffix', () => {
-    expect(parseBeadName('#1F Round Rocailles 15/0')).toEqual({ beadId: '1F', size: '15' });
-    expect(parseBeadName('#5D Round Rocailles 15/0')).toEqual({ beadId: '5D', size: '15' });
-    expect(parseBeadName('#5L Round Rocailles 15/0')).toEqual({ beadId: '5L', size: '15' });
-  });
-
-  it('parses various sizes', () => {
-    expect(parseBeadName('#1 Round Rocailles 2/0')).toEqual({ beadId: '1', size: '2' });
-    expect(parseBeadName('#1 Round Rocailles 5/0')).toEqual({ beadId: '1', size: '5' });
-    expect(parseBeadName('#1 Round Rocailles 6/0')).toEqual({ beadId: '1', size: '6' });
-    expect(parseBeadName('#1 Round Rocailles 8/0')).toEqual({ beadId: '1', size: '8' });
-    expect(parseBeadName('#1 Round Rocailles 11/0')).toEqual({ beadId: '1', size: '11' });
-    expect(parseBeadName('#1 Round Rocailles 15/0')).toEqual({ beadId: '1', size: '15' });
-  });
-
-  it('is case-insensitive', () => {
-    expect(parseBeadName('#1f round rocailles 15/0')).toEqual({ beadId: '1F', size: '15' });
-  });
-
-  it('returns null for non-matching names', () => {
-    expect(parseBeadName('Random string')).toBeNull();
-    expect(parseBeadName('')).toBeNull();
-    expect(parseBeadName('DB0001 Delica Beads 11/0')).toBeNull();
-    expect(parseBeadName('TOHO Round 11/0')).toBeNull();
+  it('reads the flags and ignores unknown sizes', () => {
+    expect(parseArgs(['--sizes', '11,15,99', '--dry-run', '--include-square-hole', '--dump', '/tmp/d.json'])).toEqual({
+      sizes: ['11', '15'],
+      dryRun: true,
+      verbose: false,
+      localOnly: false,
+      force: false,
+      includeSquareHole: true,
+      dumpPath: '/tmp/d.json',
+    });
   });
 });
 
-describe('constructImageUrl', () => {
-  it('strips thumbnail dimensions from scraped image URL', () => {
-    const result = constructImageUrl({
-      beadId: '1',
-      size: '15',
-      name: '#1 Round Rocailles 15/0',
-      imageUrl: 'https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/15-1-324x324.jpg',
-    });
-    expect(result).toBe('https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/15-1.jpg');
-  });
-
-  it('returns full-size URL when already clean', () => {
-    const result = constructImageUrl({
-      beadId: '1',
-      size: '15',
-      name: '#1 Round Rocailles 15/0',
-      imageUrl: 'https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/15-1.jpg',
-    });
-    expect(result).toBe('https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/15-1.jpg');
-  });
-
-  it('handles bead IDs with letter suffixes', () => {
-    const result = constructImageUrl({
-      beadId: '1F',
-      size: '15',
-      name: '#1F Round Rocailles 15/0',
-      imageUrl: 'https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/15-1F-324x324.jpg',
-    });
-    expect(result).toBe('https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/15-1F.jpg');
-  });
-
-  it('constructs a fallback URL when no imageUrl provided', () => {
-    const result = constructImageUrl({
-      beadId: '1',
-      size: '15',
-      name: '#1 Round Rocailles 15/0',
-    });
-    expect(result).toBe('https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/15-1.jpg');
-  });
-
-  it('constructs fallback URL for size 2', () => {
-    const result = constructImageUrl({
-      beadId: '3201',
-      size: '2',
-      name: '#3201 Round Rocailles 2/0',
-    });
-    expect(result).toBe('https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/2-3201.jpg');
+describe('sidecarForListing', () => {
+  it('records the hole on a square-hole listing and leaves a round-hole one untouched', () => {
+    const sidecar = { shape: 'Round Rocailles', size: '6/0', glassGroup: 'Transparent' };
+    expect(sidecarForListing({ hole: 'SH' }, sidecar)).toEqual({ ...sidecar, hole: 'Square Hole' });
+    expect(sidecarForListing({ hole: 'RH' }, sidecar)).toBe(sidecar);
   });
 });
 
-describe('constructFallbackImageUrls', () => {
-  it('returns both fallback patterns', () => {
-    const result = constructFallbackImageUrls({
-      beadId: '2370',
-      size: '11',
-      name: '#2370 Round Rocailles 11/0',
-    });
-    expect(result).toEqual([
-      'https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/2370-RR-11.jpg',
-      'https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/11-0_2370.jpg',
-    ]);
-  });
-
-  it('handles letter suffix in bead ID', () => {
-    const result = constructFallbackImageUrls({
-      beadId: '1F',
-      size: '15',
-      name: '#1F Round Rocailles 15/0',
-    });
-    expect(result).toEqual([
-      'https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/1F-RR-15.jpg',
-      'https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/15-0_1F.jpg',
-    ]);
-  });
-
-  it('produces correct size-0 pattern for size 11', () => {
-    const result = constructFallbackImageUrls({
-      beadId: '4281',
-      size: '11',
-      name: '#4281 Round Rocailles 11/0',
-    });
-    expect(result[1]).toBe('https://directory.miyuki-beads.co.jp/wp-content/uploads/2024/06/11-0_4281.jpg');
+describe('findNewListings', () => {
+  it('finds the listings not on disk; a -1 bead does not stand for the plain number the directory sells', () => {
+    const listing = (beadId: string) => ({ beadId, size: '6' }) as Parameters<typeof findNewListings>[0][number];
+    const fresh = findNewListings([listing('366'), listing('367'), listing('1SH')], '6', ['366-1', '1sh']);
+    expect(fresh.map((l) => l.beadId)).toEqual(['366', '367']);
   });
 });

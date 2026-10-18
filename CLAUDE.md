@@ -26,6 +26,21 @@ pnpm beads:<brand>:<type>:blob    # Diff local originals vs Vercel Blob (add -- 
 
 Supported pairs today: `miyuki:delica`, `miyuki:round_rocailles`, `preciosa:rocailles`, `toho:round`.
 
+Miyuki is sourced from official Miyuki data only (issue adamaszczos/beadloo#203). The two Miyuki syncs read
+the committed directory dump `sources/miyuki/directory/products.json` (`pnpm beads:miyuki:directory -- --fetch`
+refreshes it, throttled, and exits 1 on any unparsed product name) and record every added bead in
+`sources/miyuki/registry/`. `pnpm beads:miyuki:audit` compares `beads/miyuki/**` with the official sources and
+fails on a bead without a registry row. Never add URL guessing to a Miyuki script: the directory's Wordfence
+blocks a client that 404s too often, for hours. `sources/miyuki/README.md` lists the snapshots and their hashes.
+
+Miyuki's `-1` colours (`DB106-1`, `366-1`) are products of their own, not new names for the plain
+numbers: the official Delica list gives them a Glass Enamel finish while the directory still sells the
+plain number under its old finish, and sample card N-2 photographs a different strand. So the plain
+number stays the directory's bead and the `-1` is a separate bead (the 51 Delica at 11/0, photo from
+card N-2 via `pnpm beads:miyuki:sample-cards:add-delica`); never alias one to the other or rename one
+into the other. A round-rocaille `-1` seed number has no official size and stays in `hold-out.csv`.
+A card, the catalogue and the directory print the plain number, and their adders keep it.
+
 Common flags (passed after `--`): `--local-only` (rebuild from already-downloaded files, no network), `--sizes 11,15` (limit sizes), `--dry-run`, `--force`, `--verbose`. Blob uploads require a `BLOB_READ_WRITE_TOKEN` env var (see `.env`). The full flag reference and per-type size defaults live in **`scripts/beads/README.md`**.
 
 ## Architecture
@@ -37,7 +52,7 @@ scripts/beads/
 ├── common/              # Brand-agnostic pipeline stages + shared libs
 │   ├── extract-colors.ts, generate-metadata.ts, validate-bead-type.ts
 │   └── lib/{paths,blob,thumbnails,beadRender}.ts
-├── miyuki/common/       # Shared across Miyuki types (scrape-metadata.ts)
+├── miyuki/common/       # Shared across Miyuki types (directory dump, registry, official lists, aliases)
 ├── miyuki/{delica,round_rocailles}/   # sync.ts + blob.ts per type
 ├── preciosa/rocailles/  # + lib/config.ts (size tables)
 └── toho/round/          # + lib/config.ts (size tables, dimension normalization)

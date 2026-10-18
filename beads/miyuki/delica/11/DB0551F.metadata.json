@@ -3,8 +3,9 @@
   "size": "11/0",
   "colorGroup": "Silver",
   "glassGroup": "Opaque",
-  "finish": "Plating",
+  "finish": "Frosted (Matte), Plating",
   "dyed": "Non Dyed",
   "galvanized": "Non-galvanized",
-  "plating": "Silver"
+  "plating": "Silver",
+  "status": "Discontinued"
 }

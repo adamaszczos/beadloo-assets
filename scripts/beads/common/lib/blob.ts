@@ -195,9 +195,17 @@ export async function calculateBlobDiff(beadType: string, sizes: string[]): Prom
 // Upload
 // ============================================================================
 
-export async function uploadBlobAssets(diff: BlobDiff, beadType: string): Promise<void> {
+export type UploadBlobOptions = {
+  /** Upload only assets the store does not have; never replace a live original (the default for the Miyuki syncs). */
+  newOnly?: boolean;
+};
+
+export async function uploadBlobAssets(diff: BlobDiff, beadType: string, options: UploadBlobOptions = {}): Promise<void> {
   const manifestPath = getManifestPath(beadType);
-  const uploadQueue = [...diff.newAssets, ...diff.changedAssets];
+  const uploadQueue = options.newOnly ? [...diff.newAssets] : [...diff.newAssets, ...diff.changedAssets];
+  if (options.newOnly && diff.changedAssets.length > 0) {
+    console.log(`  skipping ${diff.changedAssets.length} changed asset(s) (--new-only): live originals are never replaced by this run`);
+  }
 
   for (const asset of uploadQueue) {
     const content = fs.readFileSync(asset.localPath);
@@ -209,7 +217,21 @@ export async function uploadBlobAssets(diff: BlobDiff, beadType: string): Promis
     console.log(`  uploaded ${asset.pathname}`);
   }
 
-  writeBlobManifest(manifestPath, [...diff.newAssets, ...diff.changedAssets, ...diff.unchangedAssets]);
+  writeBlobManifest(manifestPath, manifestRecordsAfterUpload(diff, readBlobManifest(manifestPath), Boolean(options.newOnly)));
+}
+
+/**
+ * The manifest after an upload. A changed original skipped by a new-only run keeps its previous
+ * record (the hash of what the store still holds), so the next diff still sees it as changed even
+ * when its byte size did not move; without a previous record there is nothing true to write.
+ */
+export function manifestRecordsAfterUpload(diff: BlobDiff, previous: BlobManifest, newOnly: boolean): BlobAssetRecord[] {
+  if (!newOnly) return [...diff.newAssets, ...diff.changedAssets, ...diff.unchangedAssets];
+  const skipped = diff.changedAssets.flatMap((asset) => {
+    const record = previous[asset.pathname];
+    return record ? [{ ...asset, sha256: record.sha256, size: record.size }] : [];
+  });
+  return [...diff.newAssets, ...skipped, ...diff.unchangedAssets];
 }
 
 // ============================================================================

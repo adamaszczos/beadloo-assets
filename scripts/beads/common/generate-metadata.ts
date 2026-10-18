@@ -35,6 +35,12 @@ interface BeadMetadata {
   galvanized: string;
   plating: string;
   additionalArticleNumber?: string;
+  /** Issue #203 official fields (strings): hole, cut, status, colorAccuracy, formerly. */
+  hole?: string;
+  cut?: string;
+  status?: string;
+  colorAccuracy?: string;
+  formerly?: string;
   [key: string]: string | undefined;
 }
 
@@ -72,6 +78,7 @@ interface GenerationResult {
 // Default sizes for common bead types
 const DEFAULT_SIZES: Record<string, string[]> = {
   'miyuki-delica': ['8', '10', '11', '15'],
+  'miyuki-round_rocailles': ['1', '2', '5', '6', '8', '11', '15'],
   'preciosa-rocailles': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '31', '32', '33', '34'],
   'toho-round': ['3', '6', '8', '11', '15'],
 };
@@ -258,6 +265,12 @@ export interface BeadMetadata {
   galvanized: string;
   plating: string;
   additionalArticleNumber?: string;
+  /** Issue #203 official fields: "Square Hole", "Cut", "Discontinued", photo/swatch/approximate, a former number. */
+  hole?: string;
+  cut?: string;
+  status?: string;
+  colorAccuracy?: string;
+  formerly?: string;
 }
 
 export type BeadType = ${beadTypeUnion};
@@ -463,7 +476,11 @@ export async function generateMetadata(
       totalBeads += count;
     }
     
-    if (totalBeads === 0) {
+    // A size directory that exists but holds no sidecars yet is legitimate (Miyuki 1/0 before its
+    // colours arrive); only a run that found no size directory at all is a misconfiguration.
+    const baseDir = options.inputDir || getBeadTypeDirectory(options.beadType);
+    const anySizeDirectory = Object.keys(metadata).some((size) => fs.existsSync(path.join(baseDir, size)));
+    if (totalBeads === 0 && !anySizeDirectory) {
       throw new Error('No metadata found');
     }
     

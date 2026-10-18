@@ -1,0 +1,5 @@
+productId,sku,name,decision,beadId,size,decidedOn,reason
+6566,N-RR6-0148R,#260(148R) Round Rocailles 6/0,accept,260,6,2026-10-17,"The SKU carries Miyuki's old number 148R; the name gives the current number 260, which no other 6/0 product uses (issue #203 decision 6: the current number is the ID)."
+7086,N-RR8-1255,#2006(1255) Round Rocailles 8/0,reject,,8,2026-10-17,"Old-number stock listed beside the plain #2006 8/0 product (N-RR8-2006) that Beadloo already has; one ID per colour and size."
+7087,N-RR8-1256,#2008(1256) Round Rocailles 8/0,reject,,8,2026-10-17,"Old-number stock listed beside the plain #2008 8/0 product (N-RR8-2008) that Beadloo already has; one ID per colour and size."
+7355,N-RR15-0182,#1053(182) Round Rocailles 15/0,reject,,15,2026-10-17,"Old-number stock listed beside the plain #1053 15/0 product (N-RR15-1053) that Beadloo already has; one ID per colour and size."
