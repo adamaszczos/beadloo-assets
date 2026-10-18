@@ -56,15 +56,24 @@ function readJson<T>(file: string): T {
   return JSON.parse(fs.readFileSync(file, 'utf-8')) as T;
 }
 
-/** Bump the dependency spec in-place, preserving any range prefix (^, ~, …) and file formatting. */
+/**
+ * The dependency spec that points at the published `version`. A semver spec keeps its range prefix
+ * (^, ~, >=, …); any other spec (a git pin such as `github:owner/repo#<sha>`, a tag, a file path) is
+ * replaced by the exact npm version, since the package was just published to the registry.
+ */
+export function nextDependencySpec(current: string, version: string): string {
+  const range = current.match(/^([\^~]|[<>]=?|=)?\s*\d/);
+  return `${range?.[1] ?? ''}${version}`;
+}
+
+/** Bump the dependency spec in-place, preserving file formatting. */
 function bumpDependency(packageJsonPath: string, version: string, dryRun: boolean): 'updated' | 'unchanged' | 'missing' {
   const text = fs.readFileSync(packageJsonPath, 'utf-8');
   const escaped = PACKAGE_NAME.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
   const re = new RegExp(`("${escaped}"\\s*:\\s*")([^"]*)(")`);
   const match = text.match(re);
   if (!match) return 'missing';
-  const prefix = (match[2].match(/^[^\d]*/) ?? [''])[0];
-  const next = `${prefix}${version}`;
+  const next = nextDependencySpec(match[2], version);
   if (match[2] === next) return 'unchanged';
   if (!dryRun) fs.writeFileSync(packageJsonPath, text.replace(re, `$1${next}$3`));
   return 'updated';
@@ -196,4 +205,6 @@ function main(): void {
     `${fully ? '.' : ' (install/thumbnails still pending — see above).'}`);
 }
 
-main();
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main();
+}
