@@ -89,7 +89,10 @@ scripts/beads/
 │   │   ├── directory-products.ts   # Pure product-name/SKU parsers + attributes → sidecar
 │   │   ├── sync-pipeline.ts        # Shared download/sidecar/registry steps
 │   │   ├── official-lists.ts       # durability.tsv / color_change.tsv parsers
-│   │   ├── registry.ts             # sources/miyuki/registry/<type>.csv
+│   │   ├── registry.ts             # sources/miyuki/registry/<type>.csv, and writing beads with their rows
+│   │   ├── bead-files.ts           # A bead's sidecar and original; when a bead counts as present
+│   │   ├── round-rocaille-ids.ts   # Round-rocaille ID grammar and sizes
+│   │   ├── retailer-evidence.ts    # The retailer rule (sources/miyuki/retailer/round-rocailles.csv)
 │   │   └── sidecar-diff.ts         # Proof: attributes reproduce the existing sidecars
 │   ├── delica/                     # Miyuki Delica specific
 │   │   ├── sync.ts                 # Full sync pipeline
@@ -136,7 +139,8 @@ WooCommerce Store API, instead of scraping shop pages:
 pnpm beads:miyuki:directory -- --fetch        # 43 throttled requests (1.5 s apart), writes the dump, cross-checks the sitemap
 pnpm beads:miyuki:directory                   # report on the committed dump (offline)
 pnpm beads:miyuki:audit                       # beads/ vs the official sources: registry coverage, missing colours by source
-pnpm beads:miyuki:audit -- --write-registry   # bootstrap provenance rows for beads that have none
+pnpm beads:miyuki:audit -- --write-registry   # bootstrap provenance rows for beads that have none (never for a bead whose sidecar is not a directory photo's)
+pnpm beads:miyuki:audit -- --lookup 22,327    # where these round-rocaille colour numbers appear, by source
 pnpm beads:miyuki:catalogue -- --pdf <GB-6.pdf> [--crops]   # cell parse of the printed catalogue
 ```
 
@@ -208,6 +212,51 @@ pnpm beads:toho:round:sync [options]
 | `--dry-run` | Report what would change without writing |
 | `--force` | Redownload and regenerate even when local files exist |
 | `--verbose` | Detailed progress output |
+
+## Miyuki Adders
+
+The Miyuki syncs add what the directory lists. Every other official source has an adder of its own: it
+reads one committed, reviewed source, adds the (colour, size) pairs Beadloo lacks, and writes for each
+bead the original under `downloaded/`, the sidecar under `beads/` and its row in
+`sources/miyuki/registry/<type>.csv`. What every adder shares:
+
+- `--dry-run` reports what it would add and writes nothing; with nothing new to add it prints zero beads;
+- a bead counts as present once it has both its sidecar and its registry row; one with only one of them
+  (a run that stopped half way) is written again, and replacing an original already on disk is announced;
+- sources are checked before the first bead is written, and each bead's registry row is saved even when
+  a later bead fails;
+- afterwards run the type's `:sync -- --local-only` (thumbnails, colours, metadata, aliases).
+
+`sources/miyuki/README.md` lists each source and its hash; `docs/beads/miyuki-library.md` in the app
+repo has the rules (which source wins for glass and finish, what is held back and why).
+
+| Script | Reads | Flags |
+|---|---|---|
+| `pnpm beads:miyuki:delica:add-catalogue` | `sources/miyuki/catalogue/gb-6/delica.csv` and `delica-metadata.csv`, the swatch crops under `downloaded/miyuki/catalogue/gb-6/delica/` (from `pnpm beads:miyuki:catalogue -- --crops`) | `--dry-run`, `--only DB0665,DBC0010` |
+| `pnpm beads:miyuki:round_rocailles:add-catalogue` | `sources/miyuki/catalogue/gb-6/round-rocailles.csv` and `round-rocailles-sections.csv`, the swatch crops under `downloaded/miyuki/catalogue/gb-6/round-rocailles/` | `--dry-run`, `--sizes 1,5`, `--only 404,1SH` |
+| `pnpm beads:miyuki:round_rocailles:add-square-hole` | `sources/miyuki/batches/c-older-square-hole.csv` (approved rows), the round-hole bead of the same number | `--dry-run`, `--only 10SH,12SH` |
+| `pnpm beads:miyuki:round_rocailles:add-directory-2017` | `sources/miyuki/directory-2017.csv`, the photos unpacked under `downloaded/miyuki/directory-2017/rr/Round Rocailles/` (each checked against the SHA-256 the list records), `official/color_change.tsv` | `--dry-run` |
+| `pnpm beads:miyuki:round_rocailles:add-conversion-chart` | `sources/miyuki/official/conversion-chart-2007/*.html` (each page must parse to its 830 pairs), `official/color_change.tsv`, Miyuki's photo of the colour at another size | `--dry-run` |
+| `pnpm beads:miyuki:round_rocailles:add-retailer` | `sources/miyuki/retailer/round-rocailles.csv` (the one written exception to official-only sources: `confirmation: "Retailer"`, `approximate` colour) | `--dry-run` |
+| `pnpm beads:miyuki:round_rocailles:apply-attribute-decisions` | `sources/miyuki/round-rocaille-attributes.csv`: rewrites glass and finish of a decided number at every size on disk and notes the decision in each registry row; stops when the directory lists a decided number | `--dry-run` |
+| `pnpm beads:miyuki:mark-discontinued` | `official/durability.tsv` (Delica flags), `official/glass-enamel-discontinued-2023-07-03.tsv` (Delica at its prefix size, colour numbers at every round-rocaille size): `status: "Discontinued"`, never a removal; also lists the notice numbers the directory dump still sells | `--dry-run` |
+| `pnpm beads:miyuki:aliases` | `official/color_change.tsv` and the directory dump: writes `generated/data/miyuki/<type>/<size>-aliases.json` (both Miyuki syncs run it) | none |
+
+### Sample cards (`miyuki/sample-cards/`)
+
+Miyuki's card PDFs live under `downloaded/miyuki/sample-cards/` (not committed; `sources/miyuki/sample-cards/README.md`
+says where each comes from), their page renders under `cells/`.
+
+| Script | What it does | Flags |
+|---|---|---|
+| `pnpm beads:miyuki:sample-cards:read` | Renders every page at 150 dpi, cuts it into cells along the drawn borders and OCRs each cell (Tesseract) | `[card ...]` (default: every PDF) |
+| `pnpm beads:miyuki:sample-cards:sheets` | Review sheets, one PNG per page: each number cell beside its bead cell and the OCR reading (into `.scratch/card-review/`, or `CARD_REVIEW_DIR`) | none |
+| `pnpm beads:miyuki:sample-cards:batch-b` | Writes the first, unreviewed `sources/miyuki/batches/b-sample-cards.csv` from the research note and the cells | `--force` (overwrite a reviewed batch) |
+| `pnpm beads:miyuki:sample-cards:locate` | Exact-only second OCR pass for the cells the reader missed, then the by-eye points of `located-by-eye.csv` | none |
+| `pnpm beads:miyuki:sample-cards:add` | Adds the confirmed rows of a batch at the sizes the card prints: the strand cropped from its cell, metadata from the directory (the round-hole bead's for a square-hole colour), a reviewed decision, the Delica list, another size, then the card heading (`sample-card-sections.csv`) | `--batch sources/miyuki/batches/<file>.csv` (default `b-sample-cards.csv`; read against the repo root), `--dry-run`, `--only 1603,3271SH`, `--plan <csv>` (every resolved bead with its attributes and source, or the reason it is skipped; read against the repo root; implies `--dry-run`), `--rewrite-images` (crop again the originals this card supplied; sidecars and registry untouched) |
+| `pnpm beads:miyuki:sample-cards:locate-delica` | Places the 51 Delica `-1` colours on card N-2 (`n2-renumbered-cells.csv`) | `--sheet <png>` (review sheet) |
+| `pnpm beads:miyuki:sample-cards:add-delica` | Adds the confirmed `-1` Delica of `n2-renumbered-cells.csv` at 11/0, finish from the Delica list | `--dry-run`, `--rewrite` (crop and write again) |
+| `pnpm beads:miyuki:sample-cards:add-glass-enamel` | Adds card TE-64's lead-free Glass Enamel `-1` round rocailles at 15/0, 11/0, 8/0, 6/0 from `te-64-cells.csv`, metadata from the Delica list or `te-64-metadata.csv`; checks the archived PDF against `archived-cards.csv` | `--dry-run` |
 
 ## Blob Scripts
 
@@ -305,7 +354,12 @@ pnpm beads:preciosa:rocailles:blob      # Preciosa Rocailles blob diff/upload
 
 pnpm beads:toho:round:sync         # Full TOHO Round sync pipeline
 pnpm beads:toho:round:blob         # TOHO Round blob diff/upload
+
+pnpm beads:rebuild-thumbnails      # Re-render every 16x16/48x48 derivative offline (after a renderer or sampler change; --type, --sizes)
+pnpm beads:measure-colors          # Read-only colour-accuracy report and contact sheet (--type, --no-montage, --limit N)
 ```
+
+The Miyuki adders, the sample-card tools and `beads:miyuki:mark-discontinued` are listed under "Miyuki Adders" above.
 
 ## Adding a New Bead Brand or Type
 

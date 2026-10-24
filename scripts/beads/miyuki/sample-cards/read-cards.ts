@@ -8,11 +8,12 @@ import * as path from 'path';
 import { execFileSync } from 'child_process';
 import * as os from 'os';
 import sharp from 'sharp';
-import { DOWNLOADED_ROOT } from '../../common/lib/paths.js';
+import { getMiyukiSampleCardsDirectory } from '../../common/lib/paths.js';
 import { CataloguePdf } from '../catalogue/lib/pdf.js';
+import { renderCardPage } from './card-images.js';
 
-const CARDS = path.join(DOWNLOADED_ROOT, 'miyuki', 'sample-cards');
-const OUT = path.join(CARDS, 'cells');
+const CARDS = getMiyukiSampleCardsDirectory();
+const OUT = getMiyukiSampleCardsDirectory('cells');
 const DARK_LEVELS = [110, 205];
 
 export type Line = { pos: number; start: number; end: number };
@@ -100,14 +101,9 @@ async function ocrCell(png: string, cell: Rect, inset: number): Promise<{ text: 
 }
 
 export async function readCardPage(card: string, page: number, dpi: number) {
-  fs.mkdirSync(OUT, { recursive: true });
-  const pdf = await CataloguePdf.open(path.join(CARDS, `${card}.pdf`));
-  const img = pdf.renderPage(page, dpi);
-  pdf.destroy();
   const png = path.join(OUT, `${card}-p${page}-${dpi}.png`);
-  await sharp(img.data, { raw: { width: img.width, height: img.height, channels: 3 } }).png().toFile(png);
+  const { width: W, height: H } = await renderCardPage(path.join(CARDS, `${card}.pdf`), page, dpi, png, { overwrite: true });
   const gray = await sharp(png).grayscale().raw().toBuffer();
-  const W = img.width, H = img.height;
   const px = (y: number, x: number) => gray[y * W + x];
   const minRun = Math.round(W * 0.04);
   // Dark borders first; the cover cards draw pale tan borders, so fall back to a lighter threshold.

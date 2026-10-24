@@ -6,10 +6,10 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import { ASSET_REPO_ROOT, DOWNLOADED_ROOT } from '../../common/lib/paths.js';
+import { ASSET_REPO_ROOT, getMiyukiSampleCardsDirectory } from '../../common/lib/paths.js';
 import { csvEscape } from '../common/csv.js';
 
-const CELLS = path.join(DOWNLOADED_ROOT, 'miyuki', 'sample-cards', 'cells');
+const CELLS = getMiyukiSampleCardsDirectory('cells');
 const COMMENT = path.join(ASSET_REPO_ROOT, 'sources', 'miyuki', 'sample-cards', 'issue-203-comment-6219566196.md');
 const BATCH = path.join(ASSET_REPO_ROOT, 'sources', 'miyuki', 'batches', 'b-sample-cards.csv');
 

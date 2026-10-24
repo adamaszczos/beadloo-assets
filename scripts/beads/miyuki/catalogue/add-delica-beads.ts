@@ -28,6 +28,7 @@ import { ASSET_REPO_ROOT, getBeadTypeDirectory, getDownloadedBeadTypeDirectory }
 import { readDurabilityTsv } from '../common/official-lists.js';
 import { readRegistry, todayIso, upsertRegistryRows, writeRegistry, type RegistryRow } from '../common/registry.js';
 import { parseCsv } from '../common/csv.js';
+import { readSidecar, type Sidecar } from '../common/bead-files.js';
 
 const BEAD_TYPE = 'miyuki-delica' as const;
 const CATALOGUE_DIR = path.join(ASSET_REPO_ROOT, 'sources', 'miyuki', 'catalogue', 'gb-6');
@@ -36,7 +37,6 @@ const PREFIX_SIZE: Record<string, string> = { DB: '11', DBC: '11', DBM: '10', DB
 const SIZE_LABEL: Record<string, string> = { '11': '11/0', '10': '10/0', '8': '8/0', '15': '15/0' };
 
 export type CatalogueDelicaRow = { colour_no: string; size: string; prefix: string; section_en: string; page: string; cell_x: string; cell_y: string };
-export type Sidecar = Record<string, string>;
 
 export function catalogueDelicaId(row: Pick<CatalogueDelicaRow, 'colour_no' | 'prefix'>): string | null {
   const match = /^(\d+)([A-Z]*)$/i.exec(row.colour_no.trim());
@@ -80,11 +80,6 @@ export function buildCatalogueSidecar(
   };
 }
 
-function readSidecar(size: string, beadId: string): Sidecar | null {
-  const file = path.join(getBeadTypeDirectory(BEAD_TYPE, size), `${beadId}.metadata.json`);
-  return fs.existsSync(file) ? (JSON.parse(fs.readFileSync(file, 'utf-8')) as Sidecar) : null;
-}
-
 type Resolved = { beadId: string; size: string; row: CatalogueDelicaRow; crop: string; sidecar: Sidecar; metadataSource: string };
 
 export function resolveCatalogueBead(
@@ -96,7 +91,7 @@ export function resolveCatalogueBead(
   if (!beadId) return { beadId: `${row.prefix}${row.colour_no}`, skip: 'unparseable row' };
   const size = PREFIX_SIZE[row.prefix];
   // The catalogue prints the plain number; a `-1` colour is a different product (PR #2), never this one.
-  if (readSidecar(size, beadId)) return { beadId, skip: 'already on disk' };
+  if (readSidecar(BEAD_TYPE, size, beadId)) return { beadId, skip: 'already on disk' };
   const crop = path.join(CROPS_DIR, size, catalogueCropName(row));
   if (!fs.existsSync(crop)) return { beadId, skip: `no swatch crop at ${path.relative(ASSET_REPO_ROOT, crop)}` };
   const cut = row.prefix.endsWith('C');
@@ -109,7 +104,7 @@ export function resolveCatalogueBead(
   } else {
     for (const candidate of metadataDonorCandidates(beadId)) {
       const candidateSize = PREFIX_SIZE[/^(DB[MLS]?)/.exec(candidate)![1]];
-      const sidecar = readSidecar(candidateSize, candidate);
+      const sidecar = readSidecar(BEAD_TYPE, candidateSize, candidate);
       if (sidecar) {
         donor = sidecar;
         metadataSource = `official attributes of ${candidate} (${candidateSize}/0, directory)`;

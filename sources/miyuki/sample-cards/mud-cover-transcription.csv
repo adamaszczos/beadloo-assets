@@ -1,0 +1,555 @@
+page,order,card_section,colour_no
+1,1,Transparent,131
+1,2,Transparent,132L
+1,3,Transparent,132
+1,4,Transparent,133L
+1,5,Transparent,133
+1,6,Transparent,134
+1,7,Transparent,135
+1,8,Transparent,136
+1,9,Transparent,137
+1,10,Transparent,138
+1,11,Transparent,139
+1,12,Transparent,140
+1,13,Transparent,141
+1,14,Transparent,141D
+1,15,Transparent,142
+1,16,Transparent,143
+1,17,Transparent,144
+1,18,Transparent,146
+1,19,Transparent,147
+1,20,Transparent,148
+1,21,Transparent,149
+1,22,Transparent,150
+1,23,Transparent,151
+1,24,Transparent,2412
+1,25,Transparent,152
+1,26,Transparent,153
+1,27,Transparent,155
+1,28,Transparent,156
+1,29,Transparent,158
+1,30,Transparent Dyed,1308
+1,31,Transparent Dyed,1319
+1,32,Transparent Dyed,1310
+1,33,Transparent Dyed,1311
+1,34,Transparent Dyed,1312
+1,35,Transparent Dyed,1314
+1,36,Transparent Dyed,1406
+1,37,Silverline,1
+1,38,Silverline,2
+1,39,Silverline,3
+1,40,Silverline,4
+1,41,Silverline,5L
+1,42,Silverline,5D
+1,43,Silverline,6
+1,44,Silverline,7
+1,45,Silverline,8
+1,46,Silverline,9
+1,47,Silverline,10
+1,48,Silverline,11
+1,49,Silverline,11D
+1,50,Silverline,12
+1,51,Silverline,13
+1,52,Silverline,14
+1,53,Silverline,15
+1,54,Silverline,16
+1,55,Silverline,17
+1,56,Silverline,18
+1,57,Silverline,25
+1,58,Silverline,19
+1,59,Silverline,20
+1,60,Silverline,21L
+1,61,Silverline,21
+1,62,Silverline,23
+1,63,Silverline,26
+1,64,Silverline,27
+1,65,Silverline,30
+1,66,Silverline,551
+1,67,Silverline,2422
+1,68,Silverline,2425
+1,69,Silverline,2427
+1,70,Silverline,2429
+1,71,Silverline,2433
+1,72,Transparent Luster,160
+1,73,Transparent Luster,162
+1,74,Transparent Luster,327
+1,75,Transparent Luster,325
+1,76,Transparent Luster,163
+1,77,Transparent Luster,165
+1,78,Transparent Luster,328
+1,79,Transparent Luster,166
+1,80,Transparent Luster,329
+1,81,Transparent Luster,168
+1,82,Transparent Luster,170
+1,83,Transparent Luster,172
+1,84,Transparent Luster,173
+1,85,Transparent Luster,322
+1,86,Transparent Luster,321
+1,87,Transparent Luster,326
+1,88,Transparent Luster,175
+1,89,Transparent Luster,176
+1,90,Transparent Luster,178
+1,91,Transparent Luster,174
+1,92,Transparent Luster,2439
+1,93,Transparent Luster,2442
+1,94,Transparent Luster,2444
+1,95,Transparent Luster,2445
+1,96,Transparent Rainbow,250
+1,97,Transparent Rainbow,251
+1,98,Transparent Rainbow,257
+1,99,Transparent Rainbow,296
+1,100,Transparent Rainbow,252
+1,101,Transparent Rainbow,253
+1,102,Transparent Rainbow,297
+1,103,Transparent Rainbow,254
+1,104,Transparent Rainbow,298
+1,105,Transparent Rainbow,256
+1,106,Transparent Rainbow,258
+1,107,Transparent Rainbow,179
+1,108,Transparent Rainbow,295
+1,109,Transparent Rainbow,260
+1,110,Transparent Rainbow,291
+1,111,Transparent Rainbow,261
+1,112,Transparent Rainbow,177
+1,113,Transparent Rainbow,249
+1,114,Transparent Rainbow,294
+1,115,Silverline Dyed,1333
+1,116,Silverline Dyed,1334
+1,117,Silverline Dyed,1338
+1,118,Silverline Dyed,1348
+1,119,Silverline Dyed,1349
+1,120,Silverline Dyed,1350
+1,121,Silverline Dyed,1340
+1,122,Silverline Dyed,1342
+1,123,Silverline Dyed,1344
+1,124,Silverline Dyed,1345
+1,125,Silverline Dyed,1347
+1,126,Silverline Dyed,1419
+1,127,Silverline Dyed,1420
+1,128,Silverline Dyed,1421
+1,129,Silverline Dyed,1422
+1,130,Silverline Dyed,1423
+1,131,Silverline Dyed,1424
+1,132,Silverline Dyed,1425
+1,133,Silverline Dyed,1426
+1,134,Silverline Dyed,1427
+1,135,Silverline Dyed,1428
+1,136,Silverline Dyed,1429
+1,137,Silverline Dyed,1434
+1,138,Silverline Dyed,1435
+1,139,Silverline Dyed,1436
+1,140,Silverline Dyed,1437
+1,141,Silverline Dyed,1446
+2,142,Silverline Rainbow,1001
+2,143,Silverline Rainbow,1003
+2,144,Silverline Rainbow,1004
+2,145,Silverline Rainbow,1010
+2,146,Silverline Rainbow,1011
+2,147,Silverline Rainbow,1013
+2,148,Silverline Rainbow,1014
+2,149,Silverline Rainbow,1016
+2,150,Silverline Rainbow,1018
+2,151,Silverline Rainbow,1020
+2,152,Dyed Rainbow,4783
+2,153,Dyed Rainbow,4785
+2,154,Dyed Rainbow,4786
+2,155,Dyed Rainbow,4787
+2,156,Dyed Rainbow,4794
+2,157,Dyed Rainbow,4795
+2,158,Dyed Rainbow,4796
+2,159,Inside Color,201
+2,160,Inside Color,202
+2,161,Inside Color,204
+2,162,Inside Color,205
+2,163,Inside Color,207
+2,164,Inside Color,208
+2,165,Inside Color,209
+2,166,Inside Color,210
+2,167,Inside Color,212
+2,168,Inside Color,214
+2,169,Inside Color,215
+2,170,Inside Color,217
+2,171,Inside Color,218
+2,172,Inside Color,220
+2,173,Inside Color,221
+2,174,Inside Color,222
+2,175,Inside Color,223
+2,176,Inside Color,224
+2,177,Inside Color,225
+2,178,Inside Color,226
+2,179,Inside Color,227
+2,180,Inside Color,228
+2,181,Inside Color,229
+2,182,Inside Color,234
+2,183,Inside Color,263
+2,184,Inside Color,264
+2,185,Inside Color,265
+2,186,Inside Color,266
+2,187,Inside Color,271
+2,188,Inside Color,272
+2,189,Inside Color,273
+2,190,Inside Color,274
+2,191,Inside Color,275
+2,192,Inside Color,277
+2,193,Inside Color,278
+2,194,Inside Color,279
+2,195,Inside Color,281
+2,196,Inside Color,283
+2,197,Inside Color,284
+2,198,Inside Color,331
+2,199,Inside Color,332
+2,200,Inside Color,335
+2,201,Inside Color,336
+2,202,Inside Color,337
+2,203,Inside Color,339
+2,204,Inside Color,342
+2,205,Inside Color,346
+2,206,Inside Color,347
+2,207,Inside Color,348
+2,208,Inside Color,352
+2,209,Inside Color,353
+2,210,Inside Color,355
+2,211,Inside Color,356
+2,212,Inside Color,360
+2,213,Inside Color,363
+2,214,Inside Color,364
+2,215,Inside Color,367
+2,216,Inside Color,379
+2,217,Inside Color,1105
+2,218,Inside Color,1521
+2,219,Inside Color,1522
+2,220,Inside Color,1524
+2,221,Inside Color,1527
+2,222,Inside Color,1531
+2,223,Inside Color,1554
+2,224,Inside Color,1555
+2,225,Inside Color,1558
+2,226,Inside Color,1559
+2,227,Inside Color,1816
+2,228,Inside Color,1826
+2,229,Inside Color,1827
+2,230,Inside Color,1834
+2,231,Inside Color,1837
+2,232,Inside Color,1839
+2,233,Inside Color,1840
+2,234,Inside Color,1933
+2,235,Inside Color,2195
+2,236,Inside Color,2196
+2,237,Inside Color,2197
+2,238,Inside Color,2199
+2,239,Inside Color,2200
+2,240,Inside Color,2201
+2,241,Inside Color,2202
+2,242,Inside Color,2205
+2,243,Inside Color,2206
+2,244,Inside Color,2207
+2,245,Inside Color,2208
+2,246,Inside Color,2209
+2,247,Inside Color,2210
+2,248,Inside Color,2212
+2,249,Inside Color,357
+2,250,Inside Color,2221
+2,251,Inside Color,2222
+2,252,Inside Color,2223
+2,253,Inside Color,2228
+2,254,Inside Color,2238
+2,255,Inside Color,2240
+2,256,Inside Color,2241
+2,257,Inside Color,2242
+2,258,Inside Color,2243
+2,259,Inside Color,2244
+2,260,Inside Color,2247
+2,261,Inside Color,2248
+2,262,Inside Color,2249
+2,263,Inside Color,366
+2,264,Inside Color,372
+2,265,Gold Luster,301
+2,266,Gold Luster,302
+2,267,Gold Luster,304
+2,268,Gold Luster,305
+2,269,Gold Luster,306
+2,270,Gold Luster,308
+2,271,Gold Luster,309
+2,272,Gold Luster,310
+2,273,Gold Luster,311
+2,274,Gold Luster,312
+2,275,Gold Luster,313
+2,276,Gold Luster,314
+2,277,Gold Luster,315
+2,278,Gold Luster,1881
+2,279,Gold Luster,1882
+2,280,Gold Luster,1883
+2,281,Gold Luster,1884
+2,282,Gold Luster,1887
+2,283,Gold Luster,1889
+2,284,Gold Luster,1890
+2,285,Gold Luster,2440
+2,286,Gold Luster,2441
+3,287,Semi Frost Dyed,1602
+3,288,Semi Frost Dyed,1606
+3,289,Semi Frost Dyed,1608
+3,290,Semi Frost Dyed,1609
+3,291,Semi Frost Dyed,1611
+3,292,Semi Frost Dyed,1614
+3,293,Semi Frost Dyed,1615
+3,294,Semi Frost Dyed,1617
+3,295,Semi Frost Dyed,1618
+3,296,Semi Frost Dyed,1619
+3,297,Semi Frost Dyed,1620
+3,298,Semi Frost Dyed,1621
+3,299,Semi Frost Silverline Dyed,1625
+3,300,Semi Frost Silverline Dyed,1627
+3,301,Semi Frost Silverline Dyed,1630
+3,302,Semi Frost Silverline Dyed,1631
+3,303,Semi Frost Silverline Dyed,1632
+3,304,Semi Frost Silverline Dyed,1633
+3,305,Semi Frost Silverline Dyed,1636
+3,306,Semi Frost Silverline Dyed,1637
+3,307,Semi Frost Silverline Dyed,1638
+3,308,Semi Frost Silverline Dyed,1639
+3,309,Semi Frost Silverline Dyed,1641
+3,310,Semi Frost Silverline Dyed,1642
+3,311,Semi Frost Silverline Dyed,1643
+3,312,Semi Frost Silverline Dyed,1644
+3,313,Semi Frost Silverline Dyed,1647
+3,314,Semi Frost Silverline Dyed,1650
+3,315,Semi Frost Silverline Dyed,1653
+3,316,Semi Frost Silverline Dyed,1654
+3,317,Semi Frost Silverline Dyed,1655
+3,318,Semi Frost Silverline Dyed,1656
+3,319,Semi Frost Silverline Dyed,1657
+3,320,Transparent Frost Rainbow,131FR
+3,321,Transparent Frost Rainbow,132FR
+3,322,Transparent Frost Rainbow,134FR
+3,323,Transparent Frost Rainbow,140FR
+3,324,Transparent Frost Rainbow,142FR
+3,325,Transparent Frost Rainbow,143FR
+3,326,Transparent Frost Rainbow,146FR
+3,327,Transparent Frost Rainbow,148FR
+3,328,Transparent Frost Rainbow,149FR
+3,329,Transparent Frost Rainbow,151FR
+3,330,Transparent Frost Rainbow,152FR
+3,331,Transparent Frost Rainbow,153FR
+3,332,Transparent Frost Rainbow,155FR
+3,333,Transparent Frost Rainbow,156FR
+3,334,Ceylon,511
+3,335,Ceylon,514
+3,336,Ceylon,516
+3,337,Ceylon,517
+3,338,Ceylon,519
+3,339,Ceylon,519D
+3,340,Ceylon,520
+3,341,Ceylon,522
+3,342,Ceylon,524
+3,343,Ceylon,525
+3,344,Ceylon,526
+3,345,Ceylon,527
+3,346,Ceylon,536
+3,347,Ceylon,545
+3,348,Ceylon Silverline Dyed,556
+3,349,Ceylon Silverline Dyed,572
+3,350,Ceylon Silverline Dyed,573
+3,351,Ceylon Silverline Dyed,574
+3,352,Special Plating,188
+3,353,Special Plating,191
+3,354,Special Plating,193
+3,355,Special Plating,194
+3,356,Special Plating,195
+3,357,Special Plating,196
+3,358,Special Plating,197
+3,359,Special Plating,198
+3,360,Special Plating,199
+3,361,Special Plating,972
+3,362,Special Plating,973
+3,363,Opaque,401
+3,364,Opaque,402
+3,365,Opaque,404
+3,366,Opaque,404D
+3,367,Opaque,405
+3,368,Opaque,406
+3,369,Opaque,407
+3,370,Opaque,408
+3,371,Opaque,409
+3,372,Opaque,410
+3,373,Opaque,411
+3,374,Opaque,412
+3,375,Opaque,413
+3,376,Opaque,414
+3,377,Opaque,416
+3,378,Opaque,417L
+3,379,Opaque,492
+3,380,Opaque,493
+3,381,Opaque,499
+3,382,Opaque,550
+3,383,Opaque Luster,420
+3,384,Opaque Luster,429
+3,385,Opaque Luster,422
+3,386,Opaque Luster,422D
+3,387,Opaque Luster,423
+3,388,Opaque Luster,424
+3,389,Opaque Luster,438
+3,390,Opaque Luster,425
+3,391,Opaque Luster,436
+3,392,Opaque Luster,437
+3,393,Opaque Luster,431
+3,394,Opaque Luster,435
+3,395,Opaque Luster,433
+3,396,Opaque Luster,434
+3,397,Opaque Luster,439
+3,398,Opaque Luster,432L
+3,399,Opaque Luster,441
+3,400,Opaque Luster,442
+3,401,Opaque Luster,443D
+3,402,Opaque Luster,1943
+3,403,Opaque Luster,1945
+3,404,Opaque Rainbow,471
+3,405,Opaque Rainbow,472
+3,406,Opaque Rainbow,473
+3,407,Opaque Rainbow,474
+3,408,Opaque Rainbow,475
+3,409,Opaque Rainbow,476
+3,410,Opaque Rainbow,477
+3,411,Opaque Rainbow,478
+3,412,Opaque Rainbow,480
+3,413,Opaque Rainbow,481
+3,414,Opaque Rainbow,482
+3,415,Opaque Rainbow,484
+3,416,Opaque Rainbow,479
+3,417,Opaque Rainbow,483
+3,418,Opaque Rainbow,487
+3,419,Opaque Rainbow,488
+3,420,Opaque Rainbow,489D
+3,421,Opaque Rainbow,470
+3,422,Opaque Dyed,1363
+3,423,Opaque Dyed,1364
+3,424,Opaque Dyed,1365
+3,425,Opaque Dyed,1366
+3,426,Opaque Dyed,1367
+4,427,Opaque Dyed,1371
+4,428,Opaque Dyed,1373
+4,429,Opaque Dyed,1374
+4,430,Opaque Dyed,1375
+4,431,Opaque Dyed,1376
+4,432,Opaque Dyed,1377
+4,433,Opaque Dyed,1378
+4,434,Opaque Dyed,1379
+4,435,Opaque Dyed,1381
+4,436,Opaque Dyed,1461
+4,437,Opaque Dyed,1462
+4,438,Opaque Dyed,1464
+4,439,Opaque Dyed,1465
+4,440,Opaque Dyed,1469
+4,441,Opaque Dyed,1471
+4,442,Opaque Dyed,1472
+4,443,Opaque Dyed,1473
+4,444,Opaque Dyed,1474
+4,445,Opaque Dyed,1476
+4,446,Opaque Dyed,1479
+4,447,Opaque Dyed,1486
+4,448,Opaque Dyed,1488
+4,449,Opaque Dyed,1684
+4,450,Opaque Dyed,1685
+4,451,Opaque Dyed,2531
+4,452,Opaque Dyed,2538
+4,453,Opaque Dyed,2540
+4,454,Opaque Dyed,2541
+4,455,Opaque Dyed Luster,4743
+4,456,Opaque Dyed Luster,4744
+4,457,Opaque Dyed Luster,4745
+4,458,Opaque Dyed Luster,4746
+4,459,Opaque Dyed Luster,4747
+4,460,Opaque Dyed Luster,4749
+4,461,Opaque Dyed Luster,4751
+4,462,Opaque Dyed Luster,4754
+4,463,Opaque Dyed Luster,4755
+4,464,Opaque Dyed Luster,4756
+4,465,Opaque Dyed Luster,4757
+4,466,Opaque Dyed Luster,4841
+4,467,Opaque Dyed Luster,4845
+4,468,Opaque Dyed Luster,4848
+4,469,Opaque Dyed Luster,4851
+4,470,Opaque Dyed Luster,4859
+4,471,Opaque Dyed Luster,4860
+4,472,Opaque Dyed Luster,4861
+4,473,Opaque Dyed Luster,4862
+4,474,Opaque Frost,401F
+4,475,Opaque Frost,407F
+4,476,Opaque Frost,410F
+4,477,Opaque Frost,412F
+4,478,Opaque Frost,414F
+4,479,Opaque Frost Rainbow,401FR
+4,480,Opaque Frost Rainbow,407FR
+4,481,Opaque Frost Rainbow,410FR
+4,482,Opaque Frost Rainbow,412FR
+4,483,Opaque Frost Rainbow,414FR
+4,484,Opaque Frost Rainbow,492FR
+4,485,Semi Frost Dyed,1681
+4,486,Semi Frost Dyed,1682
+4,487,Frost Dyed,2041
+4,488,Frost Dyed,2049
+4,489,Frost Dyed,2050
+4,490,Fancy,593
+4,491,Fancy,594
+4,492,Fancy,595
+4,493,Fancy,596
+4,494,Fancy,597
+4,495,Fancy,598
+4,496,Fancy,599
+4,497,Fancy,600
+4,498,Fancy,1865
+4,499,Fancy,1866
+4,500,Fancy,1867
+4,501,Fancy,2021
+4,502,Fancy,2022
+4,503,Fancy,2023
+4,504,Fancy,2024
+4,505,Fancy,2025
+4,506,Fancy,2028
+4,507,Fancy,2029
+4,508,Fancy,2030
+4,509,Fancy,2031
+4,510,Fancy,2032
+4,511,Fancy,2033
+4,512,Fancy,2035
+4,513,Fancy,2039
+4,514,Fancy,2040
+4,515,Fancy,2470
+4,516,Metallic,451
+4,517,Metallic,452
+4,518,Metallic,453
+4,519,Metallic,454
+4,520,Metallic,455
+4,521,Metallic,456
+4,522,Metallic,457L
+4,523,Metallic,457
+4,524,Metallic,457B
+4,525,Metallic,458
+4,526,Metallic,459
+4,527,Metallic,460
+4,528,Metallic,462
+4,529,Metallic,465
+4,530,Metallic,1959
+4,531,Metallic Frost,2001
+4,532,Metallic Frost,2005
+4,533,Metallic Frost,2006
+4,534,Metallic Frost,2007
+4,535,Metallic Frost,2008
+4,536,Metallic Frost,2009
+4,537,Metallic Frost,2065
+4,538,Metallic Frost,2066
+4,539,Galvanize,1051
+4,540,Galvanize,1053
+4,541,Galvanize,1052
+4,542,Galvanize,1054
+4,543,Galvanize,1061
+4,544,Galvanize,1072L
+4,545,Galvanize,1073
+4,546,Galvanize,1074
+4,547,Galvanize,1075
+4,548,Galvanize,1076
+4,549,Galvanize,1077
+4,550,Galvanize,1080
+4,551,Galvanize,1086
+4,552,Galvanize,1087
+4,553,Galvanize,1088
+4,554,Galvanize,1089

@@ -9,8 +9,11 @@ import {
   getGeneratedColorDataPath,
   getGeneratedMetadataDataPath,
   getGeneratedMetadataImportPath,
+  getMiyukiSampleCardsDirectory,
+  getMiyukiDirectory2017Directory,
   discoverBeadTypesOnDisk,
   BEADS_ROOT,
+  DOWNLOADED_ROOT,
   GENERATED_DATA_DIR,
 } from '../../../../scripts/beads/common/lib/paths.js';
 
@@ -86,6 +89,19 @@ describe('generated data helpers', () => {
     expect(getGeneratedMetadataImportPath('miyuki-round_rocailles', '15')).toBe(
       './miyuki/round_rocailles/15-metadata.json'
     );
+  });
+});
+
+describe('getMiyukiSampleCardsDirectory', () => {
+  it('resolves the sample-card downloads and their page renders under downloaded/', () => {
+    expect(getMiyukiSampleCardsDirectory()).toBe(path.join(DOWNLOADED_ROOT, 'miyuki', 'sample-cards'));
+    expect(getMiyukiSampleCardsDirectory('cells', 'TE-64-p1-300.png')).toBe(path.join(DOWNLOADED_ROOT, 'miyuki', 'sample-cards', 'cells', 'TE-64-p1-300.png'));
+  });
+});
+
+describe('getMiyukiDirectory2017Directory', () => {
+  it('resolves the unpacked 2017 directory archives under downloaded/', () => {
+    expect(getMiyukiDirectory2017Directory('rr', 'Round Rocailles')).toBe(path.join(DOWNLOADED_ROOT, 'miyuki', 'directory-2017', 'rr', 'Round Rocailles'));
   });
 });
 

@@ -2,8 +2,8 @@
   "shape": "Round Rocailles",
   "size": "11/0",
   "glassGroup": "Transparent",
-  "finish": "Galvanized",
-  "dyed": "Non Dyed",
+  "finish": "Galvanized, Outside-Dyed",
+  "dyed": "Outside Dyed",
   "galvanized": "Galvanized",
   "plating": "Non-Plating",
   "colorAccuracy": "swatch"

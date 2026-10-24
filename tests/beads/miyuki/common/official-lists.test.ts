@@ -6,6 +6,7 @@ import {
   parseDurabilityTsv,
   readColorChangeTsv,
   readDurabilityTsv,
+  renumbering,
   COLOR_CHANGE_TSV_PATH,
   DURABILITY_TSV_PATH,
 } from '../../../../scripts/beads/miyuki/common/official-lists.js';
@@ -60,6 +61,14 @@ describe('parseColorChangeTsv', () => {
     expect(rows[2]).toMatchObject({ oldNumber: '33', unified: '3', squareHole: true, shape: 'Bugle', size: '' });
     expect(rows[3]).toMatchObject({ oldNumber: '701', unified: '1', squareHole: false, shape: 'Round', size: '8' });
     expect(rows[4]).toMatchObject({ oldNumber: '133S', unified: '2422', unifiedRaw: '2422(3 in RR 5/0)', squareHole: false });
+  });
+
+  it('names the number a colour was renumbered to, and nothing for one that keeps its number', () => {
+    const renumberedTo = renumbering(parseColorChangeTsv(sample));
+    expect(renumberedTo('1R')).toBe('1001');
+    expect(renumberedTo('133s')).toBe('2422');
+    expect(renumberedTo('1001')).toBeNull();
+    expect(renumbering([{ oldNumber: '3', unified: '3' }])('3')).toBeNull();
   });
 });
 

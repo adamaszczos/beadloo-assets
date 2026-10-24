@@ -12,10 +12,10 @@ import * as path from 'path';
 import { execFileSync } from 'child_process';
 import * as os from 'os';
 import sharp from 'sharp';
-import { ASSET_REPO_ROOT, DOWNLOADED_ROOT } from '../../common/lib/paths.js';
+import { ASSET_REPO_ROOT, getMiyukiSampleCardsDirectory } from '../../common/lib/paths.js';
 import { formatCsv, parseCsv } from '../common/csv.js';
 
-const CELLS = path.join(DOWNLOADED_ROOT, 'miyuki', 'sample-cards', 'cells');
+const CELLS = getMiyukiSampleCardsDirectory('cells');
 const BATCH = path.join(ASSET_REPO_ROOT, 'sources', 'miyuki', 'batches', 'b-sample-cards.csv');
 const BY_EYE = path.join(ASSET_REPO_ROOT, 'sources', 'miyuki', 'sample-cards', 'located-by-eye.csv');
 type Rect = { x: number; y: number; w: number; h: number };

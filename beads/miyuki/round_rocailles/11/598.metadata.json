@@ -1,10 +1,11 @@
 {
   "shape": "Round Rocailles",
   "size": "11/0",
-  "glassGroup": "Transparent",
-  "finish": "Color-Lined, Luster",
-  "dyed": "Color-Lined",
+  "glassGroup": "Opaque",
+  "finish": "Glass enamel",
+  "dyed": "Non Dyed",
   "galvanized": "Non-galvanized",
   "plating": "Non-Plating",
+  "status": "Discontinued",
   "colorAccuracy": "photo"
 }

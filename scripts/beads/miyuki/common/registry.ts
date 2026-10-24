@@ -15,20 +15,31 @@ import { splitCsvLine } from './csv.js';
 export const REGISTRY_DIR = path.join(ASSET_REPO_ROOT, 'sources', 'miyuki', 'registry');
 
 /** Where a fact comes from. `directory-historical` = was on Miyuki's directory when synced before the dump existed, no longer listed. */
-export type RegistrySource =
-  | 'directory'
-  | 'directory-historical'
-  | 'catalogue-gb6'
-  | 'durability-tsv'
-  | 'sample-card'
-  | 'delica-cross-reference'
-  | 'same-colour-other-size'
+export const REGISTRY_SOURCES = [
+  'directory',
+  'directory-historical',
+  'catalogue-gb6',
+  'durability-tsv',
+  'sample-card',
+  'delica-cross-reference',
+  'same-colour-other-size',
   /** Miyuki's old/new colour table (`color_change.tsv`): names a square-hole colour and its size. */
-  | 'color-change-tsv'
+  'color-change-tsv',
   /** The round-hole bead of the same number and size stands in for a square-hole colour with no image of its own. */
-  | 'round-hole-sibling';
+  'round-hole-sibling',
+  /** Miyuki's 2007 "Conversion chart 11/0 Round to Delica" (and its reverse): names round colours at 11/0. */
+  'conversion-chart-2007',
+  /** Shops sell it as a Miyuki round rocaille at that size, but no Miyuki document names it: shown as "Not confirmed by Miyuki". */
+  'retailer',
+  /** A bead drawn by the renderer in a colour measured from photos, standing in where no Miyuki photo exists. */
+  'rendered',
+] as const;
 
-export type ColorAccuracy = 'photo' | 'swatch' | 'approximate';
+export type RegistrySource = (typeof REGISTRY_SOURCES)[number];
+
+export const COLOR_ACCURACIES = ['photo', 'swatch', 'approximate'] as const;
+
+export type ColorAccuracy = (typeof COLOR_ACCURACIES)[number];
 
 export type RegistryRow = {
   beadId: string;
@@ -59,6 +70,20 @@ export function registryPath(beadType: MiyukiBeadType): string {
 
 export function registryKey(beadId: string, size: string): string {
   return `${size}:${beadId.toUpperCase()}`;
+}
+
+/** Why a row's sources or colour accuracy are not values the registry knows (a typo, a shifted column), or null. */
+export function registryRowProblem(row: RegistryRow): string | null {
+  for (const column of ['listingSource', 'imageSource', 'sizeSource'] as const) {
+    if (!(REGISTRY_SOURCES as readonly string[]).includes(row[column])) return `unknown ${column} "${row[column]}"`;
+  }
+  if (!(COLOR_ACCURACIES as readonly string[]).includes(row.colorAccuracy)) return `unknown colorAccuracy "${row.colorAccuracy}"`;
+  return null;
+}
+
+/** Whether a row's image is Miyuki's own photo of the bead: `photo` accuracy, neither a shop's listing nor drawn by the renderer. */
+export function isMiyukiPhotoRow(row: RegistryRow | undefined): boolean {
+  return row?.colorAccuracy === 'photo' && row.listingSource !== 'retailer' && row.imageSource !== 'retailer' && row.imageSource !== 'rendered';
 }
 
 function escapeCsv(value: string): string {
@@ -132,4 +157,31 @@ export function upsertRegistryRows(existing: RegistryRow[], additions: RegistryR
 
 export function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
+}
+
+export type RegistryStore = { read: () => RegistryRow[]; write: (rows: RegistryRow[]) => void };
+
+/**
+ * Writes planned beads one at a time and saves the registry rows of the beads written, also when a
+ * later one fails: a bead never stays on disk without its row. `write` puts one bead's files in place
+ * and returns its row. Returns how many rows were added.
+ */
+export async function writeBeadsAndRegistry<T>(
+  beadType: MiyukiBeadType,
+  entries: Iterable<T>,
+  write: (entry: T) => Promise<RegistryRow> | RegistryRow,
+  store: RegistryStore = { read: () => readRegistry(beadType), write: (rows) => writeRegistry(beadType, rows) },
+): Promise<number> {
+  const written: RegistryRow[] = [];
+  let added = 0;
+  try {
+    for (const entry of entries) written.push(await write(entry));
+  } finally {
+    if (written.length > 0) {
+      const merged = upsertRegistryRows(store.read(), written);
+      store.write(merged.rows);
+      added = merged.added;
+    }
+  }
+  return added;
 }

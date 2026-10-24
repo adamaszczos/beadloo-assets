@@ -44,6 +44,16 @@ export function getDownloadedBeadTypeDirectory(beadType: string, ...segments: st
   return path.join(DOWNLOADED_ROOT, ...getBeadTypeSegments(beadType), ...segments);
 }
 
+/** Miyuki's sample-card PDFs (`downloaded/miyuki/sample-cards/`), their page renders under `cells/`. */
+export function getMiyukiSampleCardsDirectory(...segments: string[]): string {
+  return path.join(DOWNLOADED_ROOT, 'miyuki', 'sample-cards', ...segments);
+}
+
+/** Miyuki's 2017 directory image archives, unpacked (`downloaded/miyuki/directory-2017/`). */
+export function getMiyukiDirectory2017Directory(...segments: string[]): string {
+  return path.join(DOWNLOADED_ROOT, 'miyuki', 'directory-2017', ...segments);
+}
+
 export function getGeneratedBeadTypeDataDirectory(
   beadType: string,
   dataRoot: string = GENERATED_DATA_DIR,

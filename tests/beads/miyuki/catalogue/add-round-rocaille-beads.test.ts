@@ -7,8 +7,8 @@ import {
   chooseMetadataDonor,
   isColourRow,
   resolveCatalogueBead,
-  type Sidecar,
 } from '../../../../scripts/beads/miyuki/catalogue/add-round-rocaille-beads.js';
+import type { Sidecar } from '../../../../scripts/beads/miyuki/common/bead-files.js';
 
 const donor: Sidecar = { shape: 'Round Rocailles', size: '11/0', colorGroup: 'Red', glassGroup: 'Transparent', finish: 'Silverline', dyed: 'Non Dyed', galvanized: 'Non-galvanized', plating: 'Non-Plating', formerly: 'x', colorAccuracy: 'photo' };
 
@@ -40,6 +40,14 @@ describe('catalogue round-rocaille rows', () => {
     expect(chooseMetadataDonor('1SH', '8', null, { sidecar: (id: string, size: string) => (id === '1' && size === '11' ? donor : null) })?.source).toBe('official attributes of 1 at 11/0 (directory)');
     expect(chooseMetadataDonor('404', '1', '8', { sidecar: (id: string, size: string) => (id === '404' && size === '8' ? donor : null) })?.source).toBe('official attributes of 404 at 8/0 (directory)');
     expect(chooseMetadataDonor('9999', '11', null, lookup)).toBeNull();
+  });
+
+  it('lets the caller keep only some donors and name their source, for the square-hole fallback too', () => {
+    const sidecars: Record<string, Sidecar> = { '6:1SH': { ...donor, size: '6/0' }, '11:1': donor };
+    const lookup = { sidecar: (id: string, size: string) => sidecars[`${size}:${id}`] ?? null };
+    const directoryOnly = { accept: (id: string, size: string) => `${size}:${id}` === '11:1', sourceLabel: (id: string, size: string) => `listed ${id}@${size}` };
+    expect(chooseMetadataDonor('1SH', '2', null, lookup, directoryOnly)).toEqual({ sidecar: donor, source: 'listed 1@11' });
+    expect(chooseMetadataDonor('1SH', '2', null, lookup, { accept: () => false })).toBeNull();
   });
 
   it('builds the sidecar: colour group only from a directory donor, the hole when it applies', () => {

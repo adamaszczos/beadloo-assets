@@ -1,7 +1,8 @@
 /**
  * The one CSV reader and writer for the Miyuki sources (registry, decisions, catalogue, batches,
  * sample cards): comma-separated, `"` quoting with `""` for a quote inside a field, LF or CRLF line
- * ends. A field never spans lines in these files, so a record is a line.
+ * ends. A field never spans lines in these files, so a record is a line. A leading byte-order mark (a
+ * spreadsheet's "CSV UTF-8" export) is dropped, or it would become part of the first column's name.
  */
 
 /** One line's fields, quotes resolved. */
@@ -29,7 +30,7 @@ export function splitCsvLine(line: string): string[] {
 
 /** The non-blank lines of a CSV, split into fields; the header is the first. */
 export function readCsvLines(text: string): string[][] {
-  return text.split(/\r?\n/).filter((line) => line.trim() !== '').map(splitCsvLine);
+  return text.replace(/^\uFEFF/, '').split(/\r?\n/).filter((line) => line.trim() !== '').map(splitCsvLine);
 }
 
 /** Rows keyed by the header's column names; a missing trailing field reads as `undefined`. */

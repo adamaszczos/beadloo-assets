@@ -20,47 +20,32 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import sharp from 'sharp';
-import { ASSET_REPO_ROOT, getBeadTypeDirectory, getDownloadedBeadTypeDirectory } from '../../common/lib/paths.js';
-import { CataloguePdf } from '../catalogue/lib/pdf.js';
+import { ASSET_REPO_ROOT, getMiyukiSampleCardsDirectory } from '../../common/lib/paths.js';
 import { readDurabilityTsv, type DelicaOfficialRow } from '../common/official-lists.js';
-import { readRegistry, todayIso, upsertRegistryRows, writeRegistry, type RegistryRow } from '../common/registry.js';
+import { attributesFromOfficialFinish } from '../common/official-finish.js';
+import { todayIso, writeBeadsAndRegistry, type RegistryRow } from '../common/registry.js';
 import { parseCsv } from '../common/csv.js';
-import { parseBox, strandBox } from './add-card-beads.js';
-import type { Rect } from './read-cards.js';
+import { originalPath, prepareOriginalTarget, sidecarPath, writeSidecar, type Sidecar } from '../common/bead-files.js';
+import { parseBox } from './add-card-beads.js';
+import { renderCardPage, writeStrandOriginal } from './card-images.js';
 
 const BEAD_TYPE = 'miyuki-delica' as const;
 const SIZE = '11';
 const DPI = 150;
 const CELLS_CSV = path.join(ASSET_REPO_ROOT, 'sources', 'miyuki', 'sample-cards', 'n2-renumbered-cells.csv');
-const CARDS_DIR = path.join(ASSET_REPO_ROOT, 'downloaded', 'miyuki', 'sample-cards');
-const RENDERS_DIR = path.join(CARDS_DIR, 'cells');
+/** Pixels in from a located cell's border before the strand is looked for. */
+const CELL_INSET = 3;
 
-export type Sidecar = Record<string, string>;
 export type CellRow = Record<string, string>;
 
 /**
- * The official list's "Glass Type / Finish" in the directory's vocabulary. A leading `Matte` is the
- * directory's `Frosted (Matte)` finish, `AB` its `Rainbow`; finish terms are listed alphabetically,
- * as the directory lists them.
+ * The official list's "Glass Type / Finish" in the directory's vocabulary (`attributesFromOfficialFinish`):
+ * a leading `Matte` is the directory's `Frosted (Matte)` finish, `AB` its `Rainbow`; finish terms are
+ * listed alphabetically, as the directory lists them.
  */
 export function officialGlassAndFinish(text: string): { glassGroup: string; finish: string } {
-  const parts = text.split('-').map((part) => part.trim()).filter(Boolean);
-  let glass = parts[0] ?? '';
-  const finishes: string[] = [];
-  if (/^matte\s+/i.test(glass)) {
-    finishes.push('Frosted (Matte)');
-    glass = glass.replace(/^matte\s+/i, '');
-  }
-  for (const part of parts.slice(1)) {
-    if (/^glass enamel$/i.test(part)) finishes.push('Glass enamel');
-    else if (/^ab$/i.test(part)) finishes.push('Rainbow');
-    else if (/^luster$/i.test(part)) finishes.push('Luster');
-    else throw new Error(`unknown finish "${part}" in "${text}"`);
-  }
-  if (!/^(Opaque|Transparent|Silk|Alabaster)$/i.test(glass)) throw new Error(`unknown glass type "${glass}" in "${text}"`);
-  const glassGroup = glass[0].toUpperCase() + glass.slice(1).toLowerCase();
-  return { glassGroup, finish: finishes.sort((a, b) => a.localeCompare(b, 'en')).join(', ') };
+  const { glassGroup, finish } = attributesFromOfficialFinish(text);
+  return { glassGroup, finish };
 }
 
 export function buildDelicaCardSidecar(row: Pick<DelicaOfficialRow, 'glassTypeFinish'>): Sidecar {
@@ -97,30 +82,9 @@ export function registryRowFor(row: CellRow, official: Pick<DelicaOfficialRow, '
 }
 
 async function pageRender(card: string, page: string): Promise<string> {
-  const file = path.join(RENDERS_DIR, `${card}-p${page}-${DPI}.png`);
-  if (fs.existsSync(file)) return file;
-  fs.mkdirSync(RENDERS_DIR, { recursive: true });
-  const pdf = await CataloguePdf.open(path.join(CARDS_DIR, `${card}.pdf`));
-  const img = pdf.renderPage(Number(page), DPI);
-  pdf.destroy();
-  await sharp(img.data, { raw: { width: img.width, height: img.height, channels: 3 } }).png().toFile(file);
+  const file = getMiyukiSampleCardsDirectory('cells', `${card}-p${page}-${DPI}.png`);
+  await renderCardPage(getMiyukiSampleCardsDirectory(`${card}.pdf`), Number(page), DPI, file);
   return file;
-}
-
-async function writeOriginal(render: string, bead: Rect, target: string): Promise<void> {
-  const inset = 3;
-  const meta = await sharp(render).metadata();
-  const region = {
-    left: Math.max(0, bead.x + inset),
-    top: Math.max(0, bead.y + inset),
-    width: Math.max(1, Math.min(bead.w - 2 * inset, (meta.width ?? 0) - bead.x - inset)),
-    height: Math.max(1, Math.min(bead.h - 2 * inset, (meta.height ?? 0) - bead.y - inset)),
-  };
-  const cell = sharp(render).extract(region);
-  const { data, info } = await cell.clone().removeAlpha().raw().toBuffer({ resolveWithObject: true });
-  const strand = strandBox(new Uint8Array(data.buffer, data.byteOffset, data.byteLength), info.width, info.height);
-  fs.mkdirSync(path.dirname(target), { recursive: true });
-  await cell.extract({ left: strand.x, top: strand.y, width: strand.w, height: strand.h }).jpeg({ quality: 92 }).toFile(target);
 }
 
 async function main(): Promise<void> {
@@ -128,28 +92,28 @@ async function main(): Promise<void> {
   const rewrite = process.argv.includes('--rewrite');
   const official = new Map(readDurabilityTsv().map((row) => [row.beadId, row]));
   const rows = parseCsv(fs.readFileSync(CELLS_CSV, 'utf-8')).filter(isConfirmedCell);
-  const registryRows: RegistryRow[] = [];
+  const planned: Array<{ row: CellRow; listRow: DelicaOfficialRow; sidecar: Sidecar }> = [];
   const skipped: string[] = [];
   let onDisk = 0;
   for (const row of rows) {
     const listRow = official.get(row.beadId);
     if (!listRow?.renumbered) { skipped.push(`${row.beadId} (not a -1 colour of the official list)`); continue; }
-    if (!rewrite && fs.existsSync(path.join(getBeadTypeDirectory(BEAD_TYPE, SIZE), `${row.beadId}.metadata.json`))) { onDisk += 1; continue; }
-    const sidecar = buildDelicaCardSidecar(listRow);
-    registryRows.push(registryRowFor(row, listRow));
-    if (dryRun) continue;
-    const render = await pageRender(row.card, row.page);
-    await writeOriginal(render, parseBox(row.bead_cell_px150)!, path.join(getDownloadedBeadTypeDirectory(BEAD_TYPE, SIZE), `${row.beadId}.jpg`));
-    fs.writeFileSync(path.join(getBeadTypeDirectory(BEAD_TYPE, SIZE), `${row.beadId}.metadata.json`), `${JSON.stringify(sidecar, null, 2)}\n`, 'utf-8');
+    if (!rewrite && fs.existsSync(sidecarPath(BEAD_TYPE, SIZE, row.beadId))) { onDisk += 1; continue; }
+    planned.push({ row, listRow, sidecar: buildDelicaCardSidecar(listRow) });
   }
-  console.log(`Delica -1 colours from card N-2${dryRun ? ' (dry run)' : ''}: ${registryRows.length}${onDisk ? ` (${onDisk} already on disk, left alone; --rewrite writes them again)` : ''}`);
+  console.log(`Delica -1 colours from card N-2${dryRun ? ' (dry run)' : ''}: ${planned.length}${onDisk ? ` (${onDisk} already on disk, left alone; --rewrite writes them again)` : ''}`);
   if (skipped.length) console.log(`  skipped: ${skipped.join('; ')}`);
   if (dryRun) {
-    for (const r of registryRows.slice(0, 4)) console.log(`  ${r.beadId}: ${r.sourceRef}`);
+    for (const { row, listRow } of planned.slice(0, 4)) console.log(`  ${row.beadId}: ${registryRowFor(row, listRow).sourceRef}`);
     return;
   }
-  const { rows: merged } = upsertRegistryRows(readRegistry(BEAD_TYPE), registryRows);
-  writeRegistry(BEAD_TYPE, merged);
+  await writeBeadsAndRegistry(BEAD_TYPE, planned, async ({ row, listRow, sidecar }) => {
+    const target = originalPath(BEAD_TYPE, SIZE, row.beadId);
+    prepareOriginalTarget(target);
+    await writeStrandOriginal(await pageRender(row.card, row.page), parseBox(row.bead_cell_px150)!, target, CELL_INSET);
+    writeSidecar(BEAD_TYPE, SIZE, row.beadId, sidecar);
+    return registryRowFor(row, listRow);
+  });
   console.log('  originals, sidecars and registry rows written');
   console.log('\nNext: pnpm beads:miyuki:delica:sync -- --local-only');
 }

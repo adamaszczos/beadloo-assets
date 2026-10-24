@@ -28,6 +28,7 @@ import sharp from 'sharp';
 import { ASSET_REPO_ROOT, getBeadTypeDirectory, getDownloadedBeadTypeDirectory } from '../../common/lib/paths.js';
 import { readRegistry, registryKey, todayIso, upsertRegistryRows, writeRegistry, type ColorAccuracy, type RegistryRow } from '../common/registry.js';
 import { parseCsv } from '../common/csv.js';
+import { readSidecar, type Sidecar } from '../common/bead-files.js';
 
 const BEAD_TYPE = 'miyuki-round_rocailles' as const;
 const CATALOGUE_DIR = path.join(ASSET_REPO_ROOT, 'sources', 'miyuki', 'catalogue', 'gb-6');
@@ -36,7 +37,6 @@ const CROPS_DIR = path.join(ASSET_REPO_ROOT, 'downloaded', 'miyuki', 'catalogue'
 export const DONOR_SIZES = ['11', '8', '15', '6', '5', '2', '1'];
 
 export type CatalogueRoundRocailleRow = { colour_no: string; size: string; hole: string; section_en: string; page: string; cell_x: string; cell_y: string };
-export type Sidecar = Record<string, string>;
 export type SectionMapping = Pick<Sidecar, 'glassGroup' | 'finish' | 'dyed' | 'galvanized' | 'plating'> & { evidence: string };
 
 /** A catalogue row that names a colour: the Mix page lists bead mixes, which are not colours. */
@@ -72,14 +72,24 @@ export function chooseImageDonor(beadId: string, size: string, lookup: Pick<Dono
 
 export type MetadataDonor = { sidecar: Sidecar; source: string };
 
+export type DonorFilter = {
+  /** Whether the bead `id` at `donorSize` may lend its attributes (for instance only one the directory lists). */
+  accept?: (id: string, donorSize: string) => boolean;
+  /** How the registry row names the donor. */
+  sourceLabel?: (id: string, donorSize: string) => string;
+};
+
 /** The same colour at another size first (the image donor's size preferred); a square-hole colour may then take the round-hole bead's. */
-export function chooseMetadataDonor(beadId: string, size: string, imageDonorSize: string | null, lookup: Pick<DonorLookup, 'sidecar'>): MetadataDonor | null {
+export function chooseMetadataDonor(beadId: string, size: string, imageDonorSize: string | null, lookup: Pick<DonorLookup, 'sidecar'>, filter: DonorFilter = {}): MetadataDonor | null {
+  const accept = filter.accept ?? (() => true);
+  const sourceLabel = filter.sourceLabel ?? ((id, donorSize) => `official attributes of ${id} at ${donorSize}/0 (directory)`);
   const ids = beadId.endsWith('SH') ? [beadId, beadId.slice(0, -'SH'.length)] : [beadId];
   for (const id of ids) {
     const sizes = id === beadId ? [imageDonorSize, ...DONOR_SIZES].filter((s): s is string => Boolean(s) && s !== size) : [size, ...DONOR_SIZES];
     for (const donorSize of Array.from(new Set(sizes))) {
+      if (!accept(id, donorSize)) continue;
       const sidecar = lookup.sidecar(id, donorSize);
-      if (sidecar) return { sidecar, source: `official attributes of ${id} at ${donorSize}/0 (directory)` };
+      if (sidecar) return { sidecar, source: sourceLabel(id, donorSize) };
     }
   }
   return null;
@@ -102,11 +112,6 @@ export function buildRoundRocailleSidecar(
     ...(options.squareHole ? { hole: 'Square Hole' } : {}),
     colorAccuracy: options.colorAccuracy,
   };
-}
-
-function readSidecar(size: string, beadId: string): Sidecar | null {
-  const file = path.join(getBeadTypeDirectory(BEAD_TYPE, size), `${beadId}.metadata.json`);
-  return fs.existsSync(file) ? (JSON.parse(fs.readFileSync(file, 'utf-8')) as Sidecar) : null;
 }
 
 function originalPath(size: string, beadId: string): string {
@@ -173,7 +178,7 @@ function buildLookup(): DonorLookup {
   const accuracy = new Map(readRegistry(BEAD_TYPE).map((row) => [registryKey(row.beadId, row.size), row.colorAccuracy]));
   return {
     photoSizes: (beadId) => DONOR_SIZES.filter((size) => fs.existsSync(originalPath(size, beadId)) && accuracy.get(registryKey(beadId, size)) === 'photo'),
-    sidecar: (beadId, size) => readSidecar(size, beadId),
+    sidecar: (beadId, size) => readSidecar(BEAD_TYPE, size, beadId),
   };
 }
 

@@ -20,13 +20,13 @@ import * as path from 'path';
 import { ASSET_REPO_ROOT, getBeadTypeDirectory, getDownloadedBeadTypeDirectory } from '../../common/lib/paths.js';
 import { readRegistry, todayIso, upsertRegistryRows, writeRegistry, type RegistryRow } from '../common/registry.js';
 import { parseCsv } from '../common/csv.js';
+import { readSidecar, type Sidecar } from '../common/bead-files.js';
 
 const BEAD_TYPE = 'miyuki-round_rocailles' as const;
 const BATCH = path.join(ASSET_REPO_ROOT, 'sources', 'miyuki', 'batches', 'c-older-square-hole.csv');
 const APPROVED_PROPOSAL = /^add with colorAccuracy approximate/;
 
 export type BatchRow = Record<string, string>;
-export type Sidecar = Record<string, string>;
 
 /** The rows the adder takes: approved proposal, not yet on disk. */
 export function isApprovedRow(row: BatchRow): boolean {
@@ -62,11 +62,6 @@ function originalOf(size: string, beadId: string): string | null {
   return null;
 }
 
-function readSidecar(size: string, beadId: string): Sidecar | null {
-  const file = path.join(getBeadTypeDirectory(BEAD_TYPE, size), `${beadId}.metadata.json`);
-  return fs.existsSync(file) ? (JSON.parse(fs.readFileSync(file, 'utf-8')) as Sidecar) : null;
-}
-
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const dryRun = argv.includes('--dry-run');
@@ -82,8 +77,8 @@ async function main(): Promise<void> {
     const beadId = row.official_id.toUpperCase();
     if (only && !only.has(beadId)) continue;
     const base = beadId.slice(0, -'SH'.length);
-    if (readSidecar(row.size, beadId)) { skip('already on disk', `${beadId}@${row.size}`); continue; }
-    const sibling = readSidecar(row.size, base);
+    if (readSidecar(BEAD_TYPE, row.size, beadId)) { skip('already on disk', `${beadId}@${row.size}`); continue; }
+    const sibling = readSidecar(BEAD_TYPE, row.size, base);
     const original = originalOf(row.size, base);
     if (!sibling || !original) { skip('no round-hole sibling with an original and a sidecar', `${beadId}@${row.size}`); continue; }
     added.push({ row, base, original, sidecar: squareHoleSidecar(sibling) });

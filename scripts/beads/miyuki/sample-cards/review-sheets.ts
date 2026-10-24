@@ -2,9 +2,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import sharp, { type OverlayOptions } from 'sharp';
-import { ASSET_REPO_ROOT, DOWNLOADED_ROOT } from '../../common/lib/paths.js';
-const CARDS = path.join(DOWNLOADED_ROOT, 'miyuki', 'sample-cards');
-const CELLS = path.join(CARDS, 'cells');
+import { ASSET_REPO_ROOT, getMiyukiSampleCardsDirectory } from '../../common/lib/paths.js';
+const CELLS = getMiyukiSampleCardsDirectory('cells');
 const OUT = process.env.CARD_REVIEW_DIR ?? path.join(ASSET_REPO_ROOT, '.scratch', 'card-review');
 type Rect = { x: number; y: number; w: number; h: number };
 type Cell = Rect & { text: string; conf: number; kind: string; bead: Rect | null };
