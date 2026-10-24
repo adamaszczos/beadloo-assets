@@ -27,6 +27,7 @@ import { GENERATED_DATA_DIR, getBeadTypeDirectory, getGeneratedBeadTypeDataDirec
 import { canonicalDelicaId, readColorChangeTsv, type ColorChangeRow } from './official-lists.js';
 import type { DirectoryListing, MiyukiBeadType } from './directory-products.js';
 import { DIRECTORY_DUMP_PATH, loadDirectoryListings } from './directory-catalog.js';
+import { ROUND_ROCAILLE_SIZES } from './round-rocaille-ids.js';
 
 export type AliasCandidate = {
   beadType: MiyukiBeadType;
@@ -40,7 +41,6 @@ export type AliasCandidate = {
 export type AliasFiles = Record<string, Record<string, string>>; // "<type>/<size>" → { oldId: officialId }
 
 export const DELICA_SIZES = ['8', '10', '11', '15'];
-export const ROUND_ROCAILLE_SIZES = ['1', '2', '5', '6', '8', '11', '15'];
 
 /** Candidates from the old/new table: only the `Round <size>/0` sections are round rocailles. */
 export function aliasCandidatesFromColorChange(rows: ColorChangeRow[]): AliasCandidate[] {

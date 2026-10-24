@@ -2,8 +2,11 @@ import { describe, expect, it } from 'vitest';
 import {
   compareBeadIds,
   formatRegistryCsv,
+  isMiyukiPhotoRow,
   parseRegistryCsv,
+  registryRowProblem,
   upsertRegistryRows,
+  writeBeadsAndRegistry,
   type RegistryRow,
 } from '../../../../scripts/beads/miyuki/common/registry.js';
 
@@ -42,5 +45,43 @@ describe('registry CSV', () => {
 
   it('rejects a file with another header', () => {
     expect(() => parseRegistryCsv('a,b\n1,2\n')).toThrow(/Unexpected registry header/);
+  });
+});
+
+describe('registry values', () => {
+  it('names a source or colour accuracy the registry does not know', () => {
+    expect(registryRowProblem(row('1', '11'))).toBeNull();
+    expect(registryRowProblem(row('1', '11', { imageSource: 'shop-photo' as RegistryRow['imageSource'] }))).toBe('unknown imageSource "shop-photo"');
+    expect(registryRowProblem(row('1', '11', { sizeSource: '' as RegistryRow['sizeSource'] }))).toBe('unknown sizeSource ""');
+    expect(registryRowProblem(row('1', '11', { colorAccuracy: 'exact' as RegistryRow['colorAccuracy'] }))).toBe('unknown colorAccuracy "exact"');
+  });
+
+  it("tells Miyuki's own photo from a shop's listing, a rendered bead and a lesser colour", () => {
+    expect(isMiyukiPhotoRow(row('1', '15'))).toBe(true);
+    expect(isMiyukiPhotoRow(row('1', '15', { listingSource: 'sample-card', imageSource: 'sample-card' }))).toBe(true);
+    expect(isMiyukiPhotoRow(row('2046', '11', { listingSource: 'retailer', imageSource: 'rendered', colorAccuracy: 'photo' }))).toBe(false);
+    expect(isMiyukiPhotoRow(row('1', '15', { colorAccuracy: 'swatch' }))).toBe(false);
+    expect(isMiyukiPhotoRow(undefined)).toBe(false);
+  });
+});
+
+describe('writing beads with their registry rows', () => {
+  it('saves the rows of the beads written before one fails, so none is left without its row', async () => {
+    let saved: RegistryRow[] = [];
+    const store = { read: () => [row('9', '11')], write: (rows: RegistryRow[]) => { saved = rows; } };
+    const write = (beadId: string) => {
+      if (beadId === '3') throw new Error('crop failed');
+      return row(beadId, '11');
+    };
+    await expect(writeBeadsAndRegistry('miyuki-round_rocailles', ['1', '2', '3', '4'], write, store)).rejects.toThrow('crop failed');
+    expect(saved.map((r) => r.beadId).sort()).toEqual(['1', '2', '9']);
+  });
+
+  it('adds every row when all beads are written, and touches nothing when there are none', async () => {
+    let writes = 0;
+    const store = { read: () => [row('1', '11')], write: () => { writes += 1; } };
+    expect(await writeBeadsAndRegistry('miyuki-round_rocailles', ['1', '2'], (beadId) => row(beadId, '11'), store)).toBe(1);
+    expect(await writeBeadsAndRegistry('miyuki-round_rocailles', [], (beadId: string) => row(beadId, '11'), store)).toBe(0);
+    expect(writes).toBe(1);
   });
 });

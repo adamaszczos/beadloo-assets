@@ -143,6 +143,19 @@ export function parseColorChangeTsv(text: string): ColorChangeRow[] {
   return rows;
 }
 
+/**
+ * The number Miyuki's old/new table renumbers a colour to, or null when it keeps its number. Every
+ * section counts: the table files its last block of general renumberings (`1254` → `2001`, `1363/L` →
+ * `4743`) under the preceding "2Cut 8/0" heading, which the forward fill extends over them.
+ */
+export function renumbering(rows: ReadonlyArray<Pick<ColorChangeRow, 'oldNumber' | 'unified'>>): (beadId: string) => string | null {
+  const unifiedByOld = new Map(rows.map((row) => [row.oldNumber.trim().toUpperCase(), row.unified]));
+  return (beadId) => {
+    const unified = unifiedByOld.get(beadId.toUpperCase());
+    return unified && unified.toUpperCase() !== beadId.toUpperCase() ? unified : null;
+  };
+}
+
 export function readColorChangeTsv(filePath = COLOR_CHANGE_TSV_PATH): ColorChangeRow[] {
   return parseColorChangeTsv(fs.readFileSync(filePath, 'utf-8'));
 }

@@ -4,12 +4,15 @@
  *
  * Prints, per bead type and size, what is on disk, what has a provenance row, and which official
  * (colour, size) pairs are still missing, by source. It is the scoreboard of issue
- * adamaszczos/beadloo#203 and fails when a bead has no registry row or a directory product does not
- * parse.
+ * adamaszczos/beadloo#203 and fails when a bead has no registry row, a registry row names a source the
+ * registry does not know, a directory product does not parse, a bead only shops vouch for breaks the
+ * retailer rule (`common/retailer-evidence.ts`), or a colour number's glass or finish differs between
+ * sizes where a source other than the directory is involved.
  *
  * Usage:
  *   pnpm beads:miyuki:audit                       Report
- *   pnpm beads:miyuki:audit -- --write-registry   Add registry rows for beads that have none (bootstrap)
+ *   pnpm beads:miyuki:audit -- --write-registry   Add registry rows for beads that have none (bootstrap;
+ *                                                 refuses a bead whose sidecar is not a directory photo's)
  *   pnpm beads:miyuki:audit -- --write-hold-out   Rewrite sources/miyuki/hold-out.csv
  *   pnpm beads:miyuki:audit -- --lookup 22,327,2479   Where these round-rocaille colour numbers appear, by source
  */
@@ -20,9 +23,11 @@ import { ASSET_REPO_ROOT, getBeadTypeDirectory } from '../common/lib/paths.js';
 import { DIRECTORY_DUMP_PATH, applyDecisions, readDecisions, readDirectoryDump } from './common/directory-catalog.js';
 import { classifyDirectoryProducts, type DirectoryListing, type DirectoryListings, type MiyukiBeadType } from './common/directory-products.js';
 import { readDurabilityTsv, DURABILITY_TSV_PATH, type DelicaOfficialRow } from './common/official-lists.js';
-import { readRegistry, registryKey, todayIso, upsertRegistryRows, writeRegistry, type RegistryRow } from './common/registry.js';
+import { readRegistry, registryKey, registryRowProblem, todayIso, upsertRegistryRows, writeRegistry, type RegistryRow } from './common/registry.js';
 import { listingKey } from './common/sync-pipeline.js';
 import { parseCsv } from './common/csv.js';
+import { readRetailerEvidence, retailerRowProblem, type RetailerRow } from './common/retailer-evidence.js';
+import type { Sidecar } from './common/bead-files.js';
 
 const BEAD_TYPES: MiyukiBeadType[] = ['miyuki-delica', 'miyuki-round_rocailles'];
 const CATALOGUE_DIR = path.join(ASSET_REPO_ROOT, 'sources', 'miyuki', 'catalogue', 'gb-6');
@@ -50,6 +55,26 @@ export function readDiskInventory(beadType: MiyukiBeadType): DiskInventory {
 
 export function sortSizes(sizes: Iterable<string>): string[] {
   return Array.from(sizes).sort((a, b) => Number(a) - Number(b));
+}
+
+/** Every sidecar of a bead type, keyed like the registry (`registryKey`). */
+export type SidecarIndex = Map<string, Sidecar>;
+
+export function readSidecarIndex(beadType: MiyukiBeadType, inventory: DiskInventory): SidecarIndex {
+  const index: SidecarIndex = new Map();
+  const typeDir = getBeadTypeDirectory(beadType);
+  for (const size of inventory.keys()) {
+    for (const file of fs.readdirSync(path.join(typeDir, size)).filter((name) => name.endsWith('.metadata.json'))) {
+      index.set(registryKey(file.slice(0, -'.metadata.json'.length), size), JSON.parse(fs.readFileSync(path.join(typeDir, size, file), 'utf-8')) as Sidecar);
+    }
+  }
+  return index;
+}
+
+/** `11:2046` → `2046@11`. */
+function keyLabel(key: string): string {
+  const [size, beadId] = key.split(':');
+  return `${beadId}@${size}`;
 }
 
 
@@ -111,12 +136,94 @@ function list(ids: Iterable<string>, limit = 12): string {
 }
 
 // ============================================================================
+// Invariants
+// ============================================================================
+
+/** The beads only shops vouch for at their size (`listingSource: retailer`), as `id@size`. */
+export function retailerOnlyBeads(rows: ReadonlyArray<RegistryRow>): string[] {
+  return rows.filter((row) => row.listingSource === 'retailer').map((row) => `${row.beadId}@${row.size}`);
+}
+
+/** Rows whose sources or colour accuracy are not values the registry knows, as `id@size: why`. */
+export function invalidRegistryRows(rows: ReadonlyArray<RegistryRow>): string[] {
+  return rows.flatMap((row) => {
+    const problem = registryRowProblem(row);
+    return problem ? [`${row.beadId}@${row.size}: ${problem}`] : [];
+  });
+}
+
+/**
+ * Why `--write-registry` must not give a bead a directory row, or null: the bootstrap claims a Miyuki
+ * directory photo, which a bead marked as a shop's (`confirmation`) or with a lesser colour is not.
+ */
+export function bootstrapRefusal(sidecar: Sidecar | null | undefined): string | null {
+  if (sidecar?.confirmation) return `its sidecar says confirmation "${sidecar.confirmation}", and a directory row would claim Miyuki lists it`;
+  if (sidecar?.colorAccuracy && sidecar.colorAccuracy !== 'photo') return `its sidecar says colorAccuracy "${sidecar.colorAccuracy}", and a directory row would claim a Miyuki photo`;
+  return null;
+}
+
+/**
+ * Every broken link of the retailer rule: `listingSource: retailer` if and only if the sidecar says
+ * `confirmation: "Retailer"`; an `approximate` colour in both; an image rendered or borrowed from Miyuki's
+ * photo at another size; a row in `sources/miyuki/retailer/round-rocailles.csv` that meets the rule.
+ */
+export function retailerProblems(rows: ReadonlyArray<RegistryRow>, sidecars: ReadonlyMap<string, Sidecar>, evidence: ReadonlyArray<RetailerRow>): string[] {
+  const problems: string[] = [];
+  const evidenceByKey = new Map(evidence.map((row) => [registryKey(row.colour_no ?? '', row.size ?? ''), row]));
+  const rowByKey = new Map(rows.map((row) => [registryKey(row.beadId, row.size), row]));
+  for (const row of rows.filter((r) => r.listingSource === 'retailer')) {
+    const key = registryKey(row.beadId, row.size);
+    const label = keyLabel(key);
+    const sidecar = sidecars.get(key);
+    if (sidecar?.confirmation !== 'Retailer') problems.push(`${label}: listingSource retailer, but ${sidecar ? `the sidecar's confirmation is ${JSON.stringify(sidecar.confirmation ?? null)}` : 'no sidecar'}`);
+    if (row.colorAccuracy !== 'approximate') problems.push(`${label}: registry colorAccuracy "${row.colorAccuracy}", not approximate`);
+    if (sidecar && sidecar.colorAccuracy !== 'approximate') problems.push(`${label}: sidecar colorAccuracy ${JSON.stringify(sidecar.colorAccuracy ?? null)}, not approximate`);
+    if (row.imageSource !== 'rendered' && row.imageSource !== 'same-colour-other-size') problems.push(`${label}: imageSource "${row.imageSource}"; a retailer bead's image is rendered or Miyuki's photo at another size`);
+    const evidenceRow = evidenceByKey.get(key);
+    const evidenceProblem = evidenceRow ? retailerRowProblem(evidenceRow) : 'no row in sources/miyuki/retailer/round-rocailles.csv';
+    if (evidenceProblem) problems.push(`${label}: evidence: ${evidenceProblem}`);
+  }
+  for (const [key, sidecar] of sidecars) {
+    if (sidecar.confirmation === undefined) continue;
+    const listingSource = rowByKey.get(key)?.listingSource;
+    if (sidecar.confirmation !== 'Retailer') problems.push(`${keyLabel(key)}: confirmation "${sidecar.confirmation}" is not one the app knows`);
+    else if (listingSource !== 'retailer') problems.push(`${keyLabel(key)}: confirmation "Retailer", but the registry's listingSource is ${listingSource ? `"${listingSource}"` : 'missing'}`);
+  }
+  return problems;
+}
+
+/**
+ * Colour numbers whose glass or finish differs between sizes (one number names one glass and finish).
+ * A disagreement involving a bead from any source but the directory is a failure: the adders copy
+ * attributes across sizes, and a reviewed decision fixes them all. One between directory beads alone is
+ * Miyuki's own data and only warned about. A square-hole or `-1` colour is a product of its own.
+ */
+export function crossSizeDisagreements(sidecars: ReadonlyMap<string, Sidecar>, isDirectory: (key: string) => boolean): { failures: string[]; warnings: string[] } {
+  const byBead = new Map<string, Array<{ key: string; size: string; reading: string; directory: boolean }>>();
+  for (const [key, sidecar] of sidecars) {
+    const [size, beadId] = key.split(':');
+    const entries = byBead.get(beadId) ?? [];
+    entries.push({ key, size, reading: `${sidecar.glassGroup ?? ''} / ${sidecar.finish ?? ''}`, directory: isDirectory(key) });
+    byBead.set(beadId, entries);
+  }
+  const failures: string[] = [];
+  const warnings: string[] = [];
+  for (const [beadId, entries] of byBead) {
+    if (new Set(entries.map((e) => e.reading)).size < 2) continue;
+    const involvesOtherSource = entries.some((a) => !a.directory && entries.some((b) => b.reading !== a.reading));
+    const line = `${beadId}: ${entries.sort((a, b) => Number(a.size) - Number(b.size)).map((e) => `${e.size}/0 ${e.reading}${e.directory ? ' (directory)' : ''}`).join('; ')}`;
+    (involvesOtherSource ? failures : warnings).push(line);
+  }
+  return { failures: failures.sort(), warnings: warnings.sort() };
+}
+
+// ============================================================================
 // Sections
 // ============================================================================
 
-type Problems = { beadsWithoutRegistry: number; unparsedProducts: number };
+type Problems = { beadsWithoutRegistry: number; unparsedProducts: number; invalidRegistryRows: number; retailerProblems: number; crossSizeFailures: number };
 
-function auditRegistry(beadType: MiyukiBeadType, inventory: DiskInventory, listingsByKey: Map<string, DirectoryListing>, writeRegistryRows: boolean, problems: Problems): void {
+function auditRegistry(beadType: MiyukiBeadType, inventory: DiskInventory, sidecars: SidecarIndex, listingsByKey: Map<string, DirectoryListing>, writeRegistryRows: boolean, problems: Problems): void {
   const registry = readRegistry(beadType);
   const rowKeys = new Set(registry.map((row) => registryKey(row.beadId, row.size)));
   const additions: RegistryRow[] = [];
@@ -129,6 +236,11 @@ function auditRegistry(beadType: MiyukiBeadType, inventory: DiskInventory, listi
     problems.beadsWithoutRegistry += missing.length;
     if (writeRegistryRows) {
       for (const beadId of missing) {
+        const refusal = bootstrapRefusal(sidecars.get(registryKey(beadId, size)));
+        if (refusal) {
+          console.log(`  not bootstrapped: ${beadId}@${size}: ${refusal}; add it through its adder`);
+          continue;
+        }
         const listing = listingsByKey.get(`${size}:${beadId}`);
         additions.push({
           beadId: listing?.beadId ?? beadId,
@@ -149,6 +261,9 @@ function auditRegistry(beadType: MiyukiBeadType, inventory: DiskInventory, listi
     console.log(`  wrote ${added} registry row(s)`);
     problems.beadsWithoutRegistry -= added;
   }
+  const invalid = invalidRegistryRows(registry);
+  problems.invalidRegistryRows += invalid.length;
+  if (invalid.length > 0) console.log(`  INVALID registry rows: ${invalid.length}  ${list(invalid, 8)}`);
   const accuracy = countColourAccuracy(registry);
   console.log(`  colour accuracy: ${Object.keys(accuracy).sort().map((key) => `${key} ${accuracy[key]}`).join(', ')}`);
   const squareHole = countSquareHole(inventory);
@@ -297,6 +412,24 @@ function writeHoldOut(holdOut: string[], delicaWithoutSource: string[] = []): vo
   console.log(`\nwrote ${path.relative(ASSET_REPO_ROOT, HOLD_OUT_PATH)} (${holdOut.length} colours)`);
 }
 
+function auditRetailerBeads(sidecars: Record<MiyukiBeadType, SidecarIndex>, problems: Problems): void {
+  const evidence = readRetailerEvidence();
+  const found = BEAD_TYPES.flatMap((beadType) => retailerProblems(readRegistry(beadType), sidecars[beadType], evidence));
+  const unconfirmed = retailerOnlyBeads(readRegistry('miyuki-round_rocailles'));
+  console.log(`\nNot confirmed by Miyuki (shops only, sources/miyuki/retailer/): ${unconfirmed.length}${unconfirmed.length ? `  ${unconfirmed.join(' ')}` : ''}`);
+  for (const problem of found) console.log(`  BROKEN: ${problem}`);
+  problems.retailerProblems = found.length;
+}
+
+function auditCrossSize(sidecars: SidecarIndex, problems: Problems): void {
+  const directory = new Set(readRegistry('miyuki-round_rocailles').filter((row) => row.listingSource === 'directory').map((row) => registryKey(row.beadId, row.size)));
+  const { failures, warnings } = crossSizeDisagreements(sidecars, (key) => directory.has(key));
+  console.log(`\nRound-rocaille glass and finish across sizes: ${failures.length} disagreement(s) involving a non-directory bead, ${warnings.length} within the directory's own listings`);
+  for (const line of failures) console.log(`  DISAGREE: ${line}`);
+  for (const line of warnings) console.log(`  warning (directory only): ${line}`);
+  problems.crossSizeFailures = failures.length;
+}
+
 // ============================================================================
 // Main
 // ============================================================================
@@ -307,13 +440,14 @@ function main(): void {
   const writeHoldOutFile = argv.includes('--write-hold-out');
   const lookupIndex = argv.indexOf('--lookup');
   const lookups = lookupIndex >= 0 && argv[lookupIndex + 1] ? argv[lookupIndex + 1].split(',').map((v) => v.trim()).filter(Boolean) : [];
-  const problems: Problems = { beadsWithoutRegistry: 0, unparsedProducts: 0 };
+  const problems: Problems = { beadsWithoutRegistry: 0, unparsedProducts: 0, invalidRegistryRows: 0, retailerProblems: 0, crossSizeFailures: 0 };
   if (writeRegistryRows && !fs.existsSync(DIRECTORY_DUMP_PATH)) {
     console.error('--write-registry needs the directory dump to tell live listings from historical ones; run `pnpm beads:miyuki:directory -- --fetch` first.');
     process.exit(1);
   }
 
   const inventories = Object.fromEntries(BEAD_TYPES.map((beadType) => [beadType, readDiskInventory(beadType)])) as Record<MiyukiBeadType, DiskInventory>;
+  const sidecars = Object.fromEntries(BEAD_TYPES.map((beadType) => [beadType, readSidecarIndex(beadType, inventories[beadType])])) as Record<MiyukiBeadType, SidecarIndex>;
 
   let classified: DirectoryListings | null = null;
   if (fs.existsSync(DIRECTORY_DUMP_PATH)) {
@@ -324,7 +458,7 @@ function main(): void {
   const listingsByKey = new Map((classified?.listings ?? []).map((listing) => [listingKey(listing), listing]));
 
   console.log('\nBeads on disk and their registry rows');
-  for (const beadType of BEAD_TYPES) auditRegistry(beadType, inventories[beadType], listingsByKey, writeRegistryRows, problems);
+  for (const beadType of BEAD_TYPES) auditRegistry(beadType, inventories[beadType], sidecars[beadType], listingsByKey, writeRegistryRows, problems);
 
   if (classified) auditDirectory(classified, inventories, problems);
 
@@ -353,11 +487,17 @@ function main(): void {
 
   auditCatalogue(catalogue, inventories);
 
+  auditRetailerBeads(sidecars, problems);
+  auditCrossSize(sidecars['miyuki-round_rocailles'], problems);
+
   console.log('');
   if (problems.beadsWithoutRegistry > 0) console.error(`FAIL: ${problems.beadsWithoutRegistry} bead(s) without a registry row (run with --write-registry to bootstrap directory-sourced beads).`);
+  if (problems.invalidRegistryRows > 0) console.error(`FAIL: ${problems.invalidRegistryRows} registry row(s) name a source or colour accuracy the registry does not know.`);
   if (problems.unparsedProducts > 0) console.error(`FAIL: ${problems.unparsedProducts} directory product(s) do not parse.`);
-  if (problems.beadsWithoutRegistry > 0 || problems.unparsedProducts > 0) process.exit(1);
-  console.log('Audit OK: every bead has a registry row and every directory product parses.');
+  if (problems.retailerProblems > 0) console.error(`FAIL: ${problems.retailerProblems} break(s) of the retailer rule.`);
+  if (problems.crossSizeFailures > 0) console.error(`FAIL: ${problems.crossSizeFailures} colour number(s) with another glass or finish at another size (add a row to sources/miyuki/round-rocaille-attributes.csv and apply it).`);
+  if (Object.values(problems).some((count) => count > 0)) process.exit(1);
+  console.log('Audit OK: every bead has a valid registry row, every directory product parses, the retailer beads keep their rule and every colour number has one glass and finish.');
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

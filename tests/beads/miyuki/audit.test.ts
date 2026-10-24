@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { baseColourNumber, catalogueRowToBeadId, seedColourNumber, countColourAccuracy, countSquareHole, isCatalogueColourRow, lookupColour, parseCatalogueCsv, sortSizes } from '../../../scripts/beads/miyuki/audit.js';
+import { baseColourNumber, bootstrapRefusal, catalogueRowToBeadId, crossSizeDisagreements, seedColourNumber, countColourAccuracy, countSquareHole, invalidRegistryRows, isCatalogueColourRow, lookupColour, parseCatalogueCsv, retailerOnlyBeads, retailerProblems, sortSizes } from '../../../scripts/beads/miyuki/audit.js';
+import { registryKey, type RegistryRow } from '../../../scripts/beads/miyuki/common/registry.js';
+import { RETAILER_ROW } from './common/retailer-fixtures.js';
 import { diffSidecarFields } from '../../../scripts/beads/miyuki/common/sidecar-diff.js';
 
 describe('audit helpers', () => {
@@ -81,5 +83,78 @@ describe('lookupColour', () => {
     });
     expect(lookupColour('2479', inventory, listings, catalogue, delicaRows).delicaEquivalents).toEqual(['DB0268-1 (Opaque - Glass Enamel - Luster)']);
     expect(lookupColour('2046', inventory, listings, catalogue, delicaRows)).toEqual({ colourNo: '2046', onDisk: [], directory: [], catalogue: [], delicaEquivalents: [] });
+  });
+});
+
+describe('beads only shops vouch for', () => {
+  it('lists the registry rows whose listing source is a retailer, as id@size', () => {
+    const base = { imageSource: 'rendered', sizeSource: 'retailer', colorAccuracy: 'approximate', sourceRef: '', addedOn: '2026-10-23' } as const;
+    expect(retailerOnlyBeads([
+      { ...base, beadId: '2046', size: '11', listingSource: 'retailer' },
+      { ...base, beadId: '2039', size: '11', listingSource: 'conversion-chart-2007' },
+    ])).toEqual(['2046@11']);
+  });
+});
+
+describe('registry rows the audit refuses', () => {
+  const row = (beadId: string, extra: Partial<RegistryRow> = {}): RegistryRow => ({ beadId, size: '11', listingSource: 'directory', imageSource: 'directory', sizeSource: 'directory', colorAccuracy: 'photo', sourceRef: '', addedOn: '2026-10-16', ...extra });
+
+  it('lists a row whose source is not one of the registry sources', () => {
+    expect(invalidRegistryRows([row('1'), row('2', { listingSource: 'shop' as RegistryRow['listingSource'] })])).toEqual(['2@11: unknown listingSource "shop"']);
+  });
+
+  it('never bootstraps a directory row for a bead marked as a shop\'s or with a lesser colour', () => {
+    expect(bootstrapRefusal({ glassGroup: 'Opaque' })).toBeNull();
+    expect(bootstrapRefusal({ colorAccuracy: 'photo' })).toBeNull();
+    expect(bootstrapRefusal({ confirmation: 'Retailer', colorAccuracy: 'approximate' })).toMatch(/confirmation "Retailer"/);
+    expect(bootstrapRefusal({ colorAccuracy: 'swatch' })).toMatch(/colorAccuracy "swatch"/);
+  });
+});
+
+describe('the retailer rule', () => {
+  const retailerRow = (extra: Partial<RegistryRow> = {}): RegistryRow => ({ beadId: '2046', size: '11', listingSource: 'retailer', imageSource: 'rendered', sizeSource: 'retailer', colorAccuracy: 'approximate', sourceRef: '', addedOn: '2026-10-23', ...extra });
+  const sidecar = { glassGroup: 'Opaque', colorAccuracy: 'approximate', confirmation: 'Retailer' };
+  const key = registryKey('2046', '11');
+
+  it('passes a bead whose registry, sidecar and evidence row agree', () => {
+    expect(retailerProblems([retailerRow()], new Map([[key, sidecar]]), [RETAILER_ROW])).toEqual([]);
+  });
+
+  it('fails each broken link: confirmation, colour accuracy, image source, evidence', () => {
+    expect(retailerProblems([retailerRow()], new Map([[key, { glassGroup: 'Opaque', colorAccuracy: 'approximate' }]]), [RETAILER_ROW])).toEqual(['2046@11: listingSource retailer, but the sidecar\'s confirmation is null']);
+    expect(retailerProblems([retailerRow()], new Map(), [RETAILER_ROW])).toEqual(['2046@11: listingSource retailer, but no sidecar']);
+    expect(retailerProblems([retailerRow({ colorAccuracy: 'photo' })], new Map([[key, sidecar]]), [RETAILER_ROW])).toEqual(['2046@11: registry colorAccuracy "photo", not approximate']);
+    expect(retailerProblems([retailerRow()], new Map([[key, { ...sidecar, colorAccuracy: 'photo' }]]), [RETAILER_ROW])).toEqual(['2046@11: sidecar colorAccuracy "photo", not approximate']);
+    expect(retailerProblems([retailerRow({ imageSource: 'directory' })], new Map([[key, sidecar]]), [RETAILER_ROW])[0]).toMatch(/imageSource "directory"/);
+    expect(retailerProblems([retailerRow()], new Map([[key, sidecar]]), [])).toEqual(['2046@11: evidence: no row in sources/miyuki/retailer/round-rocailles.csv']);
+    expect(retailerProblems([retailerRow()], new Map([[key, sidecar]]), [{ ...RETAILER_ROW, shops: '2' }])).toEqual(['2046@11: evidence: only 2 shops']);
+  });
+
+  it('fails a sidecar marked "Retailer" whose registry row is not a retailer one', () => {
+    expect(retailerProblems([retailerRow({ listingSource: 'sample-card' })], new Map([[key, sidecar]]), [RETAILER_ROW])).toEqual(['2046@11: confirmation "Retailer", but the registry\'s listingSource is "sample-card"']);
+    expect(retailerProblems([], new Map([[key, { ...sidecar, confirmation: 'Shop' }]]), [])).toEqual(['2046@11: confirmation "Shop" is not one the app knows']);
+  });
+});
+
+describe('glass and finish across sizes', () => {
+  const sidecar = (glassGroup: string, finish = 'Outside-Dyed') => ({ glassGroup, finish });
+
+  it('fails a disagreement that involves a bead from a source other than the directory, and only warns on the directory alone', () => {
+    const sidecars = new Map([
+      ['11:1681', sidecar('Opaque')], ['15:1681', sidecar('Transparent')],
+      ['8:299', sidecar('Transparent', 'Rainbow')], ['11:299', sidecar('Transparent', 'Not Specified')],
+      ['6:1685', sidecar('Opaque')], ['15:1685', sidecar('Opaque')],
+      ['6:3271SH', sidecar('Transparent', 'Rococo Color, Silverline')], ['5:3271', sidecar('Transparent', 'Special Coating')],
+    ]);
+    const directory = new Set(['8:299', '11:299', '6:1685']);
+    expect(crossSizeDisagreements(sidecars, (key) => directory.has(key))).toEqual({
+      failures: ['1681: 11/0 Opaque / Outside-Dyed; 15/0 Transparent / Outside-Dyed'],
+      warnings: ['299: 8/0 Transparent / Rainbow (directory); 11/0 Transparent / Not Specified (directory)'],
+    });
+  });
+
+  it('fails a non-directory bead that agrees with one directory size but not another', () => {
+    const sidecars = new Map([['8:22', sidecar('Opaque')], ['11:22', sidecar('Transparent')], ['15:22', sidecar('Opaque')]]);
+    expect(crossSizeDisagreements(sidecars, (key) => key !== '15:22').failures).toHaveLength(1);
   });
 });

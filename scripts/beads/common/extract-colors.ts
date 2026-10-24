@@ -82,9 +82,10 @@ function rgbToHex(r: number, g: number, b: number): string {
 }
 
 /**
- * Extract the dominant colour of a bead from its (multi-bead pile) source photo.
+ * Extract the dominant colour of a bead from its source photo (a pile, or a strand on a card).
  *
- * Delegates to the shared robust sampler (centre-crop → OKLab → adaptive trimmed mean), so the
+ * Delegates to the shared robust sampler (`sampleBaseColor`: a pile's centre crop, a strand's bead
+ * rows; OKLab; trimmed mean), so the
  * published `colorMappings` hex and the 16x16 render base colour are produced by exactly one
  * algorithm. `metadata` lets the sampler be finish-aware (e.g. suppress metallic sheen).
  */

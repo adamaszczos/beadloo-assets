@@ -17,7 +17,9 @@ import sharp from 'sharp';
 import { sampleBaseColor, colorHintsFromInfo, calibrateToTarget } from './colorSampler.js';
 
 export const RENDER_BG = '#0d0d0d';
-const SS = 192; // supersample resolution; downscaled to 16 for clean anti-aliasing
+/** Side of the raw RGBA buffer `renderBead` returns (supersampled; downscaled to 16 for clean anti-aliasing). */
+export const RENDER_SUPERSAMPLE = 192;
+const SS = RENDER_SUPERSAMPLE;
 const HALF = 1.0;
 
 // ---------------------------------------------------------------------------
@@ -144,8 +146,9 @@ export interface BeadSample {
 }
 
 export async function sampleBead(src: string, info: BeadInfo): Promise<BeadSample> {
-  // The body colour now comes from the shared robust sampler (centre-crop, OKLab, adaptive trimmed
-  // mean) — the single source of truth shared with the published `colorMappings` hex.
+  // The body colour comes from the shared robust sampler (`sampleBaseColor`: a pile's centre crop or
+  // a strand's bead rows, OKLab, trimmed mean) — the single source of truth shared with the published
+  // `colorMappings` hex.
   const base: RGB = await sampleBaseColor(src, colorHintsFromInfo(info));
   const out: BeadSample = { base };
 

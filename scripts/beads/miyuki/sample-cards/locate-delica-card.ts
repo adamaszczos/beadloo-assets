@@ -22,7 +22,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import sharp, { type OverlayOptions } from 'sharp';
-import { ASSET_REPO_ROOT } from '../../common/lib/paths.js';
+import { ASSET_REPO_ROOT, getMiyukiSampleCardsDirectory } from '../../common/lib/paths.js';
 import { parseCsv } from '../common/csv.js';
 import { readCardPage, type Rect } from './read-cards.js';
 
@@ -31,7 +31,7 @@ export const PAGES = [1, 2, 3, 4];
 const DPI = 150;
 const OUT_CSV = path.join(ASSET_REPO_ROOT, 'sources', 'miyuki', 'sample-cards', 'n2-renumbered-cells.csv');
 const DURABILITY = path.join(ASSET_REPO_ROOT, 'sources', 'miyuki', 'official', 'durability.tsv');
-const CELLS_DIR = path.join(ASSET_REPO_ROOT, 'downloaded', 'miyuki', 'sample-cards', 'cells');
+const CELLS_DIR = getMiyukiSampleCardsDirectory('cells');
 
 /**
  * Labels Tesseract misreads, placed from a label on the same page that reads exactly: the anchor's

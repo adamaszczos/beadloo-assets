@@ -16,6 +16,10 @@ describe('Miyuki CSV', () => {
     expect(parseCsv('')).toEqual([]);
   });
 
+  it('drops a leading byte-order mark, so the first column keeps its name', () => {
+    expect(parseCsv('\uFEFFcolour_no,note\n37,x\n')).toEqual([{ colour_no: '37', note: 'x' }]);
+  });
+
   it('writes what it reads back', () => {
     const rows = [{ beadId: 'DB0106-1', ref: 'cell (1859,1561,355,105) "x"' }];
     expect(csvEscape('a,b')).toBe('"a,b"');

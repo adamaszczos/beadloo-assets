@@ -37,6 +37,7 @@ import { validateBeadType } from '../../common/validate-bead-type.js';
 import { generateDerivatives, type MiyukiOverlayInfo } from '../../common/lib/thumbnails.js';
 import { loadDirectoryListings } from '../common/directory-catalog.js';
 import { generateAliasFiles } from '../common/aliases.js';
+import { ROUND_ROCAILLE_SIZES } from '../common/round-rocaille-ids.js';
 import type { DirectoryListing } from '../common/directory-products.js';
 import {
   REQUEST_DELAY_MS,
@@ -87,7 +88,7 @@ const BEAD_TYPE = 'miyuki-round_rocailles' as const;
 const RR_DIR = getBeadTypeDirectory(BEAD_TYPE);
 const RR_DOWNLOADED_DIR = getDownloadedBeadTypeDirectory(BEAD_TYPE);
 /** 1/0 (EE beads) is offered from issue #203 Phase 2 on; it has no directory listings, so its data files stay empty until Phase 4 adds the catalogue colours. */
-export const VALID_SIZES = ['1', '2', '5', '6', '8', '11', '15'];
+export const VALID_SIZES = ROUND_ROCAILLE_SIZES;
 
 // ============================================================================
 // Step 1: directory dump → downloads, sidecars, registry

@@ -13,8 +13,8 @@ describe('Delica -1 colours from card N-2', () => {
   });
 
   it('refuses a finish it does not know rather than guess', () => {
-    expect(() => officialGlassAndFinish('Opaque - Picasso')).toThrow(/unknown finish/);
-    expect(() => officialGlassAndFinish('Lined - Glass Enamel')).toThrow(/unknown glass type/);
+    expect(() => officialGlassAndFinish('Opaque - Picasso')).toThrow(/unknown term "picasso"/);
+    expect(() => officialGlassAndFinish('Lined - Glass Enamel')).toThrow(/unknown term "lined"/);
   });
 
   it('builds a photo sidecar without a colour group, which Miyuki does not publish for these', () => {
